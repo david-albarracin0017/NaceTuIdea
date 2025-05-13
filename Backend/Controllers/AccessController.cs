@@ -28,33 +28,34 @@ namespace Backend.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] Register register)
         {
-            // Validar campos vacíos
             if (string.IsNullOrWhiteSpace(register.Name) ||
                 string.IsNullOrWhiteSpace(register.Email) ||
-                string.IsNullOrWhiteSpace(register.Password))
+                string.IsNullOrWhiteSpace(register.Password) ||
+                string.IsNullOrWhiteSpace(register.Phone))
             {
-                return BadRequest(new { message = "Todos los campos son obligatorios." });
+                return BadRequest(new { message = "Por favor, complete todos los campos: nombre, correo electrónico, contraseña y teléfono." });
             }
 
-            // Validar formato de correo
             if (!IsValidEmail(register.Email))
             {
-                return BadRequest(new { message = "El correo ingresado no tiene un formato válido." });
+                return BadRequest(new { message = "El correo electrónico ingresado no es válido. Verifique el formato (ejemplo: usuario@dominio.com)." });
             }
 
-            // Validar longitud de la contraseña (mínimo 6 caracteres)
+            if (!IsValidPhone(register.Phone))
+            {
+                return BadRequest(new { message = "El número de teléfono ingresado no es válido. Debe contener solo dígitos y tener entre 7 y 15 caracteres." });
+            }
+
             if (register.Password.Length < 6)
             {
-                return BadRequest(new { message = "La contraseña debe tener al menos 6 caracteres." });
+                return BadRequest(new { message = "La contraseña debe contener al menos 6 caracteres." });
             }
 
-            // Verificar si el usuario ya existe
             if (await _context.Users.AnyAsync(u => u.Email == register.Email))
             {
-                return BadRequest(new { message = "El usuario ya existe." });
+                return BadRequest(new { message = "Ya existe una cuenta registrada con este correo electrónico." });
             }
 
-            // Crear un nuevo usuario
             var user = new User
             {
                 Id = Guid.NewGuid(),
@@ -63,10 +64,13 @@ namespace Backend.Controllers
                 Password = BCrypt.Net.BCrypt.HashPassword(register.Password),
                 Phone = register.Phone,
             };
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Usuario registrado exitosamente." });
+
+            return Ok(new { message = "Registro exitoso. Ahora puede iniciar sesión con sus credenciales." });
         }
+
 
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] Login login)
@@ -126,6 +130,14 @@ namespace Backend.Controllers
             if (string.IsNullOrWhiteSpace(email)) return false;
             var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
             return emailRegex.IsMatch(email);
+        }
+        private bool IsValidPhone(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone)) return false;
+
+            // Permite números entre 7 y 15 dígitos, sin letras ni símbolos especiales
+            var phoneRegex = new Regex(@"^\d{7,15}$");
+            return phoneRegex.IsMatch(phone);
         }
     }
 }
