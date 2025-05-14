@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Utilidad para mostrar errores
     function setError(input, message) {
         clearError(input);
         const error = document.createElement("div");
@@ -21,101 +20,108 @@ document.addEventListener("DOMContentLoaded", () => {
         const toast = document.createElement("div");
         toast.className = "toast-success";
         toast.textContent = message;
-
+        toast.style.position = "fixed";
+        toast.style.top = "20px";
+        toast.style.left = "50%";
+        toast.style.transform = "translateX(-50%)";
+        toast.style.background = "#4CAF50";
+        toast.style.color = "white";
+        toast.style.padding = "10px 20px";
+        toast.style.borderRadius = "5px";
+        toast.style.zIndex = "9999";
+        toast.style.boxShadow = "0 0 10px rgba(0,0,0,0.2)";
         document.body.appendChild(toast);
 
-        setTimeout(() => {
-            toast.remove();
-        }, 3000); // 3 segundos
+        setTimeout(() => toast.remove(), 3000);
     }
-
 
     // LOGIN
     const loginForm = document.querySelector(".form-box.login form");
-    loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        clearAllErrors(loginForm);
+    if (loginForm) {
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            clearAllErrors(loginForm);
 
-        const emailInput = loginForm.querySelector("input[type='email']");
-        const passwordInput = loginForm.querySelector("input[type='password']");
+            const emailInput = loginForm.querySelector("input[type='email']");
+            const passwordInput = loginForm.querySelector("input[type='password']");
 
-        const email = emailInput.value;
-        const password = passwordInput.value;
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
 
-        try {
-            const response = await fetch("https://localhost:7135/api/Access/Login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
-            });
+            try {
+                const response = await fetch("https://localhost:7135/api/Access/Login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (!response.ok) {
-                const msg = data.message || "Error desconocido.";
-                if (msg.includes("correo")) setError(emailInput, msg);
-                else if (msg.includes("Contraseña")) setError(passwordInput, msg);
-                else setError(emailInput, msg); // general
-                return;
+                if (!response.ok) {
+                    const msg = data.message || "Ocurrió un error al iniciar sesión.";
+                    if (msg.includes("correo")) setError(emailInput, msg);
+                    else if (msg.includes("Contraseña")) setError(passwordInput, msg);
+                    else setError(emailInput, msg);
+                    return;
+                }
+
+                sessionStorage.setItem("token", data.token);
+                showSuccessToast(data.message || "Inicio de sesión exitoso.");
+
+                setTimeout(() => {
+                    window.location.href = "/Home/Index";
+                }, 2000);
+
+            } catch (error) {
+                setError(emailInput, "Error de red al intentar iniciar sesión.");
             }
-
-            sessionStorage.setItem("token", data.token);
-            showSuccessToast(data.message || "Inicio de sesión exitoso.");
-
-            // Redirecciona después de 2 segundos
-            setTimeout(() => {
-                window.location.href = "/Home/Index";
-            }, 2000);
-
-        } catch (error) {
-            setError(emailInput, "Error de red al intentar iniciar sesión.");
-        }
-    });
+        });
+    }
 
     // REGISTRO
     const registerForm = document.querySelector(".form-box.register form");
-    registerForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        clearAllErrors(registerForm);
+    if (registerForm) {
+        registerForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            clearAllErrors(registerForm);
 
-        const inputs = registerForm.querySelectorAll("input");
-        const nameInput = inputs[0];
-        const emailInput = inputs[1];
-        const passwordInput = inputs[2];
-        const phoneInput = inputs[3];
+            const inputs = registerForm.querySelectorAll("input");
+            const nameInput = inputs[0];
+            const emailInput = inputs[1];
+            const passwordInput = inputs[2];
+            const phoneInput = inputs[3];
 
-        const name = nameInput.value;
-        const email = emailInput.value;
-        const password = passwordInput.value;
-        const phone = phoneInput.value;
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            const phone = phoneInput.value.trim();
 
-        try {
-            const response = await fetch("https://localhost:7135/api/Access/Register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password, phone }),
-            });
+            try {
+                const response = await fetch("https://localhost:7135/api/Access/Register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, password, phone }),
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (!response.ok) {
-                const msg = data.message || "Error desconocido.";
-                if (msg.includes("nombre")) setError(nameInput, msg);
-                else if (msg.includes("correo")) setError(emailInput, msg);
-                else if (msg.includes("contraseña")) setError(passwordInput, msg);
-                else if (msg.includes("teléfono")) setError(phoneInput, msg);
-                else if (msg.includes("cuenta")) setError(emailInput, msg);
-                return;
+                if (!response.ok) {
+                    const msg = data.message || "Ocurrió un error al registrarse.";
+                    if (msg.includes("nombre")) setError(nameInput, msg);
+                    else if (msg.includes("correo")) setError(emailInput, msg);
+                    else if (msg.includes("contraseña")) setError(passwordInput, msg);
+                    else if (msg.includes("teléfono")) setError(phoneInput, msg);
+                    else if (msg.includes("cuenta")) setError(emailInput, msg);
+                    else setError(emailInput, msg);
+                    return;
+                }
+
+                showSuccessToast(data.message || "Registro exitoso.");
+                registerForm.reset();
+
+            } catch (error) {
+                setError(emailInput, "Error de red al intentar registrarse.");
             }
-
-            showSuccessToast(data.message || "Registro exitoso.");
-            registerForm.reset();
-
-            // Cambia a formulario de login (si lo deseas)
-            // document.querySelector(".login-link").click();
-
-        } catch (error) {
-            setError(emailInput, "Error de red al intentar registrarse.");
-        }
-    });
+        });
+    }
 });
