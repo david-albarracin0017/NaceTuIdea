@@ -11,7 +11,7 @@ body{
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: url('../Media/background.jpg');
+    background: url('~/Content/Media/background.jpg');
     background-size: cover;
     background-position: center;
 }
@@ -257,3 +257,53 @@ header{
     text-decoration: underline;
 
  }
+
+.error-message {
+    color: red;
+    font-size: 0.8em;
+    margin-top: 2px;
+}
+
+.success-message {
+    color: green;
+    font-size: 0.9em;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.toast-success {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    z-index: 9999;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    opacity: 0;
+    animation: fadeInOut 3s ease-in-out forwards;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+
+    10% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+}
