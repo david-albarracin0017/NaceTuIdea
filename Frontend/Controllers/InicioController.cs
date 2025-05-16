@@ -13,5 +13,9 @@ namespace Frontend.Controllers
         {
             return View();
         }
+        public ActionResult Acerca()
+        {
+            return View();
+        }
     }
 }
