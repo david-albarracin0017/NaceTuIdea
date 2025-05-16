@@ -2,6 +2,11 @@
     margin-top: 100px;
     margin-left: 35px;
     margin-right: 35px;
+    background: #fff;
+    border: 2px solid rgb(11, 109, 221);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.521);
     z-index: 1;
 }
 
