@@ -1,0 +1,100 @@
+#acerca-wrapper {
+    margin-top: 100px; /* Espacio para separarse del nav fijo */
+    padding: 40px 20px; /* Espaciado interior general */
+    width: 1200px;
+    height: 650px;
+    background: #fff;
+    border: 2px solid rgb(11, 109, 221);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.521);
+    position: relative;
+    z-index: 1;
+}
+
+#acerca-wrapper .content > * {
+    margin-bottom: 25px; /* Espacio entre cada elemento */
+}
+
+#acerca-wrapper h1,
+#acerca-wrapper h2 {
+    text-align: center;
+    color: #0077cc;
+    font-weight: 700;
+}
+
+#acerca-wrapper p {
+    line-height: 1.6;
+    color: black;
+}
+
+#acerca-wrapper ul {
+    padding-left: 1.2em;
+    list-style: none;
+}
+
+#acerca-wrapper li {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #444;
+}
+
+#acerca-wrapper ion-icon {
+    font-size: 20px;
+    color: #0077cc;
+}
+footer {
+    background-color: #222; /* Fondo oscuro similar al de la imagen */
+    color: #eee; /* Texto claro */
+    padding: 30px 20px;
+    text-align: center; /* Alineación general del texto al centro */
+}
+
+.footer-container {
+    max-width: 1200px; /* Ancho máximo del contenedor */
+    margin: 0 auto; /* Centra el contenedor */
+    display: flex;
+    flex-direction: column; /* Apila los elementos en pantallas pequeñas */
+    align-items: center;
+}
+
+.footer-logo p {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.footer-social {
+    margin-bottom: 20px;
+}
+
+.footer-social a {
+    color: #eee;
+    font-size: 1.5em;
+    margin: 0 15px;
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.footer-social a:hover {
+    opacity: 1;
+}
+
+.footer-links a {
+    color: #eee;
+    text-decoration: none;
+    margin-bottom: 10px;
+    display: block; /* Para que ocupe toda la línea en pantallas pequeñas */
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.footer-copyright p {
+    font-size: 0.8em;
+    color: #777;
+    margin-top: 20px;
+}

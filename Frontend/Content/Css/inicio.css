@@ -1,0 +1,156 @@
+main{
+    position: relative;
+    margin-top: 100px; /* Espacio para separarse del nav fijo */
+    padding: 40px 20px; /* Espaciado interior general */
+    width: 1300px;
+    height: 750px;
+    z-index: 1;
+}
+
+.hero {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #fff;
+  margin-bottom: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.hero h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 1.1em;
+  color: #555;
+}
+
+.hero-img {
+  margin-top: 20px;
+  max-width: 300px;
+  width: 100%;
+}
+#featured-spaces {
+    margin-top: 50px; /* Margen superior desde la sección de iconos */
+    padding: 30px;
+    text-align: left; /* Alineación general del texto a la izquierda */
+}
+
+.featured-hero {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    background-color: #f5f5f5; /* Fondo similar al de la imagen */
+    padding: 30px;
+    border-radius: 5px; /* Bordes redondeados */
+}
+
+.hero-content {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.hero-label {
+    font-size: 1.2em;
+    color: #777;
+}
+
+.hero-title {
+    font-size: 2em;
+    color: #333;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    line-height: 1.3;
+}
+
+
+.hero-image {
+    max-width: 40%;
+    border-radius: 5px;
+    overflow: hidden; /* Asegura que la imagen respete el border-radius */
+}
+
+.hero-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Layout de 4 columnas responsivo */
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.space-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.space-card img {
+    display: block;
+    width: 100%;
+    height: 200px; /* Establece la altura deseada (ajusta este valor) */
+    object-fit: cover; /* La imagen cubre el contenedor, puede recortarse */
+}
+
+.card-details {
+    padding: 15px;
+}
+
+.price {
+    color: #777;
+    margin-bottom: 5px;
+}
+
+.space-name {
+    font-size: 1.1em;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+#pasos-renta{
+    margin-top: 50px;
+    padding: 40px 20px;
+    text-align: center;
+    background: #fff;
+}
+
+#pasos-renta h2{
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 40px;
+}
+
+.pasos-container{
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.pasos{
+    max-width: 220px;
+}
+.pasos-icon{
+    font-size: 2.5em;
+    color: black;
+    margin-bottom: 15px ;
+}
+.pasos-number{
+    font-size: 1.1.em;
+    color: #2470fd;
+    margin-bottom: 10px;
+}
+.pasos-description{
+    font-size: 0.9em;
+    color: #666;
+    line-height: 1.6;
+}
+

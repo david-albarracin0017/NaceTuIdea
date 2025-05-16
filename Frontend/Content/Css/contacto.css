@@ -1,0 +1,33 @@
+main{
+    position: relative;
+    margin-top: 100px; /* Espacio para separarse del nav fijo */
+    padding: 40px 20px; /* Espaciado interior general */
+    width: 1300px;
+    height: 750px;
+    z-index: 1;
+}
+.hero {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #fff;
+  margin-bottom: 30px;
+  border-radius: 20px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+}
+.hero h1,h2{
+    color: #2470fd;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+
+
+
+
+

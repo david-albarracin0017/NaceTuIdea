@@ -1,0 +1,131 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/Content/Css/Style.css">
+    <link rel="stylesheet" href="~/Content/Css/acerca.css">
+    <title>NaceTuIdea</title>
+</head>
+<body>
+    <header>
+        <h2 class="logo">NaceTuIdea:)</h2>
+        <nav class="navegacion">
+            <a href="~/Views/Inicio/Principal.cshtml">Inicio</a>
+            <a href="~/Views/Inicio/Acerca.cshtml">Acerca De</a>
+            <a href="Contacto.html">Contactanos</a>
+            <button class="btnLogin-popup">Login</button>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        <span class="icon-close"><ion-icon name="close"></ion-icon></span>
+        <div class="form-box login">
+            <h2>Login</h2>
+            <form action="#">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
+                    <input type="email" required>
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="password" required>
+                    <label>Contraseña</label>
+                </div>
+                <div class="remember-forgot">
+                    <label><input type="checkbox">Recuerdame</label>
+                    <a href="#">Olvido su Contraseña?</a>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <div class="login-register">
+                    <p>No tiene una Cuenta?<a href="#" class="register-link"> Registrate</a></p>
+                </div>
+            </form>
+        </div>
+        <div class="form-box register">
+            <h2>Registrate</h2>
+            <form action="#">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="person"></ion-icon></span>
+                    <input type="text" required>
+                    <label>Nombre</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
+                    <input type="email" required>
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="password" required>
+                    <label>Contraseña</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="call"></ion-icon></span>
+                    <input type="text" required>
+                    <label>Telefon</label>
+                </div>
+                <div class="remember-forgot">
+                    <label><input type="checkbox"> Acepta Terminos y Condiciones</label>
+                </div>
+                <button type="submit" class="btn">Registrarse</button>
+                <div class="register-login">
+                    <p> Ya tiene una cuenta?<a href="#" class="login-link"> Ingresa</a></p>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <div id="acerca-wrapper">
+        <!-- Contenido principal -->
+        <section class="section">
+            <div class="container">
+                <div class="card p-6">
+                    <div class="content">
+                        <h1 class="title is-3">¿Quiénes somos?</h1>
+                        <p>
+                            En <strong>NaceTuIdea</strong> creemos en el poder de conectar ideas con espacios.
+                            Somos una plataforma dedicada a facilitar el <strong>arriendo de locales comerciales</strong> para
+                            emprendedores, startups y pequeñas empresas que buscan un lugar donde hacer realidad sus proyectos.
+                        </p>
+
+                        <h2 class="subtitle is-4 mt-5">¿Qué hacemos?</h2>
+                        <ul>
+                            <li class="icon-text"><ion-icon name="search-outline"></ion-icon> Te ayudamos a encontrar el local ideal para tu negocio.</li>
+                            <li class="icon-text"><ion-icon name="location-outline"></ion-icon> Contamos con una amplia variedad de espacios en múltiples ubicaciones.</li>
+                            <li class="icon-text"><ion-icon name="flash-outline"></ion-icon> Nuestro proceso de arriendo es rápido, transparente y sin complicaciones.</li>
+                            <li class="icon-text"><ion-icon name="chatbubbles-outline"></ion-icon> Brindamos asesoramiento a arrendadores para sacar el mejor provecho de sus propiedades.</li>
+                        </ul>
+
+                        <h2 class="subtitle is-4 mt-5">Nuestra misión</h2>
+                        <p>
+                            <ion-icon name="bulb-outline"></ion-icon>
+                            Empoderar a nuevos emprendedores y negocios ayudándolos a encontrar el espacio perfecto
+                            para dar vida a sus ideas. Queremos ser el puente entre la oportunidad y el crecimiento.
+                        </p>
+
+                        <h2 class="subtitle is-4 mt-5">¿Por qué elegirnos?</h2>
+                        <p>
+                            <ion-icon name="heart-outline"></ion-icon>
+                            Porque no solo ofrecemos locales, sino también el respaldo y la visión para que tu
+                            emprendimiento crezca desde el primer día.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="~/Content/Js/Script.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</body>
+</html>
+

@@ -9,13 +9,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="~/Content/Css/Style.css">
+    <link rel="stylesheet" href="~/Content/Css/inicio.css">
     <title>NaceTuIdea</title>
 </head>
 <body>
     <header>
         <h2 class="logo">NaceTuIdea:)</h2>
         <nav class="navegacion">
-            <a href="#">Inicio</a>
+            <a href="~/Views/Inicio/Principal.cshtml">Inicio</a>
             <a href="#">Acerca De</a>
             <a href="#">Contactanos</a>
             <button class="btnLogin-popup">Login</button>
@@ -80,6 +81,94 @@
         </div>
 
     </div>
+    <main>
+        <section class="hero">
+            <h1>Encuentra el local perfecto para tu negocio</h1>
+            <p>Locales comerciales, oficinas y más en arriendo cerca de ti</p>
+            <img src="~/Content/Media/hero-img.jpg" alt="Ilustración de locales" class="hero-img" />
+        </section>
+        <section id="featured-spaces">
+            <div class="featured-hero">
+                <div class="hero-content">
+                    <span class="hero-label">[ ] PLUS</span>
+                    <h2 class="hero-title">Espacios exclusivos. Propietarios excepcionales. Calidad verificada.</h2>
+                </div>
+                <div class="hero-image">
+                    <img src="~/Content/Media/dest-img.jpg" alt="Espacio Destacado">
+                </div>
+            </div>
+            <div class="featured-grid">
+                <div class="space-card">
+                    <img src="~/Content/Media/hero-local.jpg" alt="Espacio 1">
+                    <div class="card-details">
+                        <p class="price">desde $ 550.000/ mes</p>
+                        <h3 class="space-name">Locales arriendo Bogota</h3>
+                        <p class="more-info">Más de 35 metros cuadrados</p>
+                    </div>
+                </div>
+                <div class="space-card">
+                    <img src="~/Content/Media/hero-local2.jpg" alt="Espacio 2">
+                    <div class="card-details">
+                        <p class="price">desde $700.000 / mes</p>
+                        <h3 class="space-name">locales Bogota</h3>
+                        <p class="more-info">Más 26 metros cuadrados</p>
+                    </div>
+                </div>
+                <div class="space-card">
+                    <img src="~/Content/Media/hero-local3.jpg" alt="Espacio 3">
+                    <div class="card-details">
+                        <p class="price">desde $900.500 / mes</p>
+                        <h3 class="space-name">locales colombia</h3>
+                        <p class="more-info">Más de 28 metros cuadrados</p>
+                    </div>
+                </div>
+                <div class="space-card">
+                    <img src="~/Content/Media/hero-img4.jpg" alt="Espacio 4">
+                    <div class="card-details">
+                        <p class="price">desde $200.000 / día</p>
+                        <h3 class="space-name">Locales Medellin</h3>
+                        <p class="more-info">Más 1302 pies cuadrados</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="pasos-renta">
+            <h2>Rentar un espacio es muy fácil</h2>
+            <div class="pasos-container">
+                <div class="pasos">
+                    <div class="pasos-icon">
+                        <ion-icon name="storefront-outline" size="large"></ion-icon>
+                    </div>
+                    <h3 class="pasos-number">1. ENCUENTRA UN ESPACIO</h3>
+                    <p class="pasos-description">Disponemos de espacios comerciales flexibles, para reservar por mes o año</p>
+                </div>
+
+                <div class="pasos">
+                    <div class="pasos-icon">
+                        <ion-icon name="bulb-outline" size="large"></ion-icon>
+                    </div>
+                    <h3 class="pasos-number">2. ENVÍA TU IDEA</h3>
+                    <p class="pasos-description">Cuando solicitas un espacio se envía directamente al propietario</p>
+                </div>
+
+                <div class="pasos">
+                    <div class="pasos-icon">
+                        <ion-icon name="card-outline" size="large"></ion-icon>
+                    </div>
+                    <h3 class="pasos-number">3. PAGA EN LÍNEA</h3>
+                    <p class="pasos-description">Los precios son estandarizados y con pagos online seguros</p>
+                </div>
+
+                <div class="pasos">
+                    <div class="pasos-icon">
+                        <ion-icon name="people-outline" size="large"></ion-icon>
+                    </div>
+                    <h3 class="pasos-number">4. EMPIEZA</h3>
+                    <p class="pasos-description">Una vez haya comenzado, únete a nuestra comunidad de innovadores y emprendedores</p>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <script src="~/Content/Js/Script.js"></script>
     <script src="~/Content/Js/acces.js"></script>
