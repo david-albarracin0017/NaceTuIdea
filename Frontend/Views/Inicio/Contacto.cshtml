@@ -8,17 +8,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Css/Style.css">
-    <link rel="stylesheet" href="../Css/contacto.css">
+    <link rel="stylesheet" href="@Url.Content("~/Content/Css/Style.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Content/Css/contacto.css")">
     <title>NaceTuIdea</title>
 </head>
 <body>
     <header>
         <h2 class="logo">NaceTuIdea:)</h2>
         <nav class="navegacion">
-            <a href="index.html">Inicio</a>
-            <a href="Acerca.html">Acerca De</a>
-            <a href="Contacto.html">Contactanos</a>
+            <a href="@Url.Action("Principal","Inicio")">Inicio</a>
+            <a href="@Url.Action("Acerca", "Inicio")">Acerca De</a>
+            <a href="@Url.Action("Contact","Inicio")">Contactanos</a>
             <button class="btnLogin-popup">Login</button>
         </nav>
     </header>
@@ -139,7 +139,7 @@
 
     </div>
 
-    <script src="../Js/Script.js"></script>
+    <script src="@Url.Content("~/Content/Js/Script.js")"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>

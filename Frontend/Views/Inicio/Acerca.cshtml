@@ -17,8 +17,8 @@
         <h2 class="logo">NaceTuIdea:)</h2>
         <nav class="navegacion">
             <a href="@Url.Action("Principal","Inicio")">Inicio</a>
-            <a href="@Url.Action("Acerca", "Inicio")">>Acerca De</a>
-            <a href="Contacto.html">Contactanos</a>
+            <a href="@Url.Action("Acerca", "Inicio")">Acerca De</a>
+            <a href="@Url.Action("Contact","Inicio")">Contactanos</a>
             <button class="btnLogin-popup">Login</button>
         </nav>
     </header>
@@ -122,7 +122,7 @@
         </section>
     </div>
 
-    <script src="~/Content/Js/Script.js"></script>
+    <script src="@Url.Content("~/Content/Js/Script.js")"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
