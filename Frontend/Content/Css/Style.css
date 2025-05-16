@@ -9,11 +9,13 @@
 body {
     /* Eliminamos las propiedades de flexbox que centraban todo */
     min-height: 100vh;
+    display: flex;
+    flex-direction: column; /* Footer al final */
+    margin: 0;
+    padding: 0;
     background: url('../Media/background.jpg');
     background-size: cover;
     background-position: center;
-    margin: 0;
-    padding: 0;
 }
 
 header {
