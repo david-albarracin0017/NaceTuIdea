@@ -17,5 +17,9 @@ namespace Frontend.Controllers
         {
             return View();
         }
+        public ActionResult Contacto()
+        {
+            return View();
+        }
     }
 }

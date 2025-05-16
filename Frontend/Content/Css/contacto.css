@@ -1,9 +1,7 @@
-main{
-    position: relative;
-    margin-top: 100px; /* Espacio para separarse del nav fijo */
-    padding: 40px 20px; /* Espaciado interior general */
-    width: 1300px;
-    height: 750px;
+main {
+    margin-top: 100px;
+    margin-left: 35px;
+    margin-right: 35px;
     z-index: 1;
 }
 .hero {

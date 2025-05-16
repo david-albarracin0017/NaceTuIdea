@@ -6,14 +6,14 @@
     font-family: 'Poppins',sans-serif;
 }
 
-body{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+body {
+    /* Eliminamos las propiedades de flexbox que centraban todo */
     min-height: 100vh;
     background: url('../Media/background.jpg');
     background-size: cover;
     background-position: center;
+    margin: 0;
+    padding: 0;
 }
 
 header {
@@ -29,7 +29,7 @@ header {
     z-index: 99;
 }
 
-.logo{
+.logo {
     font-size: 2em;
     color: #fff;
     user-select: none;
@@ -44,24 +44,24 @@ header {
     margin-left: 40px;
 }
 
-.navegacion a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -6px;
-    width: 100%;
-    height: 3px;
-    background: #fff;
-    border-radius: 5px;
-    transform-origin: right;
-    transform: scale(0);
-    transition: transform.5s;
-}
+    .navegacion a::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 100%;
+        height: 3px;
+        background: #fff;
+        border-radius: 5px;
+        transform-origin: right;
+        transform: scale(0);
+        transition: transform.5s;
+    }
 
-.navegacion a:hover::after{
-    transform-origin: left;
-    transform: scaleX(1);
-}
+    .navegacion a:hover::after {
+        transform-origin: left;
+        transform: scaleX(1);
+    }
 
 
 .navegacion .btnLogin-popup {
@@ -76,38 +76,41 @@ header {
     font-weight: 500;
     margin-left: 40px;
     transition: .5s;
-    
-} 
-
-.navegacion .btnLogin-popup:hover{
-    background: #fff;
-    color: #162938;
 }
 
-.wrapper{
-    position: relative;
+    .navegacion .btnLogin-popup:hover {
+        background: #fff;
+        color: #162938;
+    }
+
+.wrapper {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0); /* Centrado inicial + escala 0 */
     width: 400px;
     height: 440px;
     background: transparent;
-    border: 2px solid rgb(225, 225, 225,.5);
+    border: 2px solid rgba(225, 225, 225, 0.5);
     border-radius: 20px;
     backdrop-filter: blur(20px);
-    box-shadow: 0 0 35px rgb(0, 0, 0,.5);
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    transform: scale(0);
     transition: transform .5s ease, height .2s ease;
+    z-index: 999;
 }
 
-.wrapper.active-popup{
-  transform: scale(1);  
-}
 
-.wrapper.active{
-    height: 530px;
-}
+    .wrapper.active-popup {
+        transform: translate(-50%, -50%) scale(1); /* Centrado + escala 1 */
+    }
+
+    .wrapper.active {
+        height: 530px;
+    }
 
 .wrapper .form-box{
     width: 100%;
