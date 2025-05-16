@@ -1,6 +1,6 @@
 ﻿
 @{
-    Layout = null;
+    ViewBag.Title = "Contacto";
 }
 
 <!DOCTYPE html>
@@ -8,21 +8,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="@Url.Content("~/Content/Css/Style.css")">
-    <link rel="stylesheet" href="@Url.Content("~/Content/Css/acerca.css")">
+    <link rel="stylesheet" href="../Css/Style.css">
+    <link rel="stylesheet" href="../Css/contacto.css">
     <title>NaceTuIdea</title>
 </head>
 <body>
     <header>
         <h2 class="logo">NaceTuIdea:)</h2>
         <nav class="navegacion">
-            <a href="@Url.Action("Principal","Inicio")">Inicio</a>
-            <a href="@Url.Action("Acerca", "Inicio")">>Acerca De</a>
+            <a href="index.html">Inicio</a>
+            <a href="Acerca.html">Acerca De</a>
             <a href="Contacto.html">Contactanos</a>
             <button class="btnLogin-popup">Login</button>
         </nav>
     </header>
 
+    <main>
+        <section class="hero">
+            <h1>Contáctanos</h1>
+
+            <section class="contact-info">
+                <p><strong>Teléfono:</strong> <a href="tel:+56912345678">+56 9 1234 5678</a></p>
+                <p><strong>Email:</strong> <a href="mailto:contacto@nacetuidea.cl">contacto@nacetuidea.cl</a></p>
+                <p><strong>Horario de Atención:</strong> Lunes a Viernes de 9:00 a 18:00</p>
+                <p><strong>Dirección:</strong> Bogota, Colombia</p>
+            </section>
+
+            <section class="faq">
+                <h2>Preguntas Frecuentes</h2>
+                <div class="faq-item">
+                    <h3>¿Cómo puedo reservar un local?</h3>
+                    <p>Solo debes iniciar sesión, buscar el local ideal y enviar tu solicitud.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Los precios incluyen servicios básicos?</h3>
+                    <p>Depende del propietario, revisa los detalles del anuncio antes de reservar.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Puedo visitar el local antes de pagar?</h3>
+                    <p>Sí, puedes coordinar con el dueño una visita previa a través del sistema.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Qué pasa si el propietario no responde?</h3>
+                    <p>Contáctanos para ayudarte a agilizar la comunicación o buscar otra opción.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Puedo arrendar por menos de un mes?</h3>
+                    <p>Actualmente solo aceptamos reservas mensuales o anuales.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Se puede pagar en cuotas?</h3>
+                    <p>Depende del método de pago seleccionado y del acuerdo con el propietario.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Puedo cancelar una reserva?</h3>
+                    <p>Sí, pero revisa nuestras políticas de cancelación antes de hacerlo.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo protegen mis datos personales?</h3>
+                    <p>Usamos protocolos de seguridad para mantener tu información segura.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Qué tipos de locales hay disponibles?</h3>
+                    <p>Locales comerciales, foodtrucks, kioscos, espacios temporales y más.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>¿Cómo me uno como propietario?</h3>
+                    <p>Regístrate como propietario y publica tu local en pocos pasos.</p>
+                </div>
+            </section>
+        </section>
+    </main>
     <div class="wrapper">
         <span class="icon-close"><ion-icon name="close"></ion-icon></span>
         <div class="form-box login">
@@ -82,50 +138,10 @@
         </div>
 
     </div>
-    <div id="acerca-wrapper">
-        <!-- Contenido principal -->
-        <section class="section">
-            <div class="container">
-                <div class="card p-6">
-                    <div class="content">
-                        <h1 class="title is-3">¿Quiénes somos?</h1>
-                        <p>
-                            En <strong>NaceTuIdea</strong> creemos en el poder de conectar ideas con espacios.
-                            Somos una plataforma dedicada a facilitar el <strong>arriendo de locales comerciales</strong> para
-                            emprendedores, startups y pequeñas empresas que buscan un lugar donde hacer realidad sus proyectos.
-                        </p>
 
-                        <h2 class="subtitle is-4 mt-5">¿Qué hacemos?</h2>
-                        <ul>
-                            <li class="icon-text"><ion-icon name="search-outline"></ion-icon> Te ayudamos a encontrar el local ideal para tu negocio.</li>
-                            <li class="icon-text"><ion-icon name="location-outline"></ion-icon> Contamos con una amplia variedad de espacios en múltiples ubicaciones.</li>
-                            <li class="icon-text"><ion-icon name="flash-outline"></ion-icon> Nuestro proceso de arriendo es rápido, transparente y sin complicaciones.</li>
-                            <li class="icon-text"><ion-icon name="chatbubbles-outline"></ion-icon> Brindamos asesoramiento a arrendadores para sacar el mejor provecho de sus propiedades.</li>
-                        </ul>
-
-                        <h2 class="subtitle is-4 mt-5">Nuestra misión</h2>
-                        <p>
-                            <ion-icon name="bulb-outline"></ion-icon>
-                            Empoderar a nuevos emprendedores y negocios ayudándolos a encontrar el espacio perfecto
-                            para dar vida a sus ideas. Queremos ser el puente entre la oportunidad y el crecimiento.
-                        </p>
-
-                        <h2 class="subtitle is-4 mt-5">¿Por qué elegirnos?</h2>
-                        <p>
-                            <ion-icon name="heart-outline"></ion-icon>
-                            Porque no solo ofrecemos locales, sino también el respaldo y la visión para que tu
-                            emprendimiento crezca desde el primer día.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <script src="~/Content/Js/Script.js"></script>
+    <script src="../Js/Script.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-
 </body>
 </html>
 
