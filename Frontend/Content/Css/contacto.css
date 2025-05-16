@@ -1,7 +1,7 @@
 main {
-    margin-top: 80px;
     margin-left: 35px;
     margin-right: 35px;
+    margin-top: 100px; /* Espacio para separarse del nav fijo */
     z-index: 1;
 }
 
@@ -12,23 +12,72 @@ main {
     margin-bottom: 30px;
     border-radius: 20px;
     box-shadow: 0 5px 10px rgba(0,0,0,0.05);
-    margin-left: 35px;
-    margin-right: 35px;
 }
-.hero h1,h2{
-    color: #2470fd;
-}
+
+    .hero h1, h2 {
+        color: #2470fd;
+    }
 
 .contact-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
 }
 
+footer {
+    background: black;
+    color: white;
+    padding: 20px 0;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    z-index: 90; /* Asegura que esté detrás del wrapper (z-index: 999) */
+}
 
+.footer-container {
+    max-width: 1200px;
+    height: 80px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between; /* Distribuye el espacio entre elementos */
+    align-items: center;
+    flex-wrap: wrap; /* Para responsive en pantallas pequeñas */
+    gap: 15px;
+}
 
+.footer-logo p {
+    font-size: 1.5em;
+    font-weight: 600;
+}
 
+.footer-social {
+    display: flex;
+    gap: 20px;
+}
+.footer-social a {
+       color: white;
+        font-size: 1.5em;
+        transition: color 0.3s;
+}
 
+.footer-social a:hover {
+    color: #ccc;
+}
 
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+.footer-links a:hover {
+    color: #ccc;
+    text-decoration: underline;
+
+}
+
+.footer-copyright p {
+    font-size: 0.9em;
+    opacity: 0.8;
+}
