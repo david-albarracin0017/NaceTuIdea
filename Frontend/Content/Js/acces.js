@@ -28,7 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let isSubmitting = false;
 
-    // LOGIN
+    //loguin
+
     const loginForm = document.querySelector(".form-box.login form");
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -50,17 +51,17 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const data = await response.json();
+            const msg = (data.message || "Error desconocido.").trim(); // ✅ Declaración correcta
 
             if (!response.ok) {
-
-                if (msg.includes("obligatorio")) {
+                if (msg.toLowerCase().includes("obligatorio")) {
                     if (!email) setError(emailInput, "Debe ingresar un correo electrónico.");
                     if (!password) setError(passwordInput, "Debe ingresar su contraseña.");
-                } else if (msg.includes("formato")) {
+                } else if (msg.toLowerCase().includes("formato")) {
                     setError(emailInput, "El formato del correo no es válido.");
-                } else if (msg.includes("no existe")) {
-                    setError(emailInput, "Correo no registrado.");
-                } else if (msg.includes("Contraseña incorrecta")) {
+                } else if (msg.toLowerCase().includes("no existe") || msg.toLowerCase().includes("credenciales")) {
+                    setError(emailInput, "Correo no registrado o incorrecto.");
+                } else if (msg.toLowerCase().includes("contraseña incorrecta")) {
                     setError(passwordInput, "La contraseña no coincide con este correo.");
                 } else {
                     setError(emailInput, msg);
@@ -82,6 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
             isSubmitting = false;
         }
     });
+
 
     // REGISTRO
     const registerForm = document.querySelector(".form-box.register form");
