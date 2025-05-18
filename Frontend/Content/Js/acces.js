@@ -52,7 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
 
             if (!response.ok) {
-                const msg = data.message || "Error desconocido.";
 
                 if (msg.includes("obligatorio")) {
                     if (!email) setError(emailInput, "Debe ingresar un correo electrónico.");
@@ -80,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
             showSuccessToast(data.message || "Inicio de sesión exitoso.");
 
             setTimeout(() => {
-                window.location.href = '@Url.Action("interfaz", "Dashboar")';
+                window.location.href = "/Dashboar/Interfaz";
             }, 2000);
 
         } catch (error) {

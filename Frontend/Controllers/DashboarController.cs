@@ -12,17 +12,18 @@ namespace Frontend.Controllers
     public class DashboarController : Controller
     {
         // GET: Dashboard/Index
-        public ActionResult interfaz()
+        public ActionResult Interfaz()
         {
-            // Verificar si existe la cookie de autenticación
             var token = Request.Cookies["AuthToken"]?.Value;
+            System.Diagnostics.Debug.WriteLine($"Token recibido: {token}");
 
             if (string.IsNullOrEmpty(token))
             {
-                return RedirectToAction("Principal", "Inicio"); // Redirigir si no hay token
+                System.Diagnostics.Debug.WriteLine("Redirigiendo a login - Token vacío");
+                return RedirectToAction("Principal", "Inicio");
             }
 
-            return View(); // Mostrar el Dashboard
+            return View();
         }
 
         private bool IsValidToken(string token)

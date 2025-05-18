@@ -249,7 +249,7 @@
     <Content Include="Views\Inicio\Principal.cshtml" />
     <Content Include="Views\Inicio\Acerca.cshtml" />
     <Content Include="Views\Inicio\Contacto.cshtml" />
-    <Content Include="Views\Dashboar\interfaz.cshtml" />
+    <Content Include="Views\Dashboar\Interfaz.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
