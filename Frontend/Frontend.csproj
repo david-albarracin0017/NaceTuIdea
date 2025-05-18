@@ -175,7 +175,6 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\DashboarController.cs" />
     <Compile Include="Controllers\InicioController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -249,7 +248,6 @@
     <Content Include="Views\Inicio\Principal.cshtml" />
     <Content Include="Views\Inicio\Acerca.cshtml" />
     <Content Include="Views\Inicio\Contacto.cshtml" />
-    <Content Include="Views\Dashboar\Interfaz.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
