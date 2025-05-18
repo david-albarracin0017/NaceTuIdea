@@ -43,6 +43,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
 
+        // Validación local mínima para la contraseña
+        if (password.length < 6) {
+            setError(passwordInput, "La contraseña debe contener al menos 6 caracteres.");
+            isSubmitting = false;
+            return;
+        }
+
         try {
             const response = await fetch("https://localhost:7135/api/Access/Login", {
                 method: "POST",
@@ -50,8 +57,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({ email, password }),
             });
 
-            const data = await response.json();
-            const msg = (data.message || "Error desconocido.").trim(); // ✅ Declaración correcta
+            let data;
+            try {
+                data = await response.json();
+            } catch {
+                data = {};
+            }
+
+            console.log("response.status:", response.status);
+            console.log("response.ok:", response.ok);
+            console.log("data:", data);
+
+            const msg = (data.message || "Error desconocido.").trim();
 
             if (!response.ok) {
                 if (msg.toLowerCase().includes("obligatorio")) {
@@ -82,6 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
             setError(emailInput, "Error de red al intentar iniciar sesión.");
             isSubmitting = false;
         }
+
     });
 
 
