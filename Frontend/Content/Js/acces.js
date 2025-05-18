@@ -72,10 +72,15 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             sessionStorage.setItem("token", data.token);
+            await fetch("/Inicio/SaveToken", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: data.token }),
+            });
             showSuccessToast(data.message || "Inicio de sesión exitoso.");
 
             setTimeout(() => {
-                window.location.href = "/Home/Index";
+                window.location.href = "/Dashboar/interfaz";
             }, 2000);
 
         } catch (error) {
