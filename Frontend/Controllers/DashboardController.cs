@@ -9,7 +9,7 @@ namespace Frontend.Controllers
     public class DashboardController : Controller
     {
         // GET: Dashboard
-        public ActionResult Dash()
+        public ActionResult Dashb()
         {
             return View();
         }
