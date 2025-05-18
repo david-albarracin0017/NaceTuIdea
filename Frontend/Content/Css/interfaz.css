@@ -1,0 +1,262 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+*{
+    font-family: 'poppins',sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root{
+    /*=== colors ===*/
+    --body-color:#e4e9f7;
+    --siderbar-color:#fff;
+    --primary-color:#402fff;
+    --primary-color-light:#f6f5ff;
+    --toggle-color:#ddd;
+    --text-color:#707070;
+    /*=== transicion===*/
+    --tran-02:all 0.2s ease;
+    --tran-03:all 0.3s ease;
+    --tran-04:all 0.4s ease;
+    --tran-05:all 0.5s ease;
+} 
+
+body{
+    height: 100vh;
+    background: var(--body-color);
+    transition: var(--tran-02);
+}
+
+body.dark{
+    --body-color:#18191a;
+    --siderbar-color:#242526;
+    --primary-color:#3a3b3c;
+    --primary-color-light:#3a3b3c;
+    --toggle-color:#fff;
+    --text-color:#ccc;
+}
+
+/*=== reusable css===*/
+.siderbar .text{
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-color);
+    transition: var(--tran-03);
+    white-space: nowrap;
+    opacity: 1;
+}
+
+.siderbar .image{
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.siderbar.close .text{
+    opacity: 0;
+}
+/*=== css===*/
+
+.siderbar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    padding: 10px 14px;
+    background: var(--siderbar-color);
+    transition: var(--tran-05);
+}
+
+.siderbar.close{
+    width: 88px;
+}
+
+.siderbar li{
+    height: 50px;
+    margin-top: 10px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+.siderbar li .icon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    font-size: 20px;
+}
+
+.siderbar li .icon,
+.siderbar li .text{
+    color: var(--text-color);
+    transition: var(--tran-02);
+}
+
+.siderbar header{
+    position: relative;
+}
+
+.siderbar .image-text img{
+    width: 40px;
+    margin-left: 5px;
+    border-radius: 6px;
+}
+
+.siderbar header .image-text{
+    display: flex;
+    align-items: center ;
+}
+
+header .image-text .header-text{
+    display: flex;
+    flex-direction: column;
+}
+
+.header-text .name{
+    font-weight: 600;
+}
+
+.siderbar header .toggle{
+    position: absolute;
+    top: 50%;
+    right: -25px;
+    transform: translateY(-50%);
+    height: 25px;
+    width: 25px;
+    background: var(--primary-color );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--siderbar-color);
+    font-size: 22px;
+    transition: var(--tran-03);
+}
+
+.siderbar.close header .toggle{
+   transform: translateY(-50%);
+}
+
+body.dark .siderbar header .toggle{
+    transform: rotate(180deg);
+    color: var(--text-color);
+}
+
+.siderbar .search-box{
+    background: var(--primary-color-light);
+    border-radius: 6px;
+}
+
+.search-box input{
+    height: 100%;
+    width: 100%;
+    outline: none;
+    border: none;
+    border-radius: 6px;
+    background: var(--primary-color-light);
+    
+}
+
+.siderbar li a{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: var(--tran-04);
+}
+
+.siderbar li a:hover{
+    background: var(--primary-color);
+}
+
+.siderbar li a:hover .icon,
+.siderbar li a:hover .text{
+    color: var(--siderbar-color);
+}
+
+body.dark .siderbar li a:hover .icon,
+body.dark .siderbar li a:hover .text{
+    color: var(--text-color);
+}
+
+.siderbar .menu-bar{
+    height: calc(100% - 50px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.menu-bar .mode{
+    position: relative;
+    border-radius: 6px;
+    background: var(--primary-color-light);
+}
+
+.menu-bar .mode .moon-sun{
+    height: 50px;
+    width: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.menu-bar .mode  ion-icon {
+    position: absolute;
+    transition: var(--tran-03);
+}
+
+.menu-bar .mode  ion-icon.sun {
+    opacity: 0;
+}
+
+body.dark .menu-bar .mode ion-icon.sun{
+    opacity: 1;
+}
+
+body.dark .menu-bar .mode ion-icon.moon{
+    opacity: 0;
+}
+
+.menu-bar .mode .toggle-switch{
+    position: absolute;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-width: 60px;
+    cursor: pointer;
+    border-radius: 6px;
+    background: var(--primary-color-light);
+}
+
+.toggle-switch .switch{
+    position: relative;
+    height: 22px;
+    width: 44px;
+    border-radius: 25px;
+    background: var(--toggle-color);
+}
+
+.switch::before{
+    content: '';
+    position: absolute;
+    height: 15px;
+    width:15px;
+    border-radius: 50%;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    background: var(--siderbar-color);
+    transition: var(--tran-03);
+    cursor: pointer;
+}
+
+body.dark .switch::before{
+    left: 24px;
+
+}

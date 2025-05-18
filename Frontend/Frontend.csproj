@@ -147,8 +147,10 @@
     <Content Include="Content\Css\acerca.css" />
     <Content Include="Content\Css\contacto.css" />
     <Content Include="Content\Css\inicio.css" />
+    <Content Include="Content\Css\interfaz.css" />
     <Content Include="Content\Css\Style.css" />
     <Content Include="Content\Js\acces.js" />
+    <Content Include="Content\Js\interfazmode.js" />
     <Content Include="Content\Js\Script.js" />
     <Content Include="Content\Media\background.jpg" />
     <Content Include="Content\Media\dest-img.jpg" />
@@ -157,6 +159,7 @@
     <Content Include="Content\Media\hero-local.jpg" />
     <Content Include="Content\Media\hero-local2.jpg" />
     <Content Include="Content\Media\hero-local3.jpg" />
+    <Content Include="Content\Media\logo.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -194,6 +197,7 @@
     <Content Include="Views\Inicio\Principal.cshtml" />
     <Content Include="Views\Inicio\Acerca.cshtml" />
     <Content Include="Views\Inicio\Contacto.cshtml" />
+    <Content Include="Views\Dashboar\interfaz.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
