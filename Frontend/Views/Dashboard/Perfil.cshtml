@@ -105,60 +105,68 @@
             <br>
             <p>Actualiza tu informacion o elimina tu cuenta</p>
             <br>
-            <div class="profile-card">
-                <div class="profile-grid">
-                    <!-- Fila 1 -->
-                    <div class="profile-field">
-                        <ion-icon name="person-outline" class="field-icon"></ion-icon>
-                        <div>
-                            <div class="field-label">Nombre</div>
-                            <div class="field-value">Juan Pérez</div>
+            <div class="modal-overlay" id="updateModal">
+                <div class="update-modal">
+                    <div class="modal-header">
+                        <h3>Actualizar información</h3>
+                        <button class="close-modal" id="closeModal">&times;</button>
+                    </div>
+
+                    <div class="modal-content">
+                        <div class="form-group">
+                            <label>
+                                <ion-icon name="person-outline"></ion-icon>
+                                Nombre
+                            </label>
+                            <input type="text" id="nombreInput">
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <ion-icon name="mail-outline"></ion-icon>
+                                Correo
+                            </label>
+                            <input type="email" id="correoInput">
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <ion-icon name="lock-closed-outline"></ion-icon>
+                                Contraseña
+                            </label>
+                            <div class="password-input">
+                                <input type="password" id="passwordInput">
+                                <ion-icon name="eye-outline" class="toggle-password"></ion-icon>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <ion-icon name="call-outline"></ion-icon>
+                                Teléfono
+                            </label>
+                            <input type="tel" id="telefonoInput">
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <ion-icon name="business-outline"></ion-icon>
+                                ¿Es propietario?
+                            </label>
+                            <select id="propietarioInput">
+                                <option value="si">Sí</option>
+                                <option value="no">No</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="profile-field">
-                        <ion-icon name="mail-outline" class="field-icon"></ion-icon>
-                        <div>
-                            <div class="field-label">Correo</div>
-                            <div class="field-value">juan@example.com</div>
-                        </div>
+                    <div class="modal-actions">
+                        <button class="btn-cancel" id="cancelUpdate">Cancelar</button>
+                        <button class="btn-confirm" id="confirmUpdateBtn">Confirmar cambios</button>
                     </div>
-
-                    <!-- Fila 2 -->
-                    <div class="profile-field">
-                        <ion-icon name="lock-closed-outline" class="field-icon"></ion-icon>
-                        <div>
-                            <div class="field-label">Contraseña</div>
-                            <div class="field-value">•••••••• <ion-icon name="eye-outline" class="password-toggle"></ion-icon></div>
-                        </div>
-                    </div>
-
-                    <div class="profile-field">
-                        <ion-icon name="call-outline" class="field-icon"></ion-icon>
-                        <div>
-                            <div class="field-label">Teléfono</div>
-                            <div class="field-value">+1 234 567 890</div>
-                        </div>
-                    </div>
-
-                    <!-- Fila 3 -->
-                    <div class="profile-field">
-                        <ion-icon name="business-outline" class="field-icon"></ion-icon>
-                        <div>
-                            <div class="field-label">¿Es propietario?</div>
-                            <div class="field-value">Sí</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Botones compactos -->
-                <div class="profile-actions">
-                    <button class="btn-update" id="updateBtn">
-                        <ion-icon name="create-outline"></ion-icon>
-                        Actualizar
-                    </button>
                 </div>
             </div>
+
             <br>
             <!-- Opción para eliminar cuenta fuera de la tarjeta -->
             <div class="delete-option">
@@ -259,6 +267,8 @@
 
         <script src="@Url.Content("~/Content/Js/interfazmode.js")"></script>
         <script src="@Url.Content("~/Content/Js/perfil.js")"></script>
+        <script src="@Url.Content("~/Content/Js/InfoUser.js")"></script>
+
         <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
         <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
