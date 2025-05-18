@@ -1,94 +1,109 @@
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+    cargarDatosUsuarioEnPerfil();
+
     // 1. Modal de Actualización
-    const updateBtn = document.querySelector('.btn-update');
+    const updateBtn = document.getElementById('updateBtn'); // Cambiado a getElementById
     const updateModal = document.getElementById('updateModal');
-    
-    if(updateBtn && updateModal) {
+
+    if (updateBtn && updateModal) {
         const closeModal = document.getElementById('closeModal');
         const cancelBtn = document.getElementById('cancelUpdate');
-        
+        const confirmBtn = document.getElementById('confirmUpdateBtn'); // Botón de confirmar cambios
+
         // Mostrar modal de actualización
-        updateBtn.addEventListener('click', function(e) {
+        updateBtn.addEventListener('click', function (e) {
             e.preventDefault();
             updateModal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
             cargarDatosUsuarioEnModal();
         });
-        
+
         // Función para cerrar modal
         function closeUpdateModalFunc() {
             updateModal.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
-        
+
         // Eventos para cerrar modal
-        if(closeModal) closeModal.addEventListener('click', closeUpdateModalFunc);
-        if(cancelBtn) cancelBtn.addEventListener('click', closeUpdateModalFunc);
-        
+        if (closeModal) closeModal.addEventListener('click', closeUpdateModalFunc);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeUpdateModalFunc);
+
         // Cerrar al hacer clic fuera del modal
-        updateModal.addEventListener('click', function(e) {
-            if(e.target === updateModal) {
+        updateModal.addEventListener('click', function (e) {
+            if (e.target === updateModal) {
                 closeUpdateModalFunc();
             }
         });
-        
+
+        // Configurar el botón de confirmar cambios
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', async function (e) {
+                e.preventDefault();
+                const resultado = await actualizarDatosUsuario();
+                if (resultado) {
+                    closeUpdateModalFunc();
+                    mostrarExito("Información actualizada correctamente");
+                }
+            });
+        }
+
         // Cerrar con tecla ESC
-        document.addEventListener('keydown', function(e) {
-            if(e.key === 'Escape' && updateModal.style.display === 'flex') {
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && updateModal.style.display === 'flex') {
                 closeUpdateModalFunc();
             }
         });
     }
 
     // 2. Modal de Eliminación
-    const deleteLink = document.querySelector('.delete-link');
+    const deleteLink = document.getElementById('deleteLink'); // Cambiado a getElementById
     const deleteModal = document.getElementById('deleteModal');
-    
-    if(deleteLink && deleteModal) {
+
+    if (deleteLink && deleteModal) {
         const closeDeleteModal = document.getElementById('closeDeleteModal');
         const cancelDelete = document.getElementById('cancelDelete');
         const confirmDelete = document.getElementById('confirmDelete');
         const confirmDeleteInput = document.getElementById('confirmDeleteInput');
-        
+
         // Mostrar modal de eliminación
-        deleteLink.addEventListener('click', function(e) {
+        deleteLink.addEventListener('click', function (e) {
             e.preventDefault();
             deleteModal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         });
-        
+
         // Validación de texto de confirmación
-        if(confirmDeleteInput && confirmDelete) {
-            confirmDeleteInput.addEventListener('input', function() {
+        if (confirmDeleteInput && confirmDelete) {
+            confirmDeleteInput.addEventListener('input', function () {
                 const confirmText = this.value.trim();
                 confirmDelete.disabled = confirmText !== "CONFIRMAR ELIMINACION";
             });
         }
-        
+
         // Función para cerrar modal
         function closeDeleteModalFunc() {
             deleteModal.style.display = 'none';
             document.body.style.overflow = 'auto';
-            if(confirmDeleteInput) confirmDeleteInput.value = '';
-            if(confirmDelete) confirmDelete.disabled = true;
+            if (confirmDeleteInput) confirmDeleteInput.value = '';
+            if (confirmDelete) confirmDelete.disabled = true;
         }
-        
+
         // Eventos para cerrar modal
-        if(closeDeleteModal) closeDeleteModal.addEventListener('click', closeDeleteModalFunc);
-        if(cancelDelete) cancelDelete.addEventListener('click', closeDeleteModalFunc);
-        
+        if (closeDeleteModal) closeDeleteModal.addEventListener('click', closeDeleteModalFunc);
+        if (cancelDelete) cancelDelete.addEventListener('click', closeDeleteModalFunc);
+
         // Cerrar al hacer clic fuera
-        deleteModal.addEventListener('click', function(e) {
-            if(e.target === deleteModal) {
+        deleteModal.addEventListener('click', function (e) {
+            if (e.target === deleteModal) {
                 closeDeleteModalFunc();
             }
         });
-        
+
         // Confirmar eliminación
-        if(confirmDelete) {
-            confirmDelete.addEventListener('click', function() {
-                if(confirmDeleteInput && confirmDeleteInput.value.trim() === "CONFIRMAR ELIMINACION") {
+        if (confirmDelete) {
+            confirmDelete.addEventListener('click', function () {
+                if (confirmDeleteInput && confirmDeleteInput.value.trim() === "CONFIRMAR ELIMINACION") {
                     // Aquí iría la lógica para eliminar la cuenta
                     alert('Cuenta eliminada permanentemente');
                     closeDeleteModalFunc();
@@ -96,10 +111,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
-        
+
         // Cerrar con tecla ESC
-        document.addEventListener('keydown', function(e) {
-            if(e.key === 'Escape' && deleteModal.style.display === 'flex') {
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && deleteModal.style.display === 'flex') {
                 closeDeleteModalFunc();
             }
         });

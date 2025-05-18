@@ -1,48 +1,92 @@
-﻿// Mostrar los datos del usuario en el modal
-function cargarDatosUsuarioEnModal() {
-    const usuario = JSON.parse(localStorage.getItem("usuario"));
-    if (!usuario) return;
+﻿async function cargarDatosUsuarioEnPerfil() {
+    try {
+        // Obtener el token de la cookie directamente
+        const token = document.cookie.split('; ')
+            .find(row => row.startsWith('jwt_token='))
+            ?.split('=')[1];
 
-    document.getElementById("nombreInput").value = usuario.nombre || "";
-    document.getElementById("correoInput").value = usuario.correo || "";
-    document.getElementById("passwordInput").value = ""; // Por seguridad
-    document.getElementById("telefonoInput").value = usuario.telefono || "";
-    document.getElementById("propietarioInput").value = usuario.esPropietario ? "si" : "no";
+        if (!token) {
+            console.error("No se encontró el token JWT");
+            return;
+        }
+
+        // Decodificar el token para obtener el userId
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const userId = payload.nameid || payload.nameidentifier; // Algunos sistemas usan nameid, otros nameidentifier
+
+        // Realizar la solicitud para obtener los datos del usuario
+        const userResponse = await fetch(`https://localhost:7135/api/Users/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!userResponse.ok) {
+            throw new Error(`Error HTTP: ${userResponse.status}`);
+        }
+
+        const user = await userResponse.json();
+
+        // Actualizar la interfaz
+        document.getElementById("profileNombre").textContent = user.name || "N/D";
+        document.getElementById("profileCorreo").textContent = user.email || "N/D";
+        document.getElementById("profileTelefono").textContent = user.phone || "N/D";
+        document.getElementById("profilePropietario").textContent = user.isOwner ? "Sí" : "No";
+
+        // Rellenar formulario del modal
+        document.getElementById("nombreInput").value = user.name || "";
+        document.getElementById("correoInput").value = user.email || "";
+        document.getElementById("telefonoInput").value = user.phone || "";
+        document.getElementById("propietarioInput").value = user.isOwner ? "si" : "no";
+
+    } catch (error) {
+        console.error("Error al cargar el perfil del usuario:", error);
+        mostrarError("No se pudieron cargar los datos del perfil. Intente recargar la página.");
+    }
 }
 
-// Confirmar y enviar cambios al backend
-document.getElementById("confirmUpdate").addEventListener("click", async () => {
-    const usuarioActual = JSON.parse(localStorage.getItem("usuario"));
-    if (!usuarioActual) return;
-
-    const datosActualizados = {
-        id: usuarioActual.id,
-        nombre: document.getElementById("nombreInput").value.trim(),
-        correo: document.getElementById("correoInput").value.trim(),
-        contraseña: document.getElementById("passwordInput").value.trim() || null,
-        telefono: document.getElementById("telefonoInput").value.trim(),
-        esPropietario: document.getElementById("propietarioInput").value === "si"
-    };
-
+async function actualizarDatosUsuario() {
     try {
-        const response = await fetch(`https://localhost:7135/api/Users/${usuarioActual.id}`, {
+        const tokenResponse = await fetch("/Token/Obtener");
+        if (!tokenResponse.ok) throw new Error("No se pudo obtener el token");
+
+        const { token } = await tokenResponse.json();
+        if (!token) throw new Error("No hay token disponible");
+
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const userId = payload.nameidentifier;
+
+        const updateData = {
+            name: document.getElementById("nombreInput").value,
+            email: document.getElementById("correoInput").value,
+            phone: document.getElementById("telefonoInput").value,
+            isOwner: document.getElementById("propietarioInput").value === "si",
+            // La contraseña solo se envía si se ha modificado
+            password: document.getElementById("passwordInput").value || undefined
+        };
+
+        const response = await fetch(`https://localhost:7135/api/Users/${userId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+                "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify(datosActualizados)
+            body: JSON.stringify(updateData)
         });
 
-        if (response.ok) {
-            localStorage.setItem("usuario", JSON.stringify(datosActualizados));
-            showSuccessToast("Información actualizada correctamente.");
-        } else {
-            const error = await response.text();
-            showErrorToast("Error al actualizar: " + error);
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Error al actualizar los datos");
         }
+
+        // Recargar los datos del perfil después de actualizar
+        await cargarDatosUsuarioEnPerfil();
+        return true;
     } catch (error) {
-        showErrorToast("Error de red al actualizar.");
+        console.error("Error al actualizar los datos:", error);
+        mostrarError(error.message || "Error al actualizar los datos");
+        return false;
     }
-});
+}
 
