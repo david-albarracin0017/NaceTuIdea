@@ -22,12 +22,6 @@ namespace Frontend.Controllers
                 return RedirectToAction("Principal", "Inicio"); // Redirigir si no hay token
             }
 
-            // Opcional: Validar el token JWT (si necesitas seguridad extra)
-            if (!IsValidToken(token))
-            {
-                return RedirectToAction("Principal", "Inicio");
-            }
-
             return View(); // Mostrar el Dashboard
         }
 
