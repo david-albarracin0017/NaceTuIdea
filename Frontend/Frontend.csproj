@@ -297,6 +297,7 @@
     <Content Include="Content\Css\perfil.css" />
     <Content Include="Content\Css\Style.css" />
     <Content Include="Content\Js\acces.js" />
+    <Content Include="Content\Js\InfoUser.js" />
     <Content Include="Content\Js\interfazmode.js" />
     <Content Include="Content\Js\perfil.js" />
     <Content Include="Content\Js\Script.js" />

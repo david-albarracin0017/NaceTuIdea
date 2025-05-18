@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             updateModal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
+            cargarDatosUsuarioEnModal();
         });
         
         // Función para cerrar modal
