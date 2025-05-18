@@ -1,0 +1,312 @@
+.main-container {
+    position: relative;
+}
+
+.perfil-container {
+    margin-left: 250px; /* Igual al ancho inicial del sidebar */
+    padding: 20px;
+    min-height: 100vh;
+    background-color: #f0f0f0; /* Solo para visualización, quítalo o cámbialo */
+    transition: var(--tran-05);
+}
+
+.siderbar.close ~ .perfil-container {
+    margin-left: 88px; /* Igual al ancho del sidebar cerrado */
+}
+
+.profile-icon {
+    margin-right: 8px; /* Espacio entre el icono y el texto */
+    font-size: 1.5em; /* Tamaño relativo al texto */
+    vertical-align: middle; /* Alinea verticalmente con el texto */
+    color: var(--text-color); /* Usa la misma variable de color que tu sidebar */
+}
+
+.perfil-container h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre icono y texto (alternativa a margin-right) */
+}
+
+.profile-card {
+    background-color: var(--siderbar-color);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1200px;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.profile-field {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background-color: var(--primary-color-light);
+    border-radius: 8px;
+}
+
+.field-icon {
+    font-size: 1.4em;
+    color: var(--primary-color);
+    min-width: 24px;
+}
+
+.field-label {
+    font-weight: 500;
+    font-size: 0.9em;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.field-value {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.password-toggle {
+    margin-left: 6px;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+/* Botones compactos */
+.profile-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn-update, .btn-delete {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--tran-03);
+    font-size: 0.9em;
+}
+
+.btn-update {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-delete {
+    background-color: #ffebee;
+    color: #d32f2f;
+    border: 1px solid #ef9a9a;
+}
+
+/* Efectos hover */
+.btn-update:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-delete:hover {
+    background-color: #ffcdd2;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-actions {
+        justify-content: center;
+    }
+}
+
+/* Estilos del modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegurar que esté por encima de todo */
+}
+
+.update-modal {
+    background-color: var(--siderbar-color);
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    animation: fadeIn 0.3s ease; /* Animación opcional */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--primary-color-light);
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 1.2rem;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: var(--tran-03);
+}
+
+.close-modal:hover {
+    color: var(--primary-color);
+}
+
+.modal-content {
+    padding: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-size: 0.9em;
+}
+
+.form-group input, 
+.form-group select {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid var(--primary-color-light);
+    border-radius: 6px;
+    background-color: var(--primary-color-light);
+    color: var(--text-color);
+}
+
+.password-input {
+    position: relative;
+}
+
+.password-input ion-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 15px 20px;
+    border-top: 1px solid var(--primary-color-light);
+}
+
+.btn-cancel, .btn-confirm {
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--tran-03);
+}
+
+.btn-cancel {
+    background-color: transparent;
+    border: 1px solid var(--primary-color-light);
+    color: var(--text-color);
+}
+
+.btn-confirm {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+.btn-confirm:hover {
+    background-color: #2a1fcc;
+}
+
+/* Mostrar/ocultar contraseña */
+.password-input input[type="password"] {
+    font-family: 'Arial', sans-serif;
+    letter-spacing: 1px;
+}
+
+.delete-modal {
+    background-color: var(--siderbar-color);
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.warning-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background-color: #fff8e1;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    color: #d32f2f;
+}
+
+.warning-icon {
+    font-size: 1.5em;
+    color: #d32f2f;
+}
+
+.btn-delete {
+    background-color: #d32f2f !important;
+    color: white !important;
+}
+
+.btn-delete:disabled {
+    background-color: #ef9a9a !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Asegura que los inputs de confirmación tengan buen estilo */
+#confirmDeleteInput {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ffcdd2;
+    border-radius: 4px;
+    font-size: 1em;
+}

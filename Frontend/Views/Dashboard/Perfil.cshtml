@@ -1,0 +1,266 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="@Url.Content("~/Content/Css/interfaz.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Content/Css/perfil.css")">
+    <title>perfil</title>
+</head>
+<body>
+    <div class="main-container">
+        <nav class="siderbar">
+            <header>
+                <div class="image-text">
+                    <span class="image">
+                        <img src="~/Content/Media/logo.jpg" alt="logo">
+                    </span>
+                    <div class="text header-text">
+                        <span class="name">NaceTuIdea</span>
+                    </div>
+                </div>
+                <ion-icon name="chevron-forward-outline" class="toggle"></ion-icon>
+            </header>
+            <div class="menu-bar">
+                <div class="menu">
+                    <li class="search-box">
+                        <ion-icon name="search" class="icon"></ion-icon>
+                        <input type="search" placeholder="Buscar...">
+                    </li>
+                    <ul class="menu-links">
+                        <li class="nav-link">
+                            <a href="@Url.Action("Perfil","Dashboard")">
+                                <ion-icon name="person" class="icon"></ion-icon>
+                                <span class="text nav-text">Perfil</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="storefront" class="icon"></ion-icon>
+                                <span class="text nav-text">Locales</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="chatbox" class="icon"></ion-icon>
+                                <span class="text nav-text">Mensajes</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="notifications" class="icon"></ion-icon>
+                                <span class="text nav-text">Notificaciones</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="heart" class="icon"></ion-icon>
+                                <span class="text nav-text">Favoritos</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="card" class="icon"></ion-icon>
+                                <span class="text nav-text">Pagos</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="calendar-clear" class="icon"></ion-icon>
+                                <span class="text nav-text">Reservas</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bottom-content">
+                    <li class="">
+                        <a href="#">
+                            <ion-icon name="log-out" class="icon"></ion-icon>
+                            <span class="text nav-text">Salir</span>
+                        </a>
+                    </li>
+                    <li class="mode">
+                        <div class="moon-sun">
+                            <ion-icon name="moon" class="icon moon"></ion-icon>
+                            <ion-icon name="sunny" class="icon sun"></ion-icon>
+                        </div>
+                        <span class="text mode-text">Modo Oscuro</span>
+                        <div class="toggle-switch">
+                            <span class="switch"></span>
+                        </div>
+                    </li>
+                </div>
+            </div>
+        </nav>
+        <div class="perfil-container">
+            <h2>
+                <ion-icon name="person-circle-outline" class="profile-icon"></ion-icon>
+                Mi perfil
+            </h2>
+            <br>
+            <p>Actualiza tu informacion o elimina tu cuenta</p>
+            <br>
+            <div class="profile-card">
+                <div class="profile-grid">
+                    <!-- Fila 1 -->
+                    <div class="profile-field">
+                        <ion-icon name="person-outline" class="field-icon"></ion-icon>
+                        <div>
+                            <div class="field-label">Nombre</div>
+                            <div class="field-value">Juan Pérez</div>
+                        </div>
+                    </div>
+
+                    <div class="profile-field">
+                        <ion-icon name="mail-outline" class="field-icon"></ion-icon>
+                        <div>
+                            <div class="field-label">Correo</div>
+                            <div class="field-value">juan@example.com</div>
+                        </div>
+                    </div>
+
+                    <!-- Fila 2 -->
+                    <div class="profile-field">
+                        <ion-icon name="lock-closed-outline" class="field-icon"></ion-icon>
+                        <div>
+                            <div class="field-label">Contraseña</div>
+                            <div class="field-value">•••••••• <ion-icon name="eye-outline" class="password-toggle"></ion-icon></div>
+                        </div>
+                    </div>
+
+                    <div class="profile-field">
+                        <ion-icon name="call-outline" class="field-icon"></ion-icon>
+                        <div>
+                            <div class="field-label">Teléfono</div>
+                            <div class="field-value">+1 234 567 890</div>
+                        </div>
+                    </div>
+
+                    <!-- Fila 3 -->
+                    <div class="profile-field">
+                        <ion-icon name="business-outline" class="field-icon"></ion-icon>
+                        <div>
+                            <div class="field-label">¿Es propietario?</div>
+                            <div class="field-value">Sí</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones compactos -->
+                <div class="profile-actions">
+                    <button class="btn-update" id="updateBtn">
+                        <ion-icon name="create-outline"></ion-icon>
+                        Actualizar
+                    </button>
+                </div>
+            </div>
+            <br>
+            <!-- Opción para eliminar cuenta fuera de la tarjeta -->
+            <div class="delete-option">
+                <p>¿Desea eliminar su cuenta? <a href="#" class="delete-link">Haga clic aquí</a></p>
+            </div>
+        </div>
+        <!-- Modal de actualización -->
+        <div class="modal-overlay" id="updateModal">
+            <div class="update-modal">
+                <div class="modal-header">
+                    <h3>Actualizar información</h3>
+                    <button class="close-modal" id="closeModal">&times;</button>
+                </div>
+
+                <div class="modal-content">
+                    <div class="form-group">
+                        <label>
+                            <ion-icon name="person-outline"></ion-icon>
+                            Nombre
+                        </label>
+                        <input type="text" value="Juan Pérez">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <ion-icon name="mail-outline"></ion-icon>
+                            Correo
+                        </label>
+                        <input type="email" value="juan@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                            Contraseña
+                        </label>
+                        <div class="password-input">
+                            <input type="password" value="mipassword123">
+                            <ion-icon name="eye-outline" class="toggle-password"></ion-icon>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <ion-icon name="call-outline"></ion-icon>
+                            Teléfono
+                        </label>
+                        <input type="tel" value="+1 234 567 890">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <ion-icon name="business-outline"></ion-icon>
+                            ¿Es propietario?
+                        </label>
+                        <select>
+                            <option value="si">Sí</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn-cancel" id="cancelUpdate">Cancelar</button>
+                    <button class="btn-confirm">Confirmar cambios</button>
+                </div>
+            </div>
+        </div>
+        <!-- Modal de Eliminar Cuenta (añade esto junto al otro modal) -->
+        <div class="modal-overlay" id="deleteModal">
+            <div class="delete-modal">
+                <div class="modal-header">
+                    <h3>Eliminar cuenta</h3>
+                    <button class="close-modal" id="closeDeleteModal">&times;</button>
+                </div>
+
+                <div class="modal-content">
+                    <div class="warning-message">
+                        <ion-icon name="warning-outline" class="warning-icon"></ion-icon>
+                        <p>Esta acción es irreversible. Todos tus datos serán eliminados permanentemente.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            Escribe <strong>"CONFIRMAR ELIMINACION"</strong> para proceder:
+                        </label>
+                        <input type="text" id="confirmDeleteInput" placeholder="CONFIRMAR ELIMINACION">
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn-cancel" id="cancelDelete">Cancelar</button>
+                    <button class="btn-delete" id="confirmDelete" disabled>Eliminar cuenta permanentemente</button>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="@Url.Content("~/Content/Js/interfazmode.js")"></script>
+        <script src="@Url.Content("~/Content/Js/perfil.js")"></script>
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
+

@@ -294,9 +294,11 @@
     <Content Include="Content\Css\contacto.css" />
     <Content Include="Content\Css\inicio.css" />
     <Content Include="Content\Css\interfaz.css" />
+    <Content Include="Content\Css\perfil.css" />
     <Content Include="Content\Css\Style.css" />
     <Content Include="Content\Js\acces.js" />
     <Content Include="Content\Js\interfazmode.js" />
+    <Content Include="Content\Js\perfil.js" />
     <Content Include="Content\Js\Script.js" />
     <Content Include="Content\Media\background.jpg" />
     <Content Include="Content\Media\dest-img.jpg" />
@@ -341,6 +343,7 @@
     <Content Include="Views\Inicio\Acerca.cshtml" />
     <Content Include="Views\Inicio\Contacto.cshtml" />
     <Content Include="Views\Dashboard\Dashb.cshtml" />
+    <Content Include="Views\Dashboard\Perfil.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Frontend.Filters;
 
 namespace Frontend.Controllers
 {
@@ -10,6 +11,12 @@ namespace Frontend.Controllers
     {
         // GET: Dashboard
         public ActionResult Dashb()
+        {
+            return View();
+        }
+
+        [JwtAuthorize]
+        public ActionResult Perfil()
         {
             return View();
         }
