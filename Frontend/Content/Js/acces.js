@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
             showSuccessToast(data.message || "Inicio de sesión exitoso.");
 
             setTimeout(() => {
-                window.location.href = ;
+                window.location.href = "/Dashboard/Dash";
             }, 2000);
 
         } catch (error) {
