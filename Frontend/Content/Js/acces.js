@@ -88,12 +88,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            sessionStorage.setItem("token", data.token);
-            showSuccessToast(data.message || "Inicio de sesión exitoso.");
+            if (response.ok) {
+                sessionStorage.setItem("token", data.token); // Opcional, puedes eliminar esto si no quieres guardarlo en sessionStorage
 
-            setTimeout(() => {
-                window.location.href = "/Dashboard/Dashb";
-            }, 2000);
+                // Enviar el token al backend MVC para que lo guarde en cookie HttpOnly
+                await fetch("/Token/Guardar", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({ token: data.token })
+                });
+
+                showSuccessToast(data.message || "Inicio de sesión exitoso.");
+
+                setTimeout(() => {
+                    window.location.href = "/Dashboard/Dashb";
+                }, 2000);
+            }
 
         } catch (error) {
             setError(emailInput, "Error de red al intentar iniciar sesión.");
