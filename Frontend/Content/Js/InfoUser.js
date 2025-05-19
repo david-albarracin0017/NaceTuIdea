@@ -1,115 +1,147 @@
-﻿// perfilUsuario.js - Versión completa
-document.addEventListener('DOMContentLoaded', async function () {
-    try {
-        // 1. Obtener token
-        const tokenResponse = await fetch('/Token/Obtener', {
-            method: 'GET',
-            credentials: 'same-origin'
-        });
+﻿let isSubmitting = false;
 
-        if (!tokenResponse.ok) throw new Error('Error al obtener token');
+document.addEventListener("DOMContentLoaded", async () => {
+    const tokenResponse = await fetch("/Token/Obtener");
+    const tokenData = await tokenResponse.json();
+    const token = tokenData.token;
+    if (!token) return alert("No se encontró token. Inicia sesión.");
 
-        const tokenData = await tokenResponse.json();
-        if (!tokenData.success) throw new Error('Token no disponible');
+    const userIdResponse = await fetch("/Token/GetUserId");
+    if (!userIdResponse.ok) return alert("Error al obtener el ID del usuario.");
+    const userId = await userIdResponse.text();
 
-        // 2. Extraer ID del usuario desde el token
-        const tokenPayload = JSON.parse(atob(tokenData.token.split('.')[1]));
-        const userId = tokenPayload.NameIdentifier;
-        if (!userId) throw new Error('ID de usuario no encontrado');
+    async function cargarDatosUsuario() {
+        try {
+            const response = await fetch(`https://localhost:7135/api/Users/${userId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (!response.ok) throw new Error("No se pudo obtener los datos del usuario");
+            const user = await response.json();
 
-        // 3. Cargar datos del usuario
-        const userResponse = await fetch(`/api/Users/${userId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${tokenData.token}`,
-                'Content-Type': 'application/json'
-            },
-            credentials: 'same-origin'
-        });
+            document.getElementById("profileNombre").textContent = user.name;
+            document.getElementById("profileCorreo").textContent = user.email;
+            document.getElementById("profileTelefono").textContent = user.phone;
+            document.getElementById("profilePropietario").textContent = user.esPropietario ? "Sí" : "No";
 
-        if (!userResponse.ok) throw new Error('Error al cargar datos');
-
-        const userData = await userResponse.json();
-
-        // 4. Mostrar datos en la UI
-        document.getElementById('profileNombre').textContent = userData.name || 'No disponible';
-        document.getElementById('profileCorreo').textContent = userData.email || 'No disponible';
-        document.getElementById('profileTelefono').textContent = userData.phone || 'No disponible';
-        document.getElementById('nombreInput').value = userData.name || '';
-        document.getElementById('correoInput').value = userData.email || '';
-        document.getElementById('telefonoInput').value = userData.phone || '';
-
-        // 5. Configurar evento de actualización
-        document.getElementById('confirmUpdateBtn').addEventListener('click', async function () {
-            try {
-                const updateData = {
-                    Id: userId,
-                    Name: document.getElementById('nombreInput').value,
-                    Email: document.getElementById('correoInput').value,
-                    Phone: document.getElementById('telefonoInput').value,
-                    Password: document.getElementById('passwordInput').value || undefined
-                };
-
-                const updateResponse = await fetch(`/api/Users/${userId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${tokenData.token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(updateData),
-                    credentials: 'same-origin'
-                });
-
-                if (!updateResponse.ok) throw new Error('Error al actualizar');
-
-                alert('Perfil actualizado correctamente');
-                document.getElementById('closeModal').click();
-                window.location.reload();
-
-            } catch (error) {
-                console.error('Error actualizando:', error);
-                alert('Error al actualizar: ' + error.message);
-            }
-        });
-
-        // 6. Configurar evento de eliminación
-        document.getElementById('confirmDelete').addEventListener('click', async function () {
-            if (document.getElementById('confirmDeleteInput').value.trim() !== "CONFIRMAR ELIMINACION") {
-                alert('Debe escribir exactamente "CONFIRMAR ELIMINACION"');
-                return;
-            }
-
-            if (!confirm('¿Está seguro de eliminar su cuenta permanentemente?')) return;
-
-            try {
-                const deleteResponse = await fetch(`/api/Users/${userId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${tokenData.token}`
-                    },
-                    credentials: 'same-origin'
-                });
-
-                if (!deleteResponse.ok) throw new Error('Error al eliminar');
-
-                // Eliminar token
-                await fetch('/Token/Eliminar', {
-                    method: 'GET',
-                    credentials: 'same-origin'
-                });
-
-                alert('Cuenta eliminada correctamente');
-                window.location.href = '/Inicio/Principal';
-
-            } catch (error) {
-                console.error('Error eliminando:', error);
-                alert('Error al eliminar cuenta: ' + error.message);
-            }
-        });
-
-    } catch (error) {
-        console.error('Error en perfilUsuario:', error);
-        alert('Error al cargar el perfil. Será redirigido al login.');
-        window.location.href = '/Inicio/Principal';
+            document.getElementById("nombreInput").value = user.name;
+            document.getElementById("correoInput").value = user.email;
+            document.getElementById("telefonoInput").value = user.phone;
+            document.getElementById("propietarioInput").value = user.esPropietario ? "si" : "no";
+        } catch (err) {
+            console.error(err);
+            alert("Error al cargar datos del usuario");
+        }
     }
+
+    cargarDatosUsuario();
+
+    // Validaciones visuales
+    function setFieldError(inputElement, message) {
+        clearFieldError(inputElement);
+        const error = document.createElement("div");
+        error.className = "error-message";
+        error.textContent = message;
+        inputElement.classList.add("input-error");
+        inputElement.parentElement.appendChild(error);
+    }
+
+    function clearFieldError(inputElement) {
+        inputElement.classList.remove("input-error");
+        const existingError = inputElement.parentElement.querySelector(".error-message");
+        if (existingError) existingError.remove();
+    }
+
+    function clearAllUpdateFormErrors() {
+        document.querySelectorAll("#updateModal input").forEach(input => clearFieldError(input));
+    }
+
+    // Actualización
+    document.getElementById("confirmUpdateBtn").addEventListener("click", async () => {
+        clearAllUpdateFormErrors();
+
+        const nombreInput = document.getElementById("nombreInput");
+        const correoInput = document.getElementById("correoInput");
+        const telefonoInput = document.getElementById("telefonoInput");
+        const passwordInput = document.getElementById("passwordInput");
+        const propietarioInput = document.getElementById("propietarioInput");
+
+        const nombre = nombreInput.value.trim();
+        const correo = correoInput.value.trim();
+        const telefono = telefonoInput.value.trim();
+        const password = passwordInput.value.trim();
+        const esPropietario = propietarioInput.value === "si";
+
+        let hasError = false;
+
+        if (!nombre) {
+            setFieldError(nombreInput, "El nombre es obligatorio.");
+            hasError = true;
+        }
+
+        const correoRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+        if (!correoRegex.test(correo)) {
+            setFieldError(correoInput, "El formato del correo no es válido.");
+            hasError = true;
+        }
+
+        const telefonoRegex = /^\d{7,15}$/;
+        if (!telefonoRegex.test(telefono)) {
+            setFieldError(telefonoInput, "El teléfono debe tener entre 7 y 15 dígitos.");
+            hasError = true;
+        }
+
+        if (password !== "" && password.length < 6) {
+            setFieldError(passwordInput, "La contraseña debe tener al menos 6 caracteres.");
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        const updatedUser = {
+            Id: userId,
+            Name: nombre,
+            Email: correo,
+            Phone: telefono,
+            EsPropietario: esPropietario
+        };
+        if (password !== "") updatedUser.Password = password;
+
+
+        try {
+            const response = await fetch(`https://localhost:7135/api/Users/${userId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(updatedUser)
+            });
+
+            if (!response.ok) throw new Error("Error al actualizar el usuario");
+            alert("Usuario actualizado correctamente.");
+            document.getElementById("updateModal").style.display = "none";
+            cargarDatosUsuario();
+        } catch (err) {
+            console.error(err);
+            alert("Error al actualizar el usuario");
+        }
+    });
+
+    // Eliminación
+    document.getElementById("confirmDelete").addEventListener("click", async () => {
+        try {
+            const response = await fetch(`https://localhost:7135/api/Users/${userId}`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (!response.ok) throw new Error("Error al eliminar la cuenta");
+            await fetch("/Token/Eliminar");
+            alert("Cuenta eliminada correctamente");
+            window.location.href = "/Inicio/Principal";
+        } catch (err) {
+            console.error(err);
+            alert("Error al eliminar la cuenta");
+        }
+    });
 });

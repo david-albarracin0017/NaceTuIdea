@@ -4,6 +4,13 @@ using System.Web.Mvc;
 
 namespace Frontend.Controllers
 {
+    using System;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Web;
+    using System.Web.Mvc;
+
     public class TokenController : Controller
     {
         // POST: /Token/Guardar
@@ -15,10 +22,12 @@ namespace Frontend.Controllers
                 return new HttpStatusCodeResult(400, "Token no válido");
             }
 
-            var cookie = new HttpCookie("jwt_token", token);
-            cookie.HttpOnly = true;
-            cookie.Secure = Request.IsSecureConnection; // solo HTTPS
-            cookie.Expires = DateTime.Now.AddHours(1); // duración del token
+            var cookie = new HttpCookie("jwt_token", token)
+            {
+                HttpOnly = true,
+                Secure = Request.IsSecureConnection,
+                Expires = DateTime.Now.AddHours(1)
+            };
 
             Response.Cookies.Add(cookie);
 
@@ -44,13 +53,43 @@ namespace Frontend.Controllers
         {
             if (Request.Cookies["jwt_token"] != null)
             {
-                var cookie = new HttpCookie("jwt_token");
-                cookie.Expires = DateTime.Now.AddDays(-1); // Eliminar
+                var cookie = new HttpCookie("jwt_token")
+                {
+                    Expires = DateTime.Now.AddDays(-1) // Eliminar
+                };
                 Response.Cookies.Add(cookie);
             }
 
             return new HttpStatusCodeResult(200, "Token eliminado");
         }
-    }
 
+        // GET: /Token/GetUserId
+        [HttpGet]
+        public ActionResult GetUserId()
+        {
+            var token = Request.Cookies["jwt_token"]?.Value;
+            if (string.IsNullOrEmpty(token))
+            {
+                return new HttpStatusCodeResult(401, "Token no encontrado");
+            }
+
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // Ajusta esto si tu claim se llama diferente, por ejemplo: "sub", "id", etc.
+                var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                    return new HttpStatusCodeResult(400, "ID de usuario no encontrado en el token");
+
+                return Content(userId);
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(400, "Error al leer el token: " + ex.Message);
+            }
+        }
+    }
 }
