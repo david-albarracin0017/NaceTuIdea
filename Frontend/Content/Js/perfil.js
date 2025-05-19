@@ -1,22 +1,18 @@
 
 document.addEventListener('DOMContentLoaded', function () {
-    cargarDatosUsuarioEnPerfil();
-
     // 1. Modal de Actualización
-    const updateBtn = document.getElementById('updateBtn'); // Cambiado a getElementById
+    const updateBtn = document.querySelector('.btn-update');
     const updateModal = document.getElementById('updateModal');
 
     if (updateBtn && updateModal) {
         const closeModal = document.getElementById('closeModal');
         const cancelBtn = document.getElementById('cancelUpdate');
-        const confirmBtn = document.getElementById('confirmUpdateBtn'); // Botón de confirmar cambios
 
         // Mostrar modal de actualización
         updateBtn.addEventListener('click', function (e) {
             e.preventDefault();
             updateModal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
-            cargarDatosUsuarioEnModal();
         });
 
         // Función para cerrar modal
@@ -36,18 +32,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Configurar el botón de confirmar cambios
-        if (confirmBtn) {
-            confirmBtn.addEventListener('click', async function (e) {
-                e.preventDefault();
-                const resultado = await actualizarDatosUsuario();
-                if (resultado) {
-                    closeUpdateModalFunc();
-                    mostrarExito("Información actualizada correctamente");
-                }
-            });
-        }
-
         // Cerrar con tecla ESC
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && updateModal.style.display === 'flex') {
@@ -57,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 2. Modal de Eliminación
-    const deleteLink = document.getElementById('deleteLink'); // Cambiado a getElementById
+    const deleteLink = document.querySelector('.delete-link');
     const deleteModal = document.getElementById('deleteModal');
 
     if (deleteLink && deleteModal) {
@@ -107,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Aquí iría la lógica para eliminar la cuenta
                     alert('Cuenta eliminada permanentemente');
                     closeDeleteModalFunc();
+                    window.location.href = '/Inicio/Principal';
                     // Redirigir o hacer logout
                 }
             });
