@@ -145,3 +145,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            try {
+                await fetch("/Token/Eliminar");
+                sessionStorage.removeItem("token"); // por si acaso
+                window.location.href = "/Inicio/Principal"; // o "/Login"
+            } catch (err) {
+                console.error("Error al cerrar sesión:", err);
+                alert("Ocurrió un error al cerrar sesión");
+            }
+        });
+    }
+});
