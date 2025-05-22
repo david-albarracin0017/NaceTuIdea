@@ -20,6 +20,8 @@ namespace Frontend.Controllers
         {
             return View();
         }
+
+        [JwtAuthorize]
         public ActionResult Local()
         {
             return View();
