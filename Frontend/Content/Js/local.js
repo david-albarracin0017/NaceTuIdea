@@ -11,7 +11,7 @@
         const indicators = document.querySelectorAll(`.carousel-indicators-${carouselId} li`);
 
         if (!carousel) return;
-
+            
         function updateIndicators() {
             indicators.forEach((indicator, index) => {
                 indicator.classList.toggle('active', index === currentIndex);
