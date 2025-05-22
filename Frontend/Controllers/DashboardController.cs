@@ -20,5 +20,9 @@ namespace Frontend.Controllers
         {
             return View();
         }
+        public ActionResult Local()
+        {
+            return View();
+        }
     }
 }

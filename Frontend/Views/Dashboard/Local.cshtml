@@ -1,0 +1,317 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="@Url.Content("~/Content/Css/interfaz.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Content/Css/local.css")">
+    <title>Locales</title>
+</head>
+<body>
+    <div class="main-container">
+        <nav class="siderbar">
+            <header>
+                <div class="image-text">
+                    <span class="image">
+                        <img src="../Media/logo.jpg" alt="logo">
+                    </span>
+                    <div class="text header-text">
+                        <span class="name">NaceTuIdea</span>
+                    </div>
+                </div>
+                <ion-icon name="chevron-forward-outline" class="toggle"></ion-icon>
+            </header>
+            <div class="menu-bar">
+                <div class="menu">
+                    <li class="search-box">
+                        <ion-icon name="search" class="icon"></ion-icon>
+                        <input type="search" placeholder="Buscar...">
+                    </li>
+                    <ul class="menu-links">
+                        <li class="nav-link">
+                            <a href="@Url.Action("Perfil","Dashboard")">
+                                <ion-icon name="person" class="icon"></ion-icon>
+                                <span class="text nav-text">Perfil</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="@Url.Action("Local","Dashboard")">
+                                <ion-icon name="storefront" class="icon"></ion-icon>
+                                <span class="text nav-text">Locales</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="chatbox" class="icon"></ion-icon>
+                                <span class="text nav-text">Mensajes</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="notifications" class="icon"></ion-icon>
+                                <span class="text nav-text">Notificaciones</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="heart" class="icon"></ion-icon>
+                                <span class="text nav-text">Favoritos</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="card" class="icon"></ion-icon>
+                                <span class="text nav-text">Pagos</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="calendar-clear" class="icon"></ion-icon>
+                                <span class="text nav-text">Reservas</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bottom-content">
+                    <li class="">
+                        <a href="#">
+                            <ion-icon name="log-out" class="icon"></ion-icon>
+                            <span class="text nav-text">Salir</span>
+                        </a>
+                    </li>
+                    <li class="mode">
+                        <div class="moon-sun">
+                            <ion-icon name="moon" class="icon moon"></ion-icon>
+                            <ion-icon name="sunny" class="icon sun"></ion-icon>
+                        </div>
+                        <span class="text mode-text">Modo Oscuro</span>
+                        <div class="toggle-switch">
+                            <span class="switch"></span>
+                        </div>
+                    </li>
+                </div>
+            </div>
+        </nav>
+        <div class="local-container">
+            <h2>
+                <ion-icon name="storefront-outline" class="store-icon"></ion-icon>
+                Tus Locales
+            </h2>
+            <br>
+            <p>
+                Tienes un local publicalo aqui
+                <ion-icon name="arrow-down-outline"></ion-icon>
+            </p>
+            <br>
+            <div class="local-actions">
+                <button class="btn-public" id="publicbtn">
+                    <ion-icon name="create-outline"></ion-icon>
+                    Publicar
+                </button>
+            </div>
+            <br>
+            <!-- Sección de publicaciones con tarjetas -->
+            <div class="box">
+                <h2 class="title is-5">
+                    <ion-icon name="build-outline"></ion-icon> Edita o elimina tus publicaciones
+                </h2>
+                <br>
+                <div class="columns is-multiline">
+                    <div class="column is-one-third">
+                        <div class="card">
+                            <div class="card-image">
+                                <div class="carousel carousel-1">
+                                    <figure class="image is-4by3">
+                                        <img src="../Img/espacio2.jpg" alt="Imagen 1">
+                                    </figure>
+                                    <figure class="image is-4by3">
+                                        <img src="../Img/espacio2.jpg" alt="Imagen 2">
+                                    </figure>
+                                    <figure class="image is-4by3">
+                                        <img src="../Img/espacio2.jpg" alt="Imagen 3">
+                                    </figure>
+                                </div>
+                                <div class="carousel-navigation">
+                                    <button class="carousel-control-prev carousel-control-prev-1">
+                                        <ion-icon name="chevron-back-outline"></ion-icon>
+                                    </button>
+                                    <ol class="carousel-indicators carousel-indicators-1">
+                                        <li data-bs-slide-to="0" class="active"></li>
+                                        <li data-bs-slide-to="1"></li>
+                                        <li data-bs-slide-to="2"></li>
+                                    </ol>
+                                    <button class="carousel-control-next carousel-control-next-1">
+                                        <ion-icon name="chevron-forward-outline"></ion-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="media">
+                                    <div class="media-content">
+                                        <p class="title is-6">Salón de eventos Central</p>
+                                        <p class="subtitle is-7">Espacio ideal para fiestas o conferencias</p>
+                                    </div>
+                                </div>
+                                <div class="content">
+                                    <p><strong>Ciudad:</strong> Medellín</p>
+                                    <p><strong>Tipo:</strong> Salón</p>
+                                    <p><strong>Dirección:</strong> Cra 45 # 8-90</p>
+                                    <p><strong>Precio por mes:</strong> $1.200.000</p>
+                                    <br>
+                                    <small>Publicado hace 3 horas</small>
+                                </div>
+                                <div class="buttons are-small is-right mt-3">
+                                    <button class="button is-info is-light btn-editar">
+                                        <ion-icon name="create-outline"></ion-icon>
+                                        <span>Editar</span>
+                                    </button>
+                                    <button class="button is-danger is-light btn-eliminar">
+                                        <ion-icon name="trash-outline"></ion-icon>
+                                        <span>Eliminar</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal de Publicación -->
+    <div class="modal-overlay">
+        <div class="public-modal">
+            <div class="modal-header">
+                <h3>Publica Tu Local</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-content">
+                    <div class="form-group">
+                        <label>
+                            <ion-icon name="person-outline"></ion-icon>
+                            Nombre
+                        </label>
+                        <input class="input" type="text" id="Name" placeholder="Nombre del Local" required>
+                    </div>
+                </div>
+                <div class="modal-content">
+                    <div class="form-group">
+                        <label>
+                            <ion-icon name="reader-outline"></ion-icon>
+                            Descripcion
+                        </label>
+                        <input class="input" type="text" id="Description" placeholder="Descripción del Local" required>
+                    </div>
+                </div>
+                <div class="modal-content">
+                    <div class="form-group">
+                        <label>
+                            <ion-icon name="cash-outline"></ion-icon>
+                            Costo
+                        </label>
+                        <input class="input" type="text" id="Costo" placeholder="Precio por Mes" required>
+                    </div>
+                </div>
+                <div class="modal-content">
+                    <div class="form-group">
+                        <label>
+                            <ion-icon name="location-outline"></ion-icon>
+                            Ciudad
+                        </label>
+                        <input class="input" type="text" id="Ciudad" placeholder="Ciudad" required>
+                    </div>
+                </div>
+                <div class="modal-content">
+                    <div class="form-group">
+                        <label>
+                            <ion-icon name="location-outline"></ion-icon>
+                            Direccion
+                        </label>
+                        <input class="input" type="text" id="Direccion" placeholder="Dirección" required>
+                    </div>
+                </div>
+                <div class="modal-content">
+                    <div class="form-group">
+                        <label>
+                            <ion-icon name="pricetags-outline"></ion-icon>
+                            Tipo
+                        </label>
+                        <input class="input" type="text" id="Tipo" placeholder="Ej:restaurante,kiosco,oficina,etc..." required>
+                    </div>
+                </div>
+                <div class="modal-content">
+                    <div class="form-group">
+                        <label>
+                            <i class="fa fa-camera"></i>
+                            Fotos
+                        </label>
+                        <div class="control">
+                            <input class="input" type="file" id="fotos" multiple accept="image/*" style="position: absolute; top: -9999px; left: -9999px;">
+                            <div class="image-upload-container">
+                                <div class="image-upload-preview" id="image-preview-1">
+                                    <ion-icon name="image-outline"></ion-icon>
+                                </div>
+                                <div class="image-upload-preview" id="image-preview-2">
+                                    <ion-icon name="image-outline"></ion-icon>
+                                </div>
+                                <div class="image-upload-preview" id="image-preview-3">
+                                    <ion-icon name="image-outline"></ion-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="cancelUpdate">Cancelar</button>
+                <button class="btn-confirm">Publicar</button>
+            </div>
+        </div>
+    </div>
+
+    <!--Exito de publicacion-->
+    <div id="successNotification" class="floating-notification success" style="display: none;">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        ¡Publicación realizada con éxito!
+    </div>
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div id="confirmDeleteModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><ion-icon name="warning-outline"></ion-icon> Confirmar eliminación</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div class="warning-message">
+                    <ion-icon name="alert-circle-outline" class="warning-icon"></ion-icon>
+                    <span>¿Estás seguro que deseas eliminar esta publicación? Esta acción no se puede deshacer.</span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="button btn-cancel">Cancelar</button>
+                <button class="button btn-confirm btn-delete">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificación flotante -->
+    <div id="floatingNotification" class="floating-notification" style="display:none;">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        ¡Publicación eliminada con éxito!
+    </div>
+
+
+
+    <script src="@Url.Content("~/Content/Js/interfazmode.js")"></script>
+    <script src="@Url.Content("~/Content/Js/local.js")"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
+
