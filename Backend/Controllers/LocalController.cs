@@ -47,7 +47,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Local local)
+        public async Task<IActionResult> Create([FromBody]Local local)
         {
             try
             {
@@ -90,5 +90,6 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Error al eliminar local: {ex.Message}");
             }
         }
+
     }
 }

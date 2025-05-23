@@ -269,7 +269,7 @@
             </div>
             <div class="modal-actions">
                 <button class="btn-cancel" id="cancelUpdate">Cancelar</button>
-                <button class="btn-confirm">Publicar</button>
+                <button class="btn-confirm"id="submitBtn">Publicar</button>
             </div>
         </div>
     </div>
@@ -305,12 +305,16 @@
         <ion-icon name="checkmark-circle-outline"></ion-icon>
         ¡Publicación eliminada con éxito!
     </div>
+    
+
+    <!-- Notificación flotante -->
+    <div id="floatingNotification" class="floating-notification" style="display:none;"></div>
 
 
 
     <script src="@Url.Content("~/Content/Js/interfazmode.js")"></script>
     <script src="@Url.Content("~/Content/Js/local.js")"></script>
-    
+    <script src="@Url.Content("~/Content/Js/CrudLocal.js")"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
