@@ -113,7 +113,7 @@
         crudSubmitBtn.addEventListener('click', async function (e) {
             e.preventDefault();
 
-            // 🚫 Si ya está deshabilitado, evita múltiples clics
+            // 🚫 Evitar múltiples clics
             if (crudSubmitBtn.disabled) return;
 
             crudSubmitBtn.disabled = true;
@@ -122,16 +122,19 @@
             try {
                 const formData = validateAndGetFormData();
 
+                // Subir imágenes
                 uploadedImageUrls = await uploadImagesToImgBB(selectedImages.filter(img => img !== null));
                 if (uploadedImageUrls.length === 0) {
                     throw new Error('No se pudieron subir las imágenes. Por favor, inténtalo de nuevo.');
                 }
 
+                // Obtener ID de usuario autenticado
                 const userId = await getUserId();
                 if (!userId) {
                     throw new Error('No se pudo obtener el ID del usuario. Por favor, inicia sesión nuevamente.');
                 }
 
+                // Armar objeto local para el backend
                 const localData = {
                     Name: formData.name,
                     Description: formData.description,
@@ -144,7 +147,10 @@
                 };
 
                 crudSubmitBtn.innerHTML = 'Creando local...';
-                await createLocal(localData);
+                const nuevoLocal = await createLocal(localData); // ← Guarda y recibe local nuevo
+
+                // Mostrar tarjeta en pantalla
+                renderLocalCard(nuevoLocal);
 
                 showSuccessMessage('¡Local creado exitosamente!');
                 closePublicationModal();
@@ -158,6 +164,7 @@
             }
         });
     }
+
 
     // ------------------------- FUNCIONES AUXILIARES -------------------------
 
@@ -378,5 +385,66 @@
             console.error('Error al crear local:', error);
             throw new Error(`Error al comunicarse con el servidor: ${error.message}`);
         }
+    }
+
+    function renderLocalCard(local) {
+        const container = document.getElementById('localCardContainer');
+        if (!container) return;
+
+        const imageUrl = local.fotos?.[0] || '../Img/espacio2.jpg'; // imagen por defecto
+
+        const column = document.createElement('div');
+        column.className = 'column is-one-third';
+
+        column.innerHTML = `
+        <div class="card">
+            <div class="card-image">
+                <div class="carousel carousel-${local.id}">
+                    <figure class="image is-4by3">
+                        <img src="${imageUrl}" alt="Imagen 1">
+                    </figure>
+                </div>
+                <div class="carousel-navigation">
+                    <button class="carousel-control-prev carousel-control-prev-${local.id}">
+                        <ion-icon name="chevron-back-outline"></ion-icon>
+                    </button>
+                    <ol class="carousel-indicators carousel-indicators-${local.id}">
+                        <li data-bs-slide-to="0" class="active"></li>
+                    </ol>
+                    <button class="carousel-control-next carousel-control-next-${local.id}">
+                        <ion-icon name="chevron-forward-outline"></ion-icon>
+                    </button>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-content">
+                        <p class="title is-6">${local.name}</p>
+                        <p class="subtitle is-7">${local.description}</p>
+                    </div>
+                </div>
+                <div class="content">
+                    <p><strong>Ciudad:</strong> ${local.ciudad}</p>
+                    <p><strong>Tipo:</strong> ${local.tipo}</p>
+                    <p><strong>Dirección:</strong> ${local.direccion}</p>
+                    <p><strong>Precio por mes:</strong> $${local.costo.toLocaleString()}</p>
+                    <br>
+                    <small>Publicado ahora</small>
+                </div>
+                <div class="buttons are-small is-right mt-3">
+                    <button class="button is-info is-light btn-editar">
+                        <ion-icon name="create-outline"></ion-icon>
+                        <span>Editar</span>
+                    </button>
+                    <button class="button is-danger is-light btn-eliminar">
+                        <ion-icon name="trash-outline"></ion-icon>
+                        <span>Eliminar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+        container.prepend(column);
     }
 });

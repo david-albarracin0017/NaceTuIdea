@@ -49,6 +49,21 @@ namespace Backend.Controllers
             }
         }
 
+        [HttpGet("usuario/{userId}")]
+        public async Task<IActionResult> GetByUserId(Guid userId)
+        {
+            try
+            {
+                var locales = await _repository.GetByUserIdAsync(userId);
+                return Ok(locales);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al obtener locales del usuario: {ex.Message}");
+            }
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Local local)
         {
