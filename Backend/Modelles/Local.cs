@@ -14,7 +14,7 @@
 
         // Propietario
         public Guid PropietarioId { get; set; }
-        public User Propietario { get; set; }
+        public User? Propietario { get; set; }
 
         // Navegación
         public List<Reserva> Reservas { get; set; } = new();

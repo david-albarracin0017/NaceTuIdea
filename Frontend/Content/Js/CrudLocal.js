@@ -1,104 +1,309 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
-    // Elementos del DOM específicos para CRUD
+    // Configuración de la API
+    const API_BASE_URL = 'https://localhost:7135/api/Local';
+    const IMGBB_API_KEY = '9107f6638e7dadfa22334599d9bc5d40'; // Considera mover esto a una variable de entorno
+
+    // Elementos del DOM
     const crudSubmitBtn = document.getElementById('submitBtn');
-    const crudCancelBtn = document.getElementById('cancelUpdate');
-    const crudCloseModal = document.getElementById('closeModal');
-    const crudFotosInput = document.getElementById('fotos');
-    const crudImagePreviews = [
+    const publicBtn = document.getElementById('publicbtn');
+    const closeModalBtn = document.getElementById('closeModal');
+    const cancelUpdateBtn = document.getElementById('cancelUpdate');
+    const imagePreviews = [
         document.getElementById('image-preview-1'),
         document.getElementById('image-preview-2'),
         document.getElementById('image-preview-3')
     ];
+    const publicationModal = document.querySelector('.modal-overlay');
+    const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+    const successNotification = document.getElementById('successNotification');
+    const errorNotification = document.getElementById('floatingNotification');
 
-    // Variables para almacenar las imágenes
-    let selectedImages = [];
+    // Variables de estado
+    const selectedImages = Array(imagePreviews.length).fill(null);
     let uploadedImageUrls = [];
 
-    // Click en recuadro para cargar imágenes
-    crudImagePreviews.forEach(preview => {
-        preview.addEventListener('click', () => crudFotosInput.click());
-    });
+    // Inicialización
+    initModals();
+    initImageUpload();
+    initFormSubmit();
 
-    // Eliminar imagen seleccionada
-    document.querySelector('.image-upload-container').addEventListener('click', e => {
-        if (e.target.classList.contains('remove-image-button')) {
-            const index = parseInt(e.target.dataset.index);
-            selectedImages.splice(index, 1);
-            uploadedImageUrls = [];
-            resetImagePreviews();
-            updateImagePreviews();
-        }
-    });
+    // ------------------------- MANEJO DE MODALS -------------------------
 
-    function resetImagePreviews() {
-        crudImagePreviews.forEach(preview => {
-            preview.innerHTML = `<ion-icon name="image-outline"></ion-icon>`;
-            preview.style.backgroundImage = '';
+    // Reemplazar la función initModals() con esta versión mejorada
+    function initModals() {
+        // Abrir modal de publicación
+        publicBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            publicationModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Evita el scroll del fondo
         });
-        crudFotosInput.value = '';
+
+        // Cerrar modal de publicación
+        [closeModalBtn, cancelUpdateBtn].forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closePublicationModal();
+            });
+        });
+
+        // Cerrar modals al hacer clic fuera del contenido
+        [publicationModal, confirmDeleteModal].forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closePublicationModal();
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto'; // Restaura el scroll
+                }
+            });
+        });
+
+        // Cerrar modals con Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (publicationModal.style.display === 'flex') {
+                    closePublicationModal();
+                }
+                if (confirmDeleteModal.style.display === 'flex') {
+                    confirmDeleteModal.style.display = 'none';
+                }
+                document.body.style.overflow = 'auto'; // Restaura el scroll
+            }
+        });
     }
 
-    function updateImagePreviews() {
-        resetImagePreviews();
+    // Modificar la función closePublicationModal
+    function closePublicationModal() {
+        document.querySelectorAll('.modal-content .input').forEach(input => input.value = '');
+        selectedImages.fill(null);
+        uploadedImageUrls = [];
+        imagePreviews.forEach((_, index) => resetImagePreview(index));
+        publicationModal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Restaura el scroll
+    }
 
-        selectedImages.slice(0, 3).forEach((file, index) => {
+    // ------------------------- FUNCIONES PRINCIPALES -------------------------
+
+    function initImageUpload() {
+        const fileInputs = imagePreviews.map((preview, index) => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.style.display = 'none';
+            input.dataset.index = index;
+            document.body.appendChild(input);
+            return input;
+        });
+
+        imagePreviews.forEach((preview, index) => {
+            preview.addEventListener('click', () => fileInputs[index].click());
+            fileInputs[index].addEventListener('change', (e) => handleImageUpload(e, preview, index));
+        });
+
+        document.querySelector('.image-upload-container').addEventListener('click', (e) => {
+            if (e.target.closest('.remove-image-button')) {
+                const button = e.target.closest('.remove-image-button');
+                const index = parseInt(button.dataset.index);
+                resetImagePreview(index);
+            }
+        });
+    }
+
+    // Modificar la función initFormSubmit para asegurar el ID del usuario
+    async function initFormSubmit() {
+        crudSubmitBtn.addEventListener('click', async function (e) {
+            e.preventDefault();
+            try {
+                // Validar formulario
+                const formData = validateAndGetFormData();
+
+                // Deshabilitar botón durante el proceso
+                crudSubmitBtn.disabled = true;
+                crudSubmitBtn.innerHTML = 'Subiendo imágenes...';
+
+                // Subir imágenes a ImgBB
+                uploadedImageUrls = await uploadImagesToImgBB(selectedImages.filter(img => img !== null));
+                if (uploadedImageUrls.length === 0) {
+                    throw new Error('No se pudieron subir las imágenes. Por favor, inténtalo de nuevo.');
+                }
+
+                // Obtener ID del usuario autenticado
+                const userId = await getUserId();
+                if (!userId) {
+                    throw new Error('No se pudo obtener el ID del usuario. Por favor, inicia sesión nuevamente.');
+                }
+
+                // Preparar datos finales con el formato exacto que espera el backend
+                const localData = {
+                    Name: formData.name,  
+                    Description: formData.description,
+                    Costo: formData.costo,
+                    Ciudad: formData.ciudad,
+                    Direccion: formData.direccion,
+                    Tipo: formData.tipo,
+                    Fotos: uploadedImageUrls,
+                    PropietarioId: userId,
+                    Propietario: { Id: userId }
+                };
+
+                crudSubmitBtn.innerHTML = 'Creando local...';
+                await createLocal(localData);
+
+                showSuccessMessage('¡Local creado exitosamente!');
+                closePublicationModal();
+
+            } catch (error) {
+                console.error('Error:', error);
+                showErrorMessage(error.message);
+            } finally {
+                crudSubmitBtn.disabled = false;
+                crudSubmitBtn.innerHTML = 'Publicar';
+            }
+        });
+    }
+
+    // ------------------------- FUNCIONES AUXILIARES -------------------------
+
+    function handleImageUpload(event, preview, index) {
+        if (event.target.files.length > 0) {
+            const file = event.target.files[0];
+            if (!file.type.startsWith('image/')) {
+                showErrorMessage('Por favor, selecciona un archivo de imagen válido');
+                return;
+            }
+
+            // Validar tamaño de imagen (opcional)
+            if (file.size > 5 * 1024 * 1024) { // 5MB
+                showErrorMessage('La imagen es demasiado grande (máximo 5MB)');
+                return;
+            }
+
             const reader = new FileReader();
-            reader.onload = function (event) {
-                crudImagePreviews[index].style.backgroundImage = `url(${event.target.result})`;
-                crudImagePreviews[index].innerHTML = `
+            reader.onload = (e) => {
+                preview.style.backgroundImage = `url(${e.target.result})`;
+                preview.innerHTML = `
                     <button class="remove-image-button" data-index="${index}">
                         <ion-icon name="close-circle-outline"></ion-icon>
                     </button>
                 `;
+                selectedImages[index] = file;
             };
             reader.readAsDataURL(file);
-        });
+        }
     }
 
-    // Manejar la selección de archivos
-    crudFotosInput.addEventListener('change', function (e) {
-        selectedImages = Array.from(e.target.files);
-        uploadedImageUrls = [];
-        updateImagePreviews();
-    });
+    function resetImagePreview(index) {
+        imagePreviews[index].style.backgroundImage = '';
+        imagePreviews[index].innerHTML = '<ion-icon name="image-outline"></ion-icon>';
+        selectedImages[index] = null;
+    }
 
-    // Función para subir imágenes a ImgBB
+    function validateAndGetFormData() {
+        const name = document.getElementById('Name').value.trim();
+        const description = document.getElementById('Description').value.trim();
+        const costo = document.getElementById('Costo').value.trim();
+        const ciudad = document.getElementById('Ciudad').value.trim();
+        const direccion = document.getElementById('Direccion').value.trim();
+        const tipo = document.getElementById('Tipo').value.trim();
+
+        if (!name) throw new Error('El nombre del local es requerido');
+        if (!description) throw new Error('La descripción es requerida');
+        if (!ciudad) throw new Error('La ciudad es requerida');
+        if (!direccion) throw new Error('La dirección es requerida');
+        if (!tipo) throw new Error('El tipo de local es requerido');
+        if (!costo) throw new Error('El costo es requerido');
+
+        const costoNum = parseFloat(costo);
+        if (isNaN(costoNum)) throw new Error('El costo debe ser un número válido');
+        if (costoNum <= 0) throw new Error('El costo debe ser mayor que cero');
+
+        const selectedImagesCount = selectedImages.filter(img => img !== null).length;
+        if (selectedImagesCount === 0) throw new Error('Se requiere al menos una imagen');
+
+        return {
+            name: name,
+            description: description,
+            costo: costoNum,
+            ciudad: ciudad,
+            direccion: direccion,
+            tipo: tipo
+        };
+    }
+
+    function showSuccessMessage(message) {
+        if (successNotification) {
+            successNotification.innerHTML = `<ion-icon name="checkmark-circle-outline"></ion-icon> ${message}`;
+            successNotification.style.display = 'flex';
+            successNotification.classList.add('visible');
+
+            setTimeout(() => {
+                successNotification.classList.remove('visible');
+                setTimeout(() => {
+                    successNotification.style.display = 'none';
+                }, 300);
+            }, 3000);
+        }
+    }
+
+    function showErrorMessage(message) {
+        if (errorNotification) {
+            errorNotification.innerHTML = `<ion-icon name="close-circle-outline"></ion-icon> ${message}`;
+            errorNotification.style.display = 'flex';
+            errorNotification.classList.add('visible', 'error');
+
+            setTimeout(() => {
+                errorNotification.classList.remove('visible');
+                setTimeout(() => {
+                    errorNotification.style.display = 'none';
+                    errorNotification.classList.remove('error');
+                }, 300);
+            }, 5000);
+        } else {
+            alert(message); // Fallback
+        }
+    }
+
+    // ------------------------- FUNCIONES DE API -------------------------
+
     async function uploadImagesToImgBB(files) {
-        const urls = [];
-        const apiKey = '9107f6638e7dadfa22334599d9bc5d40';
+        if (!files || files.length === 0) return [];
 
-        for (const file of files.slice(0, 3)) {
+        const urls = [];
+        const uploadPromises = files.map(file => {
             const formData = new FormData();
             formData.append('image', file);
-            formData.append('key', apiKey);
+            formData.append('key', IMGBB_API_KEY);
 
-            try {
-                const response = await fetch('https://api.imgbb.com/1/upload', {
-                    method: 'POST',
-                    body: formData
+            return fetch('https://api.imgbb.com/1/upload', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        return data.data.url;
+                    } else {
+                        console.error('Error al subir imagen:', data.error);
+                        return null;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al subir imagen:', error);
+                    return null;
                 });
+        });
 
-                const data = await response.json();
-                if (data.success) {
-                    urls.push(data.data.url);
-                } else {
-                    console.error('Error al subir imagen:', data);
-                }
-            } catch (error) {
-                console.error('Error al subir imagen:', error);
-            }
-        }
-
-        return urls;
+        const results = await Promise.all(uploadPromises);
+        return results.filter(url => url !== null);
     }
 
-    // Función para obtener el token JWT
     async function getJwtToken() {
         try {
             const response = await fetch('/Token/Obtener', {
-                method: 'GET'
+                method: 'GET',
+                credentials: 'include'
             });
 
+            if (!response.ok) throw new Error('Error al obtener token');
             const data = await response.json();
             return data.success ? data.token : null;
         } catch (error) {
@@ -107,133 +312,68 @@
         }
     }
 
-    // Función para obtener el ID del usuario desde el token
+    // Modificar la función getUserId para asegurar el formato correcto
     async function getUserId() {
         try {
             const response = await fetch('/Token/GetUserId', {
-                method: 'GET'
+                method: 'GET',
+                credentials: 'include'
             });
 
-            if (response.ok) {
-                return await response.text();
-            } else {
-                console.error('Error al obtener ID de usuario:', await response.text());
-                return null;
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Error al obtener ID de usuario');
             }
+
+            const userId = await response.text();
+            // Validar que el ID sea un Guid válido
+            if (!/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(userId)) {
+                throw new Error('ID de usuario no válido');
+            }
+            return userId;
         } catch (error) {
             console.error('Error al obtener ID de usuario:', error);
-            return null;
+            throw error;
         }
     }
 
-    // Función para crear el local
     async function createLocal(localData) {
         const token = await getJwtToken();
         if (!token) {
-            alert('No estás autenticado. Por favor, inicia sesión primero.');
-            return;
+            throw new Error('No estás autenticado. Por favor, inicia sesión primero.');
         }
 
         try {
-            const response = await fetch('https://localhost:7135/api/Local', {
+            const response = await fetch(API_BASE_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify(localData)
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                alert('Local creado exitosamente!');
-                document.querySelectorAll('.modal-content .input').forEach(input => input.value = '');
-                selectedImages = [];
-                uploadedImageUrls = [];
-                resetImagePreviews();
-                document.querySelector('.modal-overlay').style.display = 'none';
-            } else {
-                const error = await response.text();
-                console.error('Error al crear local:', error);
-                alert('Error al crear local: ' + error);
+            if (!response.ok) {
+                let errorMsg = 'Error al crear local';
+                try {
+                    const errorData = await response.json();
+                    if (errorData.errors) {
+                        errorMsg = Object.values(errorData.errors).join('\n');
+                    } else if (errorData.title) {
+                        errorMsg = errorData.title;
+                    }
+                } catch (e) {
+                    const errorText = await response.text();
+                    errorMsg = errorText || errorMsg;
+                }
+                throw new Error(errorMsg);
             }
+
+            return await response.json();
         } catch (error) {
             console.error('Error al crear local:', error);
-            alert('Error al crear local: ' + error.message);
+            throw new Error(`Error al comunicarse con el servidor: ${error.message}`);
         }
     }
-
-    // Manejar el envío del formulario
-    crudSubmitBtn.addEventListener('click', async function () {
-        const name = document.getElementById('Name').value;
-        const description = document.getElementById('Description').value;
-        const costo = document.getElementById('Costo').value;
-        const ciudad = document.getElementById('Ciudad').value;
-        const direccion = document.getElementById('Direccion').value;
-        const tipo = document.getElementById('Tipo').value;
-
-        if (!name || !description || !costo || !ciudad || !direccion || !tipo) {
-            alert('Por favor, completa todos los campos requeridos.');
-            return;
-        }
-
-        if (selectedImages.length === 0) {
-            alert('Por favor, selecciona al menos una imagen para el local.');
-            return;
-        }
-
-        const userId = await getUserId();
-        if (!userId) {
-            alert('No se pudo obtener el ID del usuario. Por favor, inicia sesión nuevamente.');
-            return;
-        }
-
-        crudSubmitBtn.disabled = true;
-        crudSubmitBtn.innerHTML = 'Subiendo imágenes...';
-
-        try {
-            uploadedImageUrls = await uploadImagesToImgBB(selectedImages);
-            if (uploadedImageUrls.length === 0) {
-                alert('No se pudieron subir las imágenes. Por favor, inténtalo de nuevo.');
-                crudSubmitBtn.disabled = false;
-                crudSubmitBtn.innerHTML = 'Publicar';
-                return;
-            }
-        } catch (error) {
-            console.error('Error al subir imágenes:', error);
-            alert('Error al subir imágenes: ' + error.message);
-            crudSubmitBtn.disabled = false;
-            crudSubmitBtn.innerHTML = 'Publicar';
-            return;
-        }
-
-        const localData = {
-            name: name,
-            description: description,
-            costo: parseFloat(costo),
-            ciudad: ciudad,
-            direccion: direccion,
-            tipo: tipo,
-            fotos: uploadedImageUrls.join(','),
-            propietarioId: userId
-        };
-
-        crudSubmitBtn.innerHTML = 'Creando local...';
-        await createLocal(localData);
-        crudSubmitBtn.disabled = false;
-        crudSubmitBtn.innerHTML = 'Publicar';
-    });
-
-    // Manejar botones de cancelar/cerrar
-    crudCancelBtn.addEventListener('click', function () {
-        document.querySelectorAll('.modal-content .input').forEach(input => input.value = '');
-        selectedImages = [];
-        uploadedImageUrls = [];
-        resetImagePreviews();
-        document.querySelector('.modal-overlay').style.display = 'none';
-    });
-
-    crudCloseModal.addEventListener('click', function () {
-        crudCancelBtn.click();
-    });
 });

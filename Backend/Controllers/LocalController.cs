@@ -1,5 +1,6 @@
 ﻿using Backend.Interface;
 using Backend.Modelles;
+using Backend.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,10 +48,19 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody]Local local)
+        public async Task<IActionResult> Create([FromBody] Local local)
         {
             try
             {
+                if (local.PropietarioId == Guid.Empty)
+                    return BadRequest("Se requiere el ID del propietario.");
+
+                var usuario = await _UserRepository.GetByIdAsync(local.PropietarioId);
+                if (usuario == null)
+                    return NotFound("Usuario no encontrado.");
+
+                local.Propietario = usuario;
+
                 var nuevo = await _repository.AddAsync(local);
                 return CreatedAtAction(nameof(GetById), new { id = nuevo.Id }, nuevo);
             }
@@ -59,6 +69,7 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Error al crear local: {ex.Message}");
             }
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] Local local)
@@ -90,6 +101,15 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Error al eliminar local: {ex.Message}");
             }
         }
+
+        private readonly IUserRepository _UserRepository;
+
+        public LocalController(ILocalRepository repository, IUserRepository userRepository)
+        {
+            _repository = repository;
+            _UserRepository = userRepository;
+        }
+
 
     }
 }
