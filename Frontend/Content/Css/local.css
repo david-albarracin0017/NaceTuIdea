@@ -266,6 +266,13 @@ body {
 }
 
 /* Tarjetas */
+.local-card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+}
+
 .card {
   width: 370px;
   height: 500px;

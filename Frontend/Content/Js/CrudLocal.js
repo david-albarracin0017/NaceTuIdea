@@ -112,8 +112,6 @@
     async function initFormSubmit() {
         crudSubmitBtn.addEventListener('click', async function (e) {
             e.preventDefault();
-
-            // 🚫 Evitar múltiples clics
             if (crudSubmitBtn.disabled) return;
 
             crudSubmitBtn.disabled = true;
@@ -121,20 +119,16 @@
 
             try {
                 const formData = validateAndGetFormData();
-
-                // Subir imágenes
                 uploadedImageUrls = await uploadImagesToImgBB(selectedImages.filter(img => img !== null));
                 if (uploadedImageUrls.length === 0) {
-                    throw new Error('No se pudieron subir las imágenes. Por favor, inténtalo de nuevo.');
+                    throw new Error('No se pudieron subir las imágenes.');
                 }
 
-                // Obtener ID de usuario autenticado
                 const userId = await getUserId();
                 if (!userId) {
-                    throw new Error('No se pudo obtener el ID del usuario. Por favor, inicia sesión nuevamente.');
+                    throw new Error('No se pudo obtener el ID del usuario.');
                 }
 
-                // Armar objeto local para el backend
                 const localData = {
                     Name: formData.name,
                     Description: formData.description,
@@ -147,14 +141,11 @@
                 };
 
                 crudSubmitBtn.innerHTML = 'Creando local...';
-                const nuevoLocal = await createLocal(localData); // ← Guarda y recibe local nuevo
-
-                // Mostrar tarjeta en pantalla
+                const nuevoLocal = await createLocal(localData);
                 renderLocalCard(nuevoLocal);
 
                 showSuccessMessage('¡Local creado exitosamente!');
                 closePublicationModal();
-
             } catch (error) {
                 console.error('Error:', error);
                 showErrorMessage(error.message);
@@ -164,7 +155,6 @@
             }
         });
     }
-
 
     // ------------------------- FUNCIONES AUXILIARES -------------------------
 
@@ -387,31 +377,65 @@
         }
     }
 
+    // ========== CARGAR LOCALES DEL USUARIO AL INICIAR ==========
+    async function loadUserLocales() {
+        const token = await getJwtToken();
+        const userId = await getUserId();
+        if (!token || !userId) return;
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/usuario/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error('Error al cargar locales');
+
+            const locales = await response.json();
+            locales.forEach(renderLocalCard);
+        } catch (error) {
+            console.error('Error al obtener locales del usuario:', error);
+        }
+    }
+
+
     function renderLocalCard(local) {
         const container = document.getElementById('localCardContainer');
         if (!container) return;
 
-        const imageUrl = local.fotos?.[0] || '../Img/espacio2.jpg'; // imagen por defecto
-
         const column = document.createElement('div');
         column.className = 'column is-one-third';
+
+        const fotos = local.fotos || [];
+        const carouselId = `carousel-${local.id}`;
+
+        const slides = fotos.map(url => `
+        <figure class="image is-4by3">
+            <img src="${url}" alt="Imagen del local">
+        </figure>
+    `).join('');
+
+        const indicators = fotos.map((_, i) => `
+        <li data-bs-slide-to="${i}" class="${i === 0 ? 'active' : ''}"></li>
+    `).join('');
 
         column.innerHTML = `
         <div class="card">
             <div class="card-image">
-                <div class="carousel carousel-${local.id}">
-                    <figure class="image is-4by3">
-                        <img src="${imageUrl}" alt="Imagen 1">
-                    </figure>
+                <div class="carousel ${carouselId}">
+                    ${slides}
                 </div>
                 <div class="carousel-navigation">
-                    <button class="carousel-control-prev carousel-control-prev-${local.id}">
+                    <button class="carousel-control-prev ${carouselId}">
                         <ion-icon name="chevron-back-outline"></ion-icon>
                     </button>
-                    <ol class="carousel-indicators carousel-indicators-${local.id}">
-                        <li data-bs-slide-to="0" class="active"></li>
+                    <ol class="carousel-indicators ${carouselId}">
+                        ${indicators}
                     </ol>
-                    <button class="carousel-control-next carousel-control-next-${local.id}">
+                    <button class="carousel-control-next ${carouselId}">
                         <ion-icon name="chevron-forward-outline"></ion-icon>
                     </button>
                 </div>
@@ -446,5 +470,13 @@
     `;
 
         container.prepend(column);
+        initializeCarousel(local.id);
     }
+
+
+    // ========== INICIO AUTOMÁTICO ==========
+    document.addEventListener('DOMContentLoaded', () => {
+        initFormSubmit();
+        loadUserLocales();
+    });
 });
