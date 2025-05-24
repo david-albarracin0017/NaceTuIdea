@@ -47,13 +47,29 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function closePublicationModal() {
+        // Limpiar inputs del formulario
         document.querySelectorAll('.modal-content .input').forEach(input => input.value = '');
+
+        // Limpiar imágenes
         selectedImages.fill(null);
         uploadedImageUrls = [];
         imagePreviews.forEach((_, i) => resetImagePreview(i));
+
+        // Ocultar el modal
         publicationModal.style.display = 'none';
         document.body.style.overflow = 'auto';
+
+        // Restaurar estado del botón
+        crudSubmitBtn.innerHTML = 'Publicar';
+        crudSubmitBtn.disabled = false;
+
+        // Restaurar título del modal
+        document.getElementById('modal-title').textContent = 'Publicar Local';
+
+        // Limpiar modo edición
+        editingLocalId = null;
     }
+
 
     function initImageUpload() {
         const fileInputs = imagePreviews.map((preview, i) => {
@@ -118,9 +134,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     uploadedImageUrls = uploadedImageUrls.map((url, i) => url || newUploads[i]).filter(Boolean);
                 }
 
-
                 const localData = {
-                    Id: editingLocalId, // ← Agregado
+                    Id: editingLocalId,
                     Name: formData.name,
                     Description: formData.description,
                     Costo: formData.costo,
@@ -131,29 +146,32 @@ document.addEventListener('DOMContentLoaded', function () {
                     PropietarioId: userId
                 };
 
-
                 if (editingLocalId) {
                     const updatedLocal = await updateLocal(editingLocalId, localData);
+                    // Asegurarse de que el local actualizado tiene un ID
+                    if (!updatedLocal?.id) throw new Error('Error al obtener los datos actualizados del local.');
                     document.querySelector(`[data-local-id="${editingLocalId}"]`)?.remove();
                     renderLocalCard(updatedLocal);
-                    showSuccessMessage('Local actualizado.');
+                    showSuccessMessage('Local actualizado correctamente.');
                 } else {
                     const nuevoLocal = await createLocal(localData);
                     renderLocalCard(nuevoLocal);
-                    showSuccessMessage('Local creado.');
+                    showSuccessMessage('Local creado correctamente.');
                 }
 
-                closePublicationModal();
+                closePublicationModal(); // 🔄 Asegura cierre correcto del modal
+
             } catch (err) {
                 console.error(err);
-                showErrorMessage(err.message);
+                showErrorMessage(err.message || 'Ocurrió un error al guardar.');
             } finally {
                 crudSubmitBtn.disabled = false;
                 crudSubmitBtn.innerHTML = 'Publicar';
-                editingLocalId = null;
+                editingLocalId = null; // solo se borra al final, no dentro del try
             }
         });
     }
+
 
     function validateAndGetFormData() {
         const name = document.getElementById('Name').value.trim();
@@ -383,6 +401,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showSuccessMessage(msg) {
         const notification = document.getElementById('floatingNotification');
+        notification.classList.remove('error'); // ← por si quedó de un error previo
         notification.innerText = msg;
         notification.style.display = 'flex';
         notification.classList.add('visible');
@@ -392,6 +411,7 @@ document.addEventListener('DOMContentLoaded', function () {
             notification.classList.remove('visible');
         }, 3000);
     }
+
 
 
     function showErrorMessage(msg) {
