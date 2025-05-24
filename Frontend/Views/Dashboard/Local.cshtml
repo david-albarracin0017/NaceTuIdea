@@ -122,62 +122,7 @@
                 </h2>
                 <br>
                 <div class="local-card-grid" id="localCardContainer">
-                    <div class="column is-one-third">
-                        <div class="card">
-                            <div class="card-image">
-                                <div class="carousel carousel-1">
-                                    <figure class="image is-4by3">
-                                        <img src="../Img/espacio2.jpg" alt="Imagen 1">
-                                    </figure>
-                                    <figure class="image is-4by3">
-                                        <img src="../Img/espacio2.jpg" alt="Imagen 2">
-                                    </figure>
-                                    <figure class="image is-4by3">
-                                        <img src="../Img/espacio2.jpg" alt="Imagen 3">
-                                    </figure>
-                                </div>
-                                <div class="carousel-navigation">
-                                    <button class="carousel-control-prev carousel-control-prev-1">
-                                        <ion-icon name="chevron-back-outline"></ion-icon>
-                                    </button>
-                                    <ol class="carousel-indicators carousel-indicators-1">
-                                        <li data-bs-slide-to="0" class="active"></li>
-                                        <li data-bs-slide-to="1"></li>
-                                        <li data-bs-slide-to="2"></li>
-                                    </ol>
-                                    <button class="carousel-control-next carousel-control-next-1">
-                                        <ion-icon name="chevron-forward-outline"></ion-icon>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-content">
-                                <div class="media">
-                                    <div class="media-content">
-                                        <p class="title is-6">Salón de eventos Central</p>
-                                        <p class="subtitle is-7">Espacio ideal para fiestas o conferencias</p>
-                                    </div>
-                                </div>
-                                <div class="content">
-                                    <p><strong>Ciudad:</strong> Medellín</p>
-                                    <p><strong>Tipo:</strong> Salón</p>
-                                    <p><strong>Dirección:</strong> Cra 45 # 8-90</p>
-                                    <p><strong>Precio por mes:</strong> $1.200.000</p>
-                                    <br>
-                                    <small>Publicado hace 3 horas</small>
-                                </div>
-                                <div class="buttons are-small is-right mt-3">
-                                    <button class="button is-info is-light btn-editar">
-                                        <ion-icon name="create-outline"></ion-icon>
-                                        <span>Editar</span>
-                                    </button>
-                                    <button class="button is-danger is-light btn-eliminar">
-                                        <ion-icon name="trash-outline"></ion-icon>
-                                        <span>Eliminar</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Aquí se insertarán automáticamente las tarjetas desde JavaScript -->
                 </div>
             </div>
         </div>
@@ -186,7 +131,7 @@
     <div class="modal-overlay">
         <div class="public-modal">
             <div class="modal-header">
-                <h3>Publica Tu Local</h3>
+                <h3 id="modal-title">Publica Tu Local</h3>
                 <button class="close-modal" id="closeModal">&times;</button>
             </div>
             <div class="modal-body">

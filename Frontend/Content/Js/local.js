@@ -1,13 +1,14 @@
 // ------------------------- CARRUSEL DE IMÁGENES -------------------------
 function initializeCarousel(carouselId) {
-    const carousel = document.querySelector(`.carousel-${carouselId}`);
+    const carousel = document.getElementById(carouselId);
     const slides = carousel ? carousel.querySelectorAll('figure') : [];
     const slideCount = slides.length;
     let currentIndex = 0;
     let autoSlideInterval;
-    const nextButton = document.querySelector(`.carousel-control-next-${carouselId}`);
-    const prevButton = document.querySelector(`.carousel-control-prev-${carouselId}`);
-    const indicators = document.querySelectorAll(`.carousel-indicators-${carouselId} li`);
+
+    const nextButton = document.querySelector(`.carousel-control-next[data-target="${carouselId}"]`);
+    const prevButton = document.querySelector(`.carousel-control-prev[data-target="${carouselId}"]`);
+    const indicators = document.querySelectorAll(`#indicators-${carouselId} li`);
 
     if (!carousel || slideCount === 0) return;
 
@@ -35,7 +36,7 @@ function initializeCarousel(carouselId) {
         resetAutoSlide();
     }
 
-    function startAutoSlide(interval = 3000) {
+    function startAutoSlide(interval = 5000) {
         autoSlideInterval = setInterval(nextSlide, interval);
     }
 
@@ -44,7 +45,6 @@ function initializeCarousel(carouselId) {
         startAutoSlide();
     }
 
-    // Event listeners
     if (nextButton) nextButton.addEventListener('click', nextSlide);
     if (prevButton) prevButton.addEventListener('click', prevSlide);
 
@@ -55,10 +55,11 @@ function initializeCarousel(carouselId) {
         });
     });
 
-    // Iniciar carrusel
+    // Iniciar
     startAutoSlide();
     goToSlide(0);
 }
+
 
 // Inicializar todos los carruseles
 document.addEventListener('DOMContentLoaded', () => {

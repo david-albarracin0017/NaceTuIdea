@@ -33,7 +33,18 @@ namespace Backend.Repository
 
         public async Task UpdateAsync(Local local)
         {
-            _context.Entry(local).State = EntityState.Modified;
+            var existente = await _context.Locales.FindAsync(local.Id);
+            if (existente == null)
+                throw new Exception("Local no encontrado.");
+
+            existente.Name = local.Name;
+            existente.Description = local.Description;
+            existente.Costo = local.Costo;
+            existente.Ciudad = local.Ciudad;
+            existente.Direccion = local.Direccion;
+            existente.Tipo = local.Tipo;
+            existente.Fotos = local.Fotos;
+
             await _context.SaveChangesAsync();
         }
 
@@ -46,6 +57,7 @@ namespace Backend.Repository
             await _context.SaveChangesAsync();
             return true;
         }
+
         public async Task<bool> ExistsAsync(string nombre, string direccion, Guid propietarioId)
         {
             return await _context.Locales.AnyAsync(l =>
@@ -60,8 +72,5 @@ namespace Backend.Repository
                 .Where(l => l.PropietarioId == userId)
                 .ToListAsync();
         }
-
-
     }
-
 }

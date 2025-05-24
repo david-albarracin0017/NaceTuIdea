@@ -102,7 +102,8 @@ namespace Backend.Controllers
             try
             {
                 await _repository.UpdateAsync(local);
-                return NoContent();
+                var actualizado = await _repository.GetByIdAsync(id);
+                return Ok(actualizado);
             }
             catch (Exception ex)
             {
