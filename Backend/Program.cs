@@ -47,7 +47,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAplicationServices(builder.Configuration);
 
 // 5?? Agregar Controllers
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
+
 
 // 6?? Configurar Swagger + Botón Authorize
 builder.Services.AddEndpointsApiExplorer();
