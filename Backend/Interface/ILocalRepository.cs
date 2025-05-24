@@ -9,5 +9,7 @@ namespace Backend.Interface
         Task<Local> AddAsync(Local local);
         Task UpdateAsync(Local local);
         Task<bool> DeleteAsync(Guid id);
+        Task<bool> ExistsAsync(string nombre, string direccion, Guid propietarioId);
+
     }
 }

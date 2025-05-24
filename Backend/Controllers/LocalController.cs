@@ -63,6 +63,11 @@ namespace Backend.Controllers
 
                 local.Propietario = usuario;
 
+                // ✅ Verificación de duplicado
+                var yaExiste = await _repository.ExistsAsync(local.Name, local.Direccion, local.PropietarioId);
+                if (yaExiste)
+                    return Conflict("Ya existe un local con ese nombre y dirección para este usuario.");
+
                 var nuevo = await _repository.AddAsync(local);
                 return CreatedAtAction(nameof(GetById), new { id = nuevo.Id }, nuevo);
             }
@@ -71,6 +76,7 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Error al crear local: {ex.Message}");
             }
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] Local local)

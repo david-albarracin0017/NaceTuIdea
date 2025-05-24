@@ -112,29 +112,28 @@
     async function initFormSubmit() {
         crudSubmitBtn.addEventListener('click', async function (e) {
             e.preventDefault();
+
+            // 🚫 Si ya está deshabilitado, evita múltiples clics
+            if (crudSubmitBtn.disabled) return;
+
+            crudSubmitBtn.disabled = true;
+            crudSubmitBtn.innerHTML = 'Subiendo imágenes...';
+
             try {
-                // Validar formulario
                 const formData = validateAndGetFormData();
 
-                // Deshabilitar botón durante el proceso
-                crudSubmitBtn.disabled = true;
-                crudSubmitBtn.innerHTML = 'Subiendo imágenes...';
-
-                // Subir imágenes a ImgBB
                 uploadedImageUrls = await uploadImagesToImgBB(selectedImages.filter(img => img !== null));
                 if (uploadedImageUrls.length === 0) {
                     throw new Error('No se pudieron subir las imágenes. Por favor, inténtalo de nuevo.');
                 }
 
-                // Obtener ID del usuario autenticado
                 const userId = await getUserId();
                 if (!userId) {
                     throw new Error('No se pudo obtener el ID del usuario. Por favor, inicia sesión nuevamente.');
                 }
 
-                // Preparar datos finales con el formato exacto que espera el backend
                 const localData = {
-                    Name: formData.name,  
+                    Name: formData.name,
                     Description: formData.description,
                     Costo: formData.costo,
                     Ciudad: formData.ciudad,

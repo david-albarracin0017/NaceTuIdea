@@ -46,6 +46,14 @@ namespace Backend.Repository
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> ExistsAsync(string nombre, string direccion, Guid propietarioId)
+        {
+            return await _context.Locales.AnyAsync(l =>
+                l.Name == nombre &&
+                l.Direccion == direccion &&
+                l.PropietarioId == propietarioId);
+        }
+
     }
 
 }
