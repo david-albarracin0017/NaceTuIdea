@@ -141,8 +141,7 @@
                     Direccion: formData.direccion,
                     Tipo: formData.tipo,
                     Fotos: uploadedImageUrls,
-                    PropietarioId: userId,
-                    Propietario: { Id: userId }
+                    PropietarioId: userId
                 };
 
                 crudSubmitBtn.innerHTML = 'Creando local...';
@@ -356,17 +355,22 @@
 
             if (!response.ok) {
                 let errorMsg = 'Error al crear local';
-                try {
+                const contentType = response.headers.get('content-type');
+
+                if (contentType && contentType.includes('application/json')) {
                     const errorData = await response.json();
                     if (errorData.errors) {
-                        errorMsg = Object.values(errorData.errors).join('\n');
+                        errorMsg = Object.values(errorData.errors).flat().join('\n');
                     } else if (errorData.title) {
                         errorMsg = errorData.title;
+                    } else if (errorData.message) {
+                        errorMsg = errorData.message;
                     }
-                } catch (e) {
-                    const errorText = await response.text();
-                    errorMsg = errorText || errorMsg;
+                } else {
+                    const text = await response.text();
+                    errorMsg = text || errorMsg;
                 }
+
                 throw new Error(errorMsg);
             }
 

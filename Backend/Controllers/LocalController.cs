@@ -12,10 +12,12 @@ namespace Backend.Controllers
     public class LocalController : ControllerBase
     {
         private readonly ILocalRepository _repository;
+        private readonly IUserRepository _userRepository;
 
-        public LocalController(ILocalRepository repository)
+        public LocalController(ILocalRepository repository, IUserRepository userRepository)
         {
             _repository = repository;
+            _userRepository = userRepository;
         }
 
         [HttpGet]
@@ -55,7 +57,7 @@ namespace Backend.Controllers
                 if (local.PropietarioId == Guid.Empty)
                     return BadRequest("Se requiere el ID del propietario.");
 
-                var usuario = await _UserRepository.GetByIdAsync(local.PropietarioId);
+                var usuario = await _userRepository.GetByIdAsync(local.PropietarioId);
                 if (usuario == null)
                     return NotFound("Usuario no encontrado.");
 
@@ -70,11 +72,11 @@ namespace Backend.Controllers
             }
         }
 
-
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] Local local)
         {
-            if (id != local.Id) return BadRequest();
+            if (id != local.Id)
+                return BadRequest("El ID del local no coincide con el ID en la ruta.");
 
             try
             {
@@ -101,15 +103,5 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Error al eliminar local: {ex.Message}");
             }
         }
-
-        private readonly IUserRepository _UserRepository;
-
-        public LocalController(ILocalRepository repository, IUserRepository userRepository)
-        {
-            _repository = repository;
-            _UserRepository = userRepository;
-        }
-
-
     }
 }
