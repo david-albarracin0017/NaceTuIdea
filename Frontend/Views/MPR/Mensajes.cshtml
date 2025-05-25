@@ -1,0 +1,142 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="@Url.Content("~/Content/Css/interfaz.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Content/Css/mensajes.css")">
+    <title>Mensajes</title>
+</head>
+<body>
+    <div class="main-container">
+        <nav class="siderbar">
+            <header>
+                <div class="image-text">
+                    <span class="image">
+                        <img src="~/Content/Media/logo.jpg" alt="logo">
+                    </span>
+                    <div class="text header-text">
+                        <span class="name">NaceTuIdea</span>
+                    </div>
+                </div>
+                <ion-icon name="chevron-forward-outline" class="toggle"></ion-icon>
+            </header>
+            <div class="menu-bar">
+                <div class="menu">
+                    <li class="search-box">
+                        <ion-icon name="search" class="icon"></ion-icon>
+                        <input type="search" placeholder="Buscar...">
+                    </li>
+                    <ul class="menu-links">
+                        <li class="nav-link">
+                            <a href="@Url.Action("Perfil","Dashboard")">
+                                <ion-icon name="person" class="icon"></ion-icon>
+                                <span class="text nav-text">Perfil</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="@Url.Action("Local","Dashboard")">
+                                <ion-icon name="storefront" class="icon"></ion-icon>
+                                <span class="text nav-text">Locales</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="@Url.Action("Mensajes","MPR")">
+                                <ion-icon name="chatbox" class="icon"></ion-icon>
+                                <span class="text nav-text">Mensajes</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="notifications" class="icon"></ion-icon>
+                                <span class="text nav-text">Notificaciones</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="heart" class="icon"></ion-icon>
+                                <span class="text nav-text">Favoritos</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="card" class="icon"></ion-icon>
+                                <span class="text nav-text">Pagos</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="">
+                                <ion-icon name="calendar-clear" class="icon"></ion-icon>
+                                <span class="text nav-text">Reservas</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bottom-content">
+                    <li class="">
+                        <a href="#">
+                            <ion-icon name="log-out" class="icon"></ion-icon>
+                            <span class="text nav-text">Salir</span>
+                        </a>
+                    </li>
+                    <li class="mode">
+                        <div class="moon-sun">
+                            <ion-icon name="moon" class="icon moon"></ion-icon>
+                            <ion-icon name="sunny" class="icon sun"></ion-icon>
+                        </div>
+                        <span class="text mode-text">Modo Oscuro</span>
+                        <div class="toggle-switch">
+                            <span class="switch"></span>
+                        </div>
+                    </li>
+                </div>
+            </div>
+        </nav>
+        <div class="chat-container" id="chatPanel">
+            <!-- Panel lateral de conversaciones -->
+            <section class="discussions">
+                <div class="search">
+                    <div class="searchbar">
+                        <ion-icon name="search-outline"></ion-icon>
+                        <input type="text" placeholder="Buscar contactos...">
+                    </div>
+                </div>
+                <!-- Las discusiones se cargan por JS -->
+            </section>
+
+            <!-- Área de chat principal -->
+            <section class="chat">
+                <div class="header-chat">
+                    <ion-icon name="person-outline" class="icon"></ion-icon>
+                    <p class="name">Conversación</p>
+                    <ion-icon name="ellipsis-horizontal-outline" class="icon clickable right"></ion-icon>
+                </div>
+
+                <div class="messages-chat">
+                    <!-- Los mensajes se renderizan aquí -->
+                </div>
+
+                <div class="footer-chat" style="position: relative;">
+                    <ion-icon id="emoji-toggle" name="happy-outline"></ion-icon>
+                    <input type="text" id="message-input" class="write-message" placeholder="Escribe tu mensaje...">
+                    <ion-icon name="send-outline"></ion-icon>
+                    <!-- Picker sin estilos personalizados -->
+                    <emoji-picker id="emoji-picker" style="display: none; position: absolute; bottom: 60px; left: 0; z-index: 1000;"></emoji-picker>
+                </div>
+            </section>
+        </div>
+
+    </div>
+    <script src="@Url.Content("~/Content/Js/interfazmode.js")"></script>
+    <script src="@Url.Content("~/Content/Js/mensajes.js")"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.6.4/dist/emoji-picker-element.umd.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
+

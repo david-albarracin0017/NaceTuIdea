@@ -2,6 +2,7 @@
 using Backend.Modelles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Backend.Controllers
 {
@@ -45,6 +46,42 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Error al obtener el mensaje: {ex.Message}");
             }
         }
+
+        [HttpGet("usuarios-conversacion")]
+        public async Task<IActionResult> GetUsuariosConversacion()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
+
+            var mensajes = await _repository.GetAllAsync();
+
+            var relacionados = mensajes
+                .Where(m => m.RemitenteId.ToString() == userId || m.DestinatarioId.ToString() == userId)
+                .Select(m => m.RemitenteId.ToString() == userId ? m.Destinatario : m.Remitente)
+                .Distinct()
+                .ToList();
+
+            return Ok(relacionados);
+        }
+
+        [HttpGet("conversacion/{otroId}")]
+        public async Task<IActionResult> GetConversacionConUsuario(Guid otroId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
+
+            var mensajes = await _repository.GetAllAsync();
+
+            var conversacion = mensajes
+                .Where(m =>
+                    (m.RemitenteId.ToString() == userId && m.DestinatarioId == otroId) ||
+                    (m.RemitenteId == otroId && m.DestinatarioId.ToString() == userId))
+                .OrderBy(m => m.Fecha)
+                .ToList();
+
+            return Ok(conversacion);
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Mensaje mensaje)

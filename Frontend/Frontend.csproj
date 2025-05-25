@@ -266,6 +266,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\InicioController.cs" />
+    <Compile Include="Controllers\MPRController.cs" />
     <Compile Include="Controllers\TokenController.cs" />
     <Compile Include="Filters\JwtAuthorizeAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -302,6 +303,8 @@
     <Content Include="Content\Js\InfoUser.js" />
     <Content Include="Content\Js\interfazmode.js" />
     <Content Include="Content\Js\local.js" />
+    <Content Include="Content\Css\mensajes.css" />
+    <Content Include="Content\Js\mensajes.js" />
     <Content Include="Content\Js\perfil.js" />
     <Content Include="Content\Js\Script.js" />
     <Content Include="Content\Media\background.jpg" />
@@ -349,6 +352,7 @@
     <Content Include="Views\Dashboard\Dashb.cshtml" />
     <Content Include="Views\Dashboard\Perfil.cshtml" />
     <Content Include="Views\Dashboard\Local.cshtml" />
+    <Content Include="Views\MPR\Mensajes.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
