@@ -7,22 +7,17 @@ using System.Web.Mvc;
 
 namespace Frontend.Controllers
 {
-    public class MPRController : Controller
+    public class FNController : Controller
     {
-        // GET: MPR
+        // GET: FN
         [JwtAuthorize]
-        public ActionResult Mensajes()
-        {
-            return View();
-        }
-        [JwtAuthorize]
-        public ActionResult Pagos()
+        public ActionResult Favoritos()
         {
             return View();
         }
 
         [JwtAuthorize]
-        public ActionResult Reservas()
+        public ActionResult Notificaciones()
         {
             return View();
         }

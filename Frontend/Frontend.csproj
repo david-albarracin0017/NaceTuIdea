@@ -265,6 +265,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\FNController.cs" />
     <Compile Include="Controllers\InicioController.cs" />
     <Compile Include="Controllers\MPRController.cs" />
     <Compile Include="Controllers\TokenController.cs" />
@@ -353,6 +354,10 @@
     <Content Include="Views\Dashboard\Perfil.cshtml" />
     <Content Include="Views\Dashboard\Local.cshtml" />
     <Content Include="Views\MPR\Mensajes.cshtml" />
+    <Content Include="Views\MPR\Pagos.cshtml" />
+    <Content Include="Views\MPR\Reservas.cshtml" />
+    <Content Include="Views\FN\Favoritos.cshtml" />
+    <Content Include="Views\FN\Notificaciones.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
