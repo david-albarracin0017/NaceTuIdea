@@ -10,6 +10,7 @@ namespace Frontend.Controllers
     public class DashboardController : Controller
     {
         // GET: Dashboard
+        [JwtAuthorize]
         public ActionResult Dashb()
         {
             return View();
