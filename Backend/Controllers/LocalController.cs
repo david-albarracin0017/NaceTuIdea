@@ -63,6 +63,21 @@ namespace Backend.Controllers
             }
         }
 
+        [HttpGet("todos")]
+        public async Task<IActionResult> GetAllLocalesSinFiltro()
+        {
+            try
+            {
+                var locales = await _repository.GetAllAsync();
+                return Ok(locales);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al obtener todos los locales: {ex.Message}");
+            }
+        }
+
+
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Local local)
