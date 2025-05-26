@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // === mensajes.js completo e integrado ===
-const apiBase = 'https://localhost:5001/api/mensaje';
+const apiBase = 'https://localhost:7135/api/Mensaje';
 let userId = null;
 let usuarioActivoId = null;
 
