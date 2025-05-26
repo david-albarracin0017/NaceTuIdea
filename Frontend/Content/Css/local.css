@@ -571,6 +571,33 @@ small {
     }
 }
 
+body.dark {
+    --siderbar-color: #242526;
+    --text-color: #ddd;
+    --text-color-light: #999;
+    --primary-color-light: #333;
+    background-color: #18191a;
+}
+
+    body.dark .local-container {
+        background-color: #18191a;
+    }
+
+    body.dark .card {
+        background-color: #2a2a2a;
+    }
+
+    body.dark .modal-header,
+    body.dark .modal-actions {
+        background-color: #2a2a2a;
+    }
+
+    body.dark .btn-cancel {
+        background-color: #444;
+        color: #eee;
+    }
+
+
 
 
 

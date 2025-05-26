@@ -1,0 +1,180 @@
+:root {
+    --bg-color-light: #f5f5f5;
+    --card-color-light: #fff;
+    --text-color-light: #333;
+    --subtitle-color-light: #777;
+    --bg-color-dark: #18191a;
+    --card-color-dark: #242526;
+    --text-color-dark: #ddd;
+    --subtitle-color-dark: #999;
+    --siderbar-color: #fff;
+    --primary-color: #3a57e8;
+}
+
+/* Estilo global para la página mostrarlc */
+.mostrar-lc-page {
+    background-color: var(--bg-color-light);
+    min-height: 100vh;
+    padding: 2rem;
+    margin-left: 250px;
+    transition: background-color 0.3s ease, margin-left 0.3s ease;
+}
+
+body.dark .mostrar-lc-page {
+    background-color: var(--bg-color-dark);
+}
+
+.siderbar.close ~ .mostrar-lc-page {
+    margin-left: 88px;
+}
+
+/* Sección individual con fondo y borde */
+.mostrar-lc-page .locales-section {
+    background-color: var(--siderbar-color);
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    transition: background-color 0.3s ease;
+}
+
+body.dark .mostrar-lc-page .locales-section {
+    background-color: var(--card-color-dark);
+}
+
+/* Título de cada sección */
+.mostrar-lc-page .locales-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color-light);
+}
+
+body.dark .mostrar-lc-page .locales-section h2 {
+    color: var(--text-color-dark);
+}
+
+/* Grid de tarjetas */
+.mostrar-lc-page .locales-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+/* Tarjeta individual */
+.mostrar-lc-page .local-card-column {
+    flex: 1 1 300px !important;
+    max-width: 350px !important;
+}
+
+.mostrar-lc-page .card {
+    background-color: var(--card-color-light);
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+body.dark .mostrar-lc-page .card {
+    background-color: var(--card-color-dark);
+}
+
+.mostrar-lc-page .card:hover {
+    transform: scale(1.02);
+}
+
+.mostrar-lc-page .card-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Contenido de tarjeta */
+.mostrar-lc-page .card-content {
+    padding: 1rem;
+}
+
+.mostrar-lc-page .title.is-6 {
+    font-size: 1.2rem;
+    color: var(--text-color-light);
+}
+
+body.dark .mostrar-lc-page .title.is-6 {
+    color: var(--text-color-dark);
+}
+
+.mostrar-lc-page .subtitle.is-7 {
+    font-size: 0.9rem;
+    color: var(--subtitle-color-light);
+}
+
+body.dark .mostrar-lc-page .subtitle.is-7 {
+    color: var(--subtitle-color-dark);
+}
+
+.mostrar-lc-page .content {
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+    .mostrar-lc-page .content p {
+        margin-bottom: 6px;
+    }
+
+    .mostrar-lc-page .content strong {
+        color: var(--text-color-light);
+    }
+
+body.dark .mostrar-lc-page .content strong {
+    color: var(--text-color-dark);
+}
+
+.mostrar-lc-page small {
+    color: var(--subtitle-color-light);
+}
+
+body.dark .mostrar-lc-page small {
+    color: var(--subtitle-color-dark);
+}
+
+/* Botones */
+.mostrar-lc-page .buttons {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.mostrar-lc-page .button {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .mostrar-lc-page .button.is-primary {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .mostrar-lc-page .button.is-success {
+        background-color: #48c774;
+        color: white;
+    }
+
+    .mostrar-lc-page .button:hover {
+        filter: brightness(1.1);
+    }
+
+/* Botón de favoritos */
+.mostrar-lc-page .favorite-btn {
+    float: right;
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    cursor: pointer;
+}

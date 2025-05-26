@@ -184,5 +184,33 @@ body .siderbar.close ~ .chat-container {
   font-size: 28px; /* puedes ajustar a 30px si quieres más grande */
 }
 
+body.dark .chat-container,
+body.dark .discussion,
+body.dark .discussions,
+body.dark .chat,
+body.dark .header-chat,
+body.dark .footer-chat {
+    background-color: #18191a !important;
+    color: #ccc !important;
+}
+
+    body.dark .discussion .text,
+    body.dark .timer,
+    body.dark .desc-contact {
+        color: #ccc;
+    }
+
+body.dark .message .text {
+    background-color: #2a2a2a;
+    color: #ddd;
+}
+
+body.dark .searchbar,
+body.dark .searchbar input {
+    background-color: #2a2a2a;
+    color: #ccc;
+}
+
+
 
 

@@ -49,42 +49,64 @@
         column.setAttribute('data-local-id', local.id);
 
         const fotos = local.fotos || [];
+        const carouselId = `carousel-${local.id}`;
         const timeAgo = getTimeAgo(local.fechaCreacion || new Date().toISOString());
+
         const slides = fotos.map(url => `<figure><img src="${url}" alt="Imagen"></figure>`).join('');
+        const indicators = fotos.map((_, i) => `<li data-index="${i}" class="${i === 0 ? 'active' : ''}"></li>`).join('');
 
         column.innerHTML = `
-        <div class="card">
-            <div class="card-image">
-                <div class="carousel">${slides}</div>
-            </div>
-            <div class="card-content">
-                <div class="media-content">
-                    <p class="title is-6">${local.name}</p>
-                    <ion-icon class="favorite-btn" name="heart-outline"></ion-icon>
-                    <p class="subtitle is-7">${local.description}</p>
-                </div>
-                <div class="content">
-                    <p><strong>Ciudad:</strong> ${local.ciudad}</p>
-                    <p><strong>Tipo:</strong> ${local.tipo}</p>
-                    <p><strong>Dirección:</strong> ${local.direccion}</p>
-                    <p><strong>Precio:</strong> $${local.costo.toLocaleString()}</p>
-                    <small>${timeAgo}</small>
-                </div>
-                <div class="buttons">
-                    <button class="button is-primary is-light"><ion-icon name="chatbubbles-outline"></ion-icon> Contactar</button>
-                    <button class="button is-success is-light"><ion-icon name="calendar-outline"></ion-icon> Reservar</button>
+    <div class="card">
+        <div class="card-image">
+            <div class="carousel-container">
+                <div class="carousel" id="${carouselId}">${slides}</div>
+                <div class="carousel-navigation">
+                    <button class="carousel-control-prev" data-target="${carouselId}">
+                        <ion-icon name="chevron-back-outline"></ion-icon>
+                    </button>
+                    <ol class="carousel-indicators" id="indicators-${carouselId}">
+                        ${indicators}
+                    </ol>
+                    <button class="carousel-control-next" data-target="${carouselId}">
+                        <ion-icon name="chevron-forward-outline"></ion-icon>
+                    </button>
                 </div>
             </div>
-        </div>`;
+        </div>
+        <div class="card-content">
+            <div class="media-content">
+                <p class="title is-6">${local.name}</p>
+                <ion-icon class="favorite-btn" name="heart-outline"></ion-icon>
+                <p class="subtitle is-7">${local.description}</p>
+            </div>
+            <div class="content">
+                <p><strong>Ciudad:</strong> ${local.ciudad}</p>
+                <p><strong>Tipo:</strong> ${local.tipo}</p>
+                <p><strong>Dirección:</strong> ${local.direccion}</p>
+                <p><strong>Precio:</strong> $${local.costo.toLocaleString()}</p>
+                <small>${timeAgo}</small>
+            </div>
+            <div class="buttons">
+                <button class="button is-primary"><ion-icon name="chatbubbles-outline"></ion-icon> Contactar</button>
+                <button class="button is-success"><ion-icon name="calendar-outline"></ion-icon> Reservar</button>
+            </div>
+        </div>
+    </div>`;
 
-        // evento para "favorito"
+        // activar ícono de favorito
         const favBtn = column.querySelector('.favorite-btn');
         favBtn.addEventListener('click', () => {
             favBtn.name = favBtn.name === 'heart-outline' ? 'heart' : 'heart-outline';
         });
 
+        // iniciar el carrusel
+        setTimeout(() => {
+            initializeCarousel(carouselId);
+        }, 100);
+
         return column;
     }
+
 
     function getTimeAgo(dateString) {
         const now = new Date();

@@ -310,3 +310,36 @@
     border-radius: 4px;
     font-size: 1em;
 }
+
+body.dark .perfil-container {
+    background-color: #18191a;
+}
+
+body.dark .profile-card,
+body.dark .update-modal,
+body.dark .delete-modal {
+    background-color: #242526;
+}
+
+body.dark .field-label,
+body.dark .field-value,
+body.dark .modal-header h3,
+body.dark .modal-header,
+body.dark .form-group label,
+body.dark .form-group input,
+body.dark .form-group select {
+    color: #ccc;
+    background-color: #2a2a2a;
+}
+
+body.dark .warning-message {
+    background-color: #3a1a1a;
+    color: #f88;
+}
+
+body.dark .btn-cancel {
+    border-color: #444;
+    background-color: #333;
+    color: #ccc;
+}
+

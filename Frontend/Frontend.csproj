@@ -297,6 +297,7 @@
     <Content Include="Content\Css\inicio.css" />
     <Content Include="Content\Css\interfaz.css" />
     <Content Include="Content\Css\local.css" />
+    <Content Include="Content\Css\mostrarlc.css" />
     <Content Include="Content\Css\perfil.css" />
     <Content Include="Content\Css\Style.css" />
     <Content Include="Content\Js\acces.js" />

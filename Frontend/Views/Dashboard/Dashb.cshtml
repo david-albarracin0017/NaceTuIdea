@@ -10,6 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="@Url.Content("~/Favicon/logo.ico")" type="image/x-icon" />
     <link rel="stylesheet" href="@Url.Content("~/Content/Css/interfaz.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Content/Css/local.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Content/Css/mostrarlc.css")">
     <title>Inicio</title>
 </head>
 <body>
@@ -105,27 +107,24 @@
 
         </nav>
         <!-- Zona principal para mostrar las publicaciones -->
-        <div class="publicacion-local" style="flex-grow: 1; padding: 1.5rem;">
-
-            <!-- Sección: Todas las publicaciones -->
-            <section id="albums-all" class="locales-section">
+        <div class="mostrar-lc-page">
+            <section class="locales-section">
                 <div class="locales-grid" id="albums-all-grid"></div>
             </section>
 
-            <!-- Sección: Publicaciones más recientes -->
-            <section id="albums-recent" class="locales-section">
+            <section class="locales-section">
                 <div class="locales-grid" id="albums-recent-grid"></div>
             </section>
 
-            <!-- Sección: Publicaciones recomendadas -->
-            <section id="albums-recommended" class="locales-section">
+            <section class="locales-section">
                 <div class="locales-grid" id="albums-recommended-grid"></div>
             </section>
-
         </div>
+
     </div>
     <script src="@Url.Content("~/Content/Js/interfazmode.js")"></script>
     <script src="@Url.Content("~/Content/Js/mostrarlc.js")"></script>
+    <script src="@Url.Content("~/Content/Js/local.js")"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
