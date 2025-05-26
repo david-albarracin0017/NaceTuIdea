@@ -3,5 +3,102 @@
     Layout = null;
 }
 
-<h2>Notificaciones</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="@Url.Content("~/Content/Css/interfaz.css")">
+    <title>Notificaciones</title>
+</head>
+<body>
+    <nav class="siderbar">
+        <header>
+            <div class="image-text">
+                <span class="image">
+                    <img src="~/Content/Media/logo.jpg" alt="logo">
+                </span>
+                <div class="text header-text">
+                    <span class="name">NaceTuIdea</span>
+                </div>
+            </div>
+            <ion-icon name="chevron-forward-outline" class="toggle"></ion-icon>
+        </header>
+        <div class="menu-bar">
+            <div class="menu">
+                <li class="search-box">
+                    <ion-icon name="search" class="icon"></ion-icon>
+                    <input type="search" placeholder="Buscar...">
+                </li>
+                <ul class="menu-links">
+                    <li class="nav-link">
+                        <a href="@Url.Action("Perfil","Dashboard")">
+                            <ion-icon name="person" class="icon"></ion-icon>
+                            <span class="text nav-text">Perfil</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                        <a href="@Url.Action("Local","Dashboard")">
+                            <ion-icon name="storefront" class="icon"></ion-icon>
+                            <span class="text nav-text">Locales</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                        <a href="@Url.Action("Mensajes","MPR")">
+                            <ion-icon name="chatbox" class="icon"></ion-icon>
+                            <span class="text nav-text">Mensajes</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                        <a href="@Url.Action("Notificaciones","FN")">
+                            <ion-icon name="notifications" class="icon"></ion-icon>
+                            <span class="text nav-text">Notificaciones</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                        <a href="@Url.Action("Favoritos","FN")">
+                            <ion-icon name="heart" class="icon"></ion-icon>
+                            <span class="text nav-text">Favoritos</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                        <a href="@Url.Action("Pagos","MPR")">
+                            <ion-icon name="card" class="icon"></ion-icon>
+                            <span class="text nav-text">Pagos</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                        <a href="@Url.Action("Reservas","MPR")">
+                            <ion-icon name="calendar-clear" class="icon"></ion-icon>
+                            <span class="text nav-text">Reservas</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="bottom-content">
+                <li class="">
+                    <a href="@Url.Action("Principal","Inicio")" id="logoutBtn">
+                        <ion-icon name="log-out" class="icon"></ion-icon>
+                        <span class="text nav-text">Salir</span>
+                    </a>
+                </li>
+                <li class="mode">
+                    <div class="moon-sun">
+                        <ion-icon name="moon" class="icon moon"></ion-icon>
+                        <ion-icon name="sunny" class="icon sun"></ion-icon>
+                    </div>
+                    <span class="text mode-text">Modo Oscuro</span>
+                    <div class="toggle-switch">
+                        <span class="switch"></span>
+                    </div>
+                </li>
+            </div>
+        </div>
+
+    </nav>
+    <script src="@Url.Content("~/Content/Js/interfazmode.js")"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
 
