@@ -1,11 +1,22 @@
 :root {
-    --siderbar-color: #fff;
-    --text-color: #333;
-    --text-color-light: #777;
+    body .dark
+
+{
+    --siderbar-color: #242526;
+    --text-color: #ccc;
+    --text-color-light: #888;
     --primary-color: #3a57e8;
-    --primary-color-light: #f5f5f5;
-    --tran-03: all 0.3s ease;
-    --tran-05: all 0.5s ease;
+    --primary-color-light: #3a3b3c;
+    --floating-bg: #2a2b2c;
+}
+
+--siderbar-color: #fff;
+--text-color: #333;
+--text-color-light: #777;
+--primary-color: #3a57e8;
+--primary-color-light: #f5f5f5;
+--tran-03: all 0.3s ease;
+--tran-05: all 0.5s ease;
 }
 
 * {
@@ -30,6 +41,15 @@ body {
     min-height: 100vh;
     background-color: #f0f0f0;
     transition: var(--tran-05);
+    color: var(--text-color);
+}
+
+.box {
+    background-color: var(--siderbar-color);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    color: var(--text-color);
 }
 
 .siderbar.close ~ .local-container {
@@ -457,23 +477,106 @@ small {
     padding: 12px 20px;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    display: none;
     align-items: center;
     gap: 10px;
     font-size: 0.95rem;
     z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.floating-notification.visible {
-   visibility: visible;
-   opacity: 1;
+    .floating-notification.visible {
+        display: flex;
+        opacity: 1;
+    }
+
+
+    .floating-notification.error {
+        background-color: #f44336;
+    }
+
+
+
+/* === MODO OSCURO === */
+body.dark .local-container {
+    background-color: var(--primary-color-light);
 }
 
-.floating-notification.error {
-   background-color: #f44336;
-
+body.dark .modal-header,
+body.dark .public-modal,
+body.dark .modal-card,
+body.dark .modal-actions {
+    background-color: var(--siderbar-color);
 }
 
+    body.dark .form-group label,
+    body.dark .content p,
+    body.dark .content strong,
+    body.dark .card-content small,
+    body.dark .modal-header h3 {
+        color: var(--text-color);
+    }
 
+body.dark .form-group input,
+body.dark .form-group select {
+    background-color: var(--primary-color-light);
+    color: var(--text-color);
+    border-color: var(--primary-color);
+}
+
+body.dark .card {
+    background-color: var(--primary-color-light);
+    color: var(--text-color);
+}
+
+body.dark .button.is-info.is-light.btn-editar {
+    background-color: rgba(66, 133, 244, 0.2);
+    color: #91baff;
+    border: 1px solid #91baff;
+}
+
+    body.dark .button.is-info.is-light.btn-editar:hover {
+        background-color: rgba(66, 133, 244, 0.3);
+    }
+
+body.dark .button.is-danger.is-light.btn-eliminar {
+    background-color: rgba(219, 68, 55, 0.2);
+    color: #ff9990;
+    border: 1px solid #ff9990;
+}
+
+    body.dark .button.is-danger.is-light.btn-eliminar:hover {
+        background-color: rgba(219, 68, 55, 0.3);
+    }
+
+body.dark .carousel-control-prev,
+body.dark .carousel-control-next {
+    color: #ccc;
+}
+
+body.dark .carousel-indicators li {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+    body.dark .carousel-indicators li.active {
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+
+body.dark .btn-cancel {
+    background-color: #444;
+    color: #ccc;
+}
+
+    body.dark .btn-cancel:hover {
+        background-color: #555;
+    }
+
+body.dark .floating-notification {
+    background-color: #2e7d32;
+    color: var(--text-color);
+}
+
+    body.dark .floating-notification.error {
+        background-color: #c62828;
+    }

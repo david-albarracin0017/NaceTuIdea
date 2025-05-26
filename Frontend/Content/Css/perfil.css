@@ -1,3 +1,75 @@
+:root {
+    --bg-color-light: #f5f5f5;
+    --card-color-light: #fff;
+    --text-color-light: #333;
+    --subtitle-color-light: #777;
+    --bg-color-dark: #18191a;
+    --card-color-dark: #242526;
+    --text-color-dark: #ddd;
+    --subtitle-color-dark: #999;
+    --siderbar-color: #fff;
+    --primary-color: #3a57e8;
+}
+
+body.dark .mostrar-lc-page {
+    background-color: var(--bg-color-dark);
+}
+
+    body.dark .mostrar-lc-page .locales-section {
+        background-color: var(--card-color-dark);
+    }
+
+        body.dark .mostrar-lc-page .locales-section h2,
+        body.dark .mostrar-lc-page .title.is-6,
+        body.dark .mostrar-lc-page .content strong {
+            color: var(--text-color-dark);
+        }
+
+    body.dark .mostrar-lc-page .subtitle.is-7,
+    body.dark .mostrar-lc-page small {
+        color: var(--subtitle-color-dark);
+    }
+
+    body.dark .mostrar-lc-page .card {
+        background-color: var(--card-color-dark);
+    }
+
+
+/* ================== PERFIL.CSS ================== */
+body.dark .perfil-container {
+    background-color: #18191a;
+}
+
+body.dark .profile-card,
+body.dark .update-modal,
+body.dark .delete-modal {
+    background-color: #242526;
+}
+
+body.dark .field-label,
+body.dark .field-value,
+body.dark .modal-header h3,
+body.dark .modal-header,
+body.dark .form-group label,
+body.dark .form-group input,
+body.dark .form-group select {
+    color: #ccc;
+    background-color: #2a2a2a;
+}
+
+body.dark .warning-message {
+    background-color: #3a1a1a;
+    color: #f88;
+}
+
+body.dark .btn-cancel {
+    border-color: #444;
+    background-color: #333;
+    color: #ccc;
+}
+
+
+
 .main-container {
     position: relative;
 }
@@ -311,35 +383,4 @@
     font-size: 1em;
 }
 
-body.dark .perfil-container {
-    background-color: #18191a;
-}
-
-body.dark .profile-card,
-body.dark .update-modal,
-body.dark .delete-modal {
-    background-color: #242526;
-}
-
-body.dark .field-label,
-body.dark .field-value,
-body.dark .modal-header h3,
-body.dark .modal-header,
-body.dark .form-group label,
-body.dark .form-group input,
-body.dark .form-group select {
-    color: #ccc;
-    background-color: #2a2a2a;
-}
-
-body.dark .warning-message {
-    background-color: #3a1a1a;
-    color: #f88;
-}
-
-body.dark .btn-cancel {
-    border-color: #444;
-    background-color: #333;
-    color: #ccc;
-}
 
