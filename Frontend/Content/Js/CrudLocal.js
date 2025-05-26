@@ -124,50 +124,40 @@ document.addEventListener('DOMContentLoaded', function () {
                 const userId = await getUserId();
                 if (!userId) throw new Error('No se pudo obtener el ID del usuario.');
 
+                // Upload images first
                 if (!editingLocalId) {
                     uploadedImageUrls = await uploadImagesToImgBB(selectedImages.filter(img => img));
-                    if (uploadedImageUrls.length === 0) throw new Error('No se pudieron subir imágenes.');
-                } else {
-                    const newUploads = await uploadImagesToImgBB(
-                        selectedImages.map((img, i) => img || null)
-                    );
-                    uploadedImageUrls = uploadedImageUrls.map((url, i) => url || newUploads[i]).filter(Boolean);
+                    if (uploadedImageUrls.length === 0) throw new Error('Debes subir al menos una imagen.');
                 }
 
                 const localData = {
-                    Id: editingLocalId,
-                    Name: formData.name,
-                    Description: formData.description,
-                    Costo: formData.costo,
-                    Ciudad: formData.ciudad,
-                    Direccion: formData.direccion,
-                    Tipo: formData.tipo,
-                    Fotos: uploadedImageUrls,
+                    name: formData.name,
+                    description: formData.description,
+                    costo: formData.costo,
+                    ciudad: formData.ciudad,
+                    direccion: formData.direccion,
+                    tipo: formData.tipo,
+                    Fotos: uploadedImageUrls, // Make sure this matches your backend model
                     PropietarioId: userId
                 };
 
                 if (editingLocalId) {
-                    const updatedLocal = await updateLocal(editingLocalId, localData);
-                    // Asegurarse de que el local actualizado tiene un ID
-                    if (!updatedLocal?.id) throw new Error('Error al obtener los datos actualizados del local.');
-                    document.querySelector(`[data-local-id="${editingLocalId}"]`)?.remove();
-                    renderLocalCard(updatedLocal);
+                    await updateLocal(editingLocalId, localData);
                     showSuccessMessage('Local actualizado correctamente.');
                 } else {
-                    const nuevoLocal = await createLocal(localData);
-                    renderLocalCard(nuevoLocal);
+                    await createLocal(localData);
                     showSuccessMessage('Local creado correctamente.');
                 }
 
-                closePublicationModal(); // 🔄 Asegura cierre correcto del modal
+                closePublicationModal();
+                loadUserLocales(); // Refresh the list
 
             } catch (err) {
-                console.error(err);
+                console.error('Submission error:', err);
                 showErrorMessage(err.message || 'Ocurrió un error al guardar.');
             } finally {
                 crudSubmitBtn.disabled = false;
-                crudSubmitBtn.innerHTML = 'Publicar';
-                editingLocalId = null; // solo se borra al final, no dentro del try
+                crudSubmitBtn.innerHTML = editingLocalId ? 'Actualizar' : 'Publicar';
             }
         });
     }
@@ -176,7 +166,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function validateAndGetFormData() {
         const name = document.getElementById('Name').value.trim();
         const description = document.getElementById('Description').value.trim();
-        const costo = parseFloat(document.getElementById('Costo').value);
+        const costoInput = document.getElementById('Costo').value.trim();
+        const costo = parseFloat(costoInput.replace(',', '.')) || 0; 
         const ciudad = document.getElementById('Ciudad').value.trim();
         const direccion = document.getElementById('Direccion').value.trim();
         const tipo = document.getElementById('Tipo').value.trim();
@@ -233,22 +224,51 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function createLocal(data) {
         const token = await getJwtToken();
-        const res = await fetch(API_BASE_URL, {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        return await res.json();
+        const requestData = {
+            Name: data.name,
+            Description: data.description,
+            Costo: parseFloat(data.costo) || 0,
+            Ciudad: data.ciudad,
+            Direccion: data.direccion,
+            Tipo: data.tipo,
+            Fotos: data.Fotos || [], // Ensure this matches your backend model
+            PropietarioId: await getUserId() // Make sure this is included
+        };
+
+        try {
+            const res = await fetch(API_BASE_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || 'Error creating local');
+            }
+
+            return await res.json();
+        } catch (error) {
+            console.error('Error in createLocal:', error);
+            throw error;
+        }
     }
 
     async function updateLocal(id, data) {
         const token = await getJwtToken();
+        const requestData = {
+            ...data,
+            Costo: parseFloat(data.costo) || 0
+        };
         const res = await fetch(`${API_BASE_URL}/${id}`, {
             method: 'PUT',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: JSON.stringify(requestData) // Changed from data to requestData
         });
-        return await res.json(); 
+        return await res.json();
     }
 
 
@@ -317,55 +337,86 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderLocalCard(local) {
         const container = document.getElementById('localCardContainer');
-        if (!container) return;
+        if (!container || !local) {
+            console.error('Container not found or local data is invalid');
+            return;
+        }
+
+        // Create a safe version with proper decimal handling
+        const safeLocal = {
+            id: local.id || '',
+            name: local.name || 'Sin nombre',
+            description: local.description || 'Sin descripción',
+            costo: (typeof local.costo === 'number' || typeof local.costo === 'string')
+                ? Number(local.costo)
+                : 0,
+            ciudad: local.ciudad || 'Ciudad no especificada',
+            direccion: local.direccion || 'Dirección no especificada',
+            tipo: local.tipo || 'Tipo no especificado',
+            fotos: Array.isArray(local.fotos) ? local.fotos : [],
+            fechaCreacion: local.fechaCreacion || new Date().toISOString()
+        };
 
         const column = document.createElement('div');
         column.className = 'local-card-column';
-        column.setAttribute('data-local-id', local.id);
+        column.setAttribute('data-local-id', safeLocal.id);
 
-        const fotos = local.fotos || [];
-        const carouselId = `carousel-${local.id}`;
+        const carouselId = `carousel-${safeLocal.id}`;
 
-        const slides = fotos.map(url => `<figure><img src="${url}" alt="Imagen"></figure>`).join('');
-        const indicators = fotos.map((_, i) => `<li data-index="${i}" class="${i === 0 ? 'active' : ''}"></li>`).join('');
+        const slides = safeLocal.fotos
+            .filter(url => typeof url === 'string')
+            .map(url => `<figure><img src="${url}" alt="Imagen"></figure>`)
+            .join('');
 
-        const timeAgo = getTimeAgo(local.fechaCreacion || new Date().toISOString());
+        const indicators = safeLocal.fotos
+            .map((_, i) => `<li data-index="${i}" class="${i === 0 ? 'active' : ''}"></li>`)
+            .join('');
+
+        const timeAgo = getTimeAgo(safeLocal.fechaCreacion);
+
+        // Format the price safely
+        const formattedPrice = !isNaN(safeLocal.costo)
+            ? safeLocal.costo.toLocaleString('es-ES', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })
+            : '0.00';
 
         column.innerHTML = `
-        <div class="card">
-            <div class="card-image">
-                <div class="carousel-container">
-                    <div class="carousel" id="${carouselId}">${slides}</div>
-                    <div class="carousel-navigation">
-                        <button class="carousel-control-prev" data-target="${carouselId}"><ion-icon name="chevron-back-outline"></ion-icon></button>
-                        <ol class="carousel-indicators" id="indicators-${carouselId}">${indicators}</ol>
-                        <button class="carousel-control-next" data-target="${carouselId}"><ion-icon name="chevron-forward-outline"></ion-icon></button>
-                    </div>
+    <div class="card">
+        <div class="card-image">
+            <div class="carousel-container">
+                <div class="carousel" id="${carouselId}">${slides}</div>
+                <div class="carousel-navigation">
+                    <button class="carousel-control-prev" data-target="${carouselId}"><ion-icon name="chevron-back-outline"></ion-icon></button>
+                    <ol class="carousel-indicators" id="indicators-${carouselId}">${indicators}</ol>
+                    <button class="carousel-control-next" data-target="${carouselId}"><ion-icon name="chevron-forward-outline"></ion-icon></button>
                 </div>
             </div>
-            <div class="card-content">
-                <div class="media">
-                    <div class="media-content">
-                        <p class="title is-6">${local.name}</p>
-                        <p class="subtitle is-7">${local.description}</p>
-                    </div>
-                </div>
-                <div class="content">
-                    <p><strong>Ciudad:</strong> ${local.ciudad}</p>
-                    <p><strong>Tipo:</strong> ${local.tipo}</p>
-                    <p><strong>Dirección:</strong> ${local.direccion}</p>
-                    <p><strong>Precio:</strong> $${local.costo.toLocaleString()}</p>
-                    <small>${timeAgo}</small>
-                </div>
-                <div class="buttons">
-                    <button class="button is-info is-light btn-editar"><ion-icon name="create-outline"></ion-icon><span>Editar</span></button>
-                    <button class="button is-danger is-light btn-eliminar"><ion-icon name="trash-outline"></ion-icon><span>Eliminar</span></button>
+        </div>
+        <div class="card-content">
+            <div class="media">
+                <div class="media-content">
+                    <p class="title is-6">${safeLocal.name}</p>
+                    <p class="subtitle is-7">${safeLocal.description}</p>
                 </div>
             </div>
-        </div>`;
+            <div class="content">
+                <p><strong>Ciudad:</strong> ${safeLocal.ciudad}</p>
+                <p><strong>Tipo:</strong> ${safeLocal.tipo}</p>
+                <p><strong>Dirección:</strong> ${safeLocal.direccion}</p>
+                <p><strong>Precio:</strong> $${formattedPrice}</p>
+                <small>${timeAgo}</small>
+            </div>
+            <div class="buttons">
+                <button class="button is-info is-light btn-editar"><ion-icon name="create-outline"></ion-icon><span>Editar</span></button>
+                <button class="button is-danger is-light btn-eliminar"><ion-icon name="trash-outline"></ion-icon><span>Eliminar</span></button>
+            </div>
+        </div>
+    </div>`;
 
-        column.querySelector('.btn-editar').addEventListener('click', () => handleEditLocal(local));
-        column.querySelector('.btn-eliminar').addEventListener('click', () => handleDeleteLocal(local.id, column));
+        column.querySelector('.btn-editar')?.addEventListener('click', () => handleEditLocal(local));
+        column.querySelector('.btn-eliminar')?.addEventListener('click', () => handleDeleteLocal(safeLocal.id, column));
         container.prepend(column);
         initializeCarousel(carouselId);
     }

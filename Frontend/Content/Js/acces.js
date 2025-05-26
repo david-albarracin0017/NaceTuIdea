@@ -1,5 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Utilidad para mostrar errores debajo del campo
+
+    // FUNCIONES DE VALIDACIÓN
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    function isValidPhone(phone) {
+        const phoneRegex = /^\d{7,15}$/;
+        return phoneRegex.test(phone);
+    }
+
+    // UTILIDADES DE UI
     function setError(input, message) {
         clearError(input);
         const error = document.createElement("div");
@@ -132,6 +144,36 @@ document.addEventListener("DOMContentLoaded", () => {
         const password = passwordInput.value.trim();
         const phone = phoneInput.value.trim();
 
+        let hasError = false;
+
+        if (!name) {
+            setError(nameInput, "El nombre es obligatorio.");
+            hasError = true;
+        }
+
+        if (!email) {
+            setError(emailInput, "El correo es obligatorio.");
+            hasError = true;
+        } else if (!isValidEmail(email)) {
+            setError(emailInput, "Formato de correo no válido.");
+            hasError = true;
+        }
+
+        if (password.length < 6) {
+            setError(passwordInput, "La contraseña debe tener al menos 6 caracteres.");
+            hasError = true;
+        }
+
+        if (!isValidPhone(phone)) {
+            setError(phoneInput, "Número de teléfono inválido. Solo dígitos, entre 7 y 15 caracteres.");
+            hasError = true;
+        }
+
+        if (hasError) {
+            isSubmitting = false;
+            return;
+        }
+
         try {
             const response = await fetch("https://localhost:7135/api/Access/Register", {
                 method: "POST",
@@ -140,16 +182,27 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const data = await response.json();
+            const msg = (data.message || "").toLowerCase();
 
             if (!response.ok) {
-                const msg = data.message || "Error desconocido.";
-
-                if (msg.includes("nombre")) setError(nameInput, msg);
-                else if (msg.includes("correo") && msg.includes("válido")) setError(emailInput, "Formato de correo inválido.");
-                else if (msg.includes("correo") || msg.includes("cuenta")) setError(emailInput, msg);
-                else if (msg.includes("contraseña")) setError(passwordInput, msg);
-                else if (msg.includes("teléfono")) setError(phoneInput, msg);
-                else setError(nameInput, msg);
+                if (msg.includes("nombre")) {
+                    setError(nameInput, data.message);
+                } else if (msg.includes("correo") && msg.includes("formato")) {
+                    setError(emailInput, "Formato de correo inválido.");
+                } else if (msg.includes("correo") || msg.includes("cuenta")) {
+                    setError(emailInput, data.message);
+                } else if (msg.includes("contraseña")) {
+                    setError(passwordInput, data.message);
+                } else if (msg.includes("teléfono") || msg.includes("número de teléfono")) {
+                    setError(phoneInput, data.message);
+                } else if (msg.includes("campos") || msg.includes("completar")) {
+                    if (!name) setError(nameInput, "Nombre obligatorio.");
+                    if (!email) setError(emailInput, "Correo obligatorio.");
+                    if (!password) setError(passwordInput, "Contraseña obligatoria.");
+                    if (!phone) setError(phoneInput, "Teléfono obligatorio.");
+                } else {
+                    setError(nameInput, data.message || "Error desconocido.");
+                }
 
                 isSubmitting = false;
                 return;
