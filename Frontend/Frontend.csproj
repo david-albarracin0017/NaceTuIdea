@@ -317,6 +317,7 @@
     <Content Include="Content\Media\hero-local3.jpg" />
     <Content Include="Content\Media\logo.jpg" />
     <Content Include="favicon.ico" />
+    <Content Include="Favicon\logo.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.bundle.js" />
