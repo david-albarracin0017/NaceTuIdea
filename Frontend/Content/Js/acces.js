@@ -11,6 +11,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return phoneRegex.test(phone);
     }
 
+    function isValidName(name) {
+        const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,50}$/;
+        return nameRegex.test(name);
+    }
+
     // UTILIDADES DE UI
     function setError(input, message) {
         clearError(input);
@@ -34,14 +39,14 @@ document.addEventListener("DOMContentLoaded", () => {
         toast.className = "toast-success";
         toast.textContent = message;
         document.body.appendChild(toast);
-
         setTimeout(() => toast.remove(), 3000);
     }
 
     let isSubmitting = false;
 
-    //loguin
-
+    // -------------------------
+    // LOGIN
+    // -------------------------
     const loginForm = document.querySelector(".form-box.login form");
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -55,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
 
-        // Validación local mínima para la contraseña
         if (password.length < 6) {
             setError(passwordInput, "La contraseña debe contener al menos 6 caracteres.");
             isSubmitting = false;
@@ -77,55 +81,46 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             console.log("response.status:", response.status);
-            console.log("response.ok:", response.ok);
             console.log("data:", data);
 
-            const msg = (data.message || "Error desconocido.").trim();
+            const msg = (data.message || "Error desconocido.").trim().toLowerCase();
 
             if (!response.ok) {
-                if (msg.toLowerCase().includes("obligatorio")) {
+                if (msg.includes("obligatorio")) {
                     if (!email) setError(emailInput, "Debe ingresar un correo electrónico.");
                     if (!password) setError(passwordInput, "Debe ingresar su contraseña.");
-                } else if (msg.toLowerCase().includes("formato")) {
+                } else if (msg.includes("formato")) {
                     setError(emailInput, "El formato del correo no es válido.");
-                } else if (msg.toLowerCase().includes("no existe") || msg.toLowerCase().includes("credenciales")) {
+                } else if (msg.includes("no existe") || msg.includes("credenciales")) {
                     setError(emailInput, "Correo no registrado o incorrecto.");
-                } else if (msg.toLowerCase().includes("contraseña incorrecta")) {
+                } else if (msg.includes("contraseña")) {
                     setError(passwordInput, "La contraseña no coincide con este correo.");
                 } else {
-                    setError(emailInput, msg);
+                    setError(emailInput, data.message || "Error desconocido.");
                 }
-
                 isSubmitting = false;
                 return;
             }
 
-            if (response.ok) {
-                sessionStorage.setItem("token", data.token); // Opcional, puedes eliminar esto si no quieres guardarlo en sessionStorage
+            sessionStorage.setItem("token", data.token);
+            await fetch("/Token/Guardar", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({ token: data.token })
+            });
 
-                // Enviar el token al backend MVC para que lo guarde en cookie HttpOnly
-                await fetch("/Token/Guardar", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: new URLSearchParams({ token: data.token })
-                });
-
-                showSuccessToast(data.message || "Inicio de sesión exitoso.");
-
-                setTimeout(() => {
-                    window.location.href = "/Dashboard/Dashb";
-                }, 2000);
-            }
+            showSuccessToast(data.message || "Inicio de sesión exitoso.");
+            setTimeout(() => window.location.href = "/Dashboard/Dashb", 2000);
 
         } catch (error) {
             setError(emailInput, "Error de red al intentar iniciar sesión.");
             isSubmitting = false;
         }
-
     });
 
-
+    // -------------------------
     // REGISTRO
+    // -------------------------
     const registerForm = document.querySelector(".form-box.register form");
     registerForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -148,6 +143,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!name) {
             setError(nameInput, "El nombre es obligatorio.");
+            hasError = true;
+        } else if (!isValidName(name)) {
+            setError(nameInput, "El nombre solo debe contener letras y espacios.");
             hasError = true;
         }
 
@@ -181,27 +179,42 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({ name, email, password, phone }),
             });
 
-            const data = await response.json();
-            const msg = (data.message || "").toLowerCase();
+            let data = {};
+            let msg = "";
+            let rawText = "";
+
+            try {
+                rawText = await response.text(); // capturamos texto por si no es JSON
+                data = JSON.parse(rawText);     // intentamos parsear
+                msg = (data.message || "").toLowerCase();
+            } catch (parseError) {
+                console.error("Error al parsear la respuesta JSON:", parseError);
+                console.warn("Respuesta cruda:", rawText);
+                msg = rawText.toLowerCase(); // Usamos el texto crudo como mensaje fallback
+            }
+
+            console.log("Mensaje del backend:", msg);
 
             if (!response.ok) {
-                if (msg.includes("nombre")) {
-                    setError(nameInput, data.message);
-                } else if (msg.includes("correo") && msg.includes("formato")) {
+                if (!msg) {
+                    setError(nameInput, "Error del servidor. Intenta más tarde.");
+                } else if (msg.includes("nombre")) {
+                    setError(nameInput, msg);
+                } else if (msg.includes("formato") && msg.includes("correo")) {
                     setError(emailInput, "Formato de correo inválido.");
                 } else if (msg.includes("correo") || msg.includes("cuenta")) {
-                    setError(emailInput, data.message);
+                    setError(emailInput, msg);
                 } else if (msg.includes("contraseña")) {
-                    setError(passwordInput, data.message);
-                } else if (msg.includes("teléfono") || msg.includes("número de teléfono")) {
-                    setError(phoneInput, data.message);
+                    setError(passwordInput, msg);
+                } else if (msg.includes("teléfono") || msg.includes("número")) {
+                    setError(phoneInput, msg);
                 } else if (msg.includes("campos") || msg.includes("completar")) {
                     if (!name) setError(nameInput, "Nombre obligatorio.");
                     if (!email) setError(emailInput, "Correo obligatorio.");
                     if (!password) setError(passwordInput, "Contraseña obligatoria.");
                     if (!phone) setError(phoneInput, "Teléfono obligatorio.");
                 } else {
-                    setError(nameInput, data.message || "Error desconocido.");
+                    setError(nameInput, msg); // mensaje genérico como fallback
                 }
 
                 isSubmitting = false;
@@ -217,9 +230,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 1500);
 
         } catch (error) {
+            console.error("Error de red:", error);
             setError(emailInput, "Error de red al intentar registrarse.");
             isSubmitting = false;
         }
     });
 });
+
 
