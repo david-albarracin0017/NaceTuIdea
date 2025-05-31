@@ -355,7 +355,6 @@
     <Content Include="Views\Dashboard\Perfil.cshtml" />
     <Content Include="Views\Dashboard\Local.cshtml" />
     <Content Include="Views\MPR\Mensajes.cshtml" />
-    <Content Include="Views\MPR\Pagos.cshtml" />
     <Content Include="Views\MPR\Reservas.cshtml" />
     <Content Include="Views\FN\Favoritos.cshtml" />
     <Content Include="Views\FN\Notificaciones.cshtml" />
