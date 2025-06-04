@@ -53,7 +53,7 @@ namespace Backend.Controllers
 
             if (await _context.Users.AnyAsync(u => u.Email == register.Email))
             {
-                return BadRequest(new { message = "Ya existe una cuenta registrada con este correo electrónico." });
+                return BadRequest(new { message = "Ya existe una cuenta registrada con este correo." });
             }
 
             var user = new User
