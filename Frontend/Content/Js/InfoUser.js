@@ -97,24 +97,36 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (hasError) return;
 
-        const updatedUser = {
-            Id: userId,
-            Name: nombre,
-            Email: correo,
-            Phone: telefono,
-            EsPropietario: esPropietario
-        };
-        if (password !== "") updatedUser.Password = password;
+        const updates = {};
+        if (nombre !== document.getElementById("profileNombre").textContent) {
+            updates["Name"] = nombre;
+        }
+        if (correo !== document.getElementById("profileCorreo").textContent) {
+            updates["Email"] = correo;
+        }
+        if (telefono !== document.getElementById("profileTelefono").textContent) {
+            updates["Phone"] = telefono;
+        }
+        if (esPropietario !== (document.getElementById("profilePropietario").textContent === "Sí")) {
+            updates["Propierty"] = esPropietario; // Cambiado a "Propierty"
+        }
+        if (password !== "") {
+            updates["Password"] = password;
+        }
 
+        if (Object.keys(updates).length === 0) {
+            alert("No hay cambios para guardar.");
+            return;
+        }
 
         try {
-            const response = await fetch(`https://localhost:7135/api/Users/${userId}`, {
+            const response = await fetch(`https://localhost:7135/api/Users/partial/${userId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify(updatedUser)
+                body: JSON.stringify(updates)
             });
 
             if (!response.ok) throw new Error("Error al actualizar el usuario");

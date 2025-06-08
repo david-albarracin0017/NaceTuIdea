@@ -76,6 +76,20 @@ namespace Backend.Controllers
             }
         }
 
+        [HttpPut("partial/{id}")]
+        public async Task<IActionResult> UpdatePartial(Guid id, [FromBody] Dictionary<string, object> updates)
+        {
+            try
+            {
+                await _repository.UpdatePartialAsync(id, updates);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al actualizar parcialmente el usuario: {ex.Message}");
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
