@@ -81,12 +81,19 @@ namespace Backend.Controllers
         {
             try
             {
+                Console.WriteLine($"Recibida actualización para usuario {id}: {System.Text.Json.JsonSerializer.Serialize(updates)}");
                 await _repository.UpdatePartialAsync(id, updates);
                 return NoContent();
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error al actualizar parcialmente el usuario: {ex.Message}");
+                Console.WriteLine($"Error completo: {ex}");
+                return StatusCode(500, new
+                {
+                    Message = "Error al actualizar parcialmente el usuario",
+                    DetailedError = ex.Message,
+                    InnerError = ex.InnerException?.Message
+                });
             }
         }
 

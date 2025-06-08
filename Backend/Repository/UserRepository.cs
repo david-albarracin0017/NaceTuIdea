@@ -38,32 +38,47 @@ namespace Backend.Repository
         public async Task UpdatePartialAsync(Guid id, Dictionary<string, object> updates)
         {
             var user = await _context.Users.FindAsync(id);
-            if (user == null) return;
+            if (user == null) throw new Exception("Usuario no encontrado");
 
-            foreach (var update in updates)
+            try
             {
-                switch (update.Key.ToLower())
+                foreach (var update in updates)
                 {
-                    case "name":
-                        user.Name = (string)update.Value;
-                        break;
-                    case "email":
-                        user.Email = (string)update.Value;
-                        break;
-                    case "password":
-                        user.Password = (string)update.Value;
-                        break;
-                    case "phone":
-                        user.Phone = (string)update.Value;
-                        break;
-                    case "propierty":
-                        user.Propierty = (bool)update.Value;
-                        break;
+                    switch (update.Key.ToLower())
+                    {
+                        case "name":
+                            user.Name = update.Value?.ToString();
+                            break;
+                        case "email":
+                            user.Email = update.Value?.ToString();
+                            break;
+                        case "password":
+                            var plainPassword = update.Value?.ToString();
+                            if (!string.IsNullOrEmpty(plainPassword))
+                            {
+                                user.Password = BCrypt.Net.BCrypt.HashPassword(plainPassword);
+                            }
+                            break;
+                        case "phone":
+                            user.Phone = update.Value?.ToString();
+                            break;
+                        case "propierty":
+                            if (bool.TryParse(update.Value?.ToString(), out bool propiertyValue))
+                                user.Propierty = propiertyValue;
+                            else
+                                throw new Exception("Valor inválido para Propierty. Debe ser true/false");
+                            break;
+                        default:
+                            throw new Exception($"Campo no reconocido para actualización: {update.Key}");
+                    }
                 }
-            }
 
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al actualizar usuario: {ex.Message}");
+            }
         }
 
         public async Task DeleteAsync(Guid id)
