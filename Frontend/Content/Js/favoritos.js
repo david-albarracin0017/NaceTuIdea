@@ -7,13 +7,16 @@
     let currentUserId = null;
     let isLoading = false;
 
-    // Elementos del DOM
+    // Elementos del DOM - Ahora favoritesMain se buscará directamente
     const favoritesMain = document.querySelector('.favorites-main');
 
-    // Verificar que el elemento principal existe
+    // Es crucial que favoritesMain exista en el HTML para que esto funcione
     if (!favoritesMain) {
-        console.error('Error: No se encontró el elemento .favorites-main');
-        return;
+        console.error('Error: Elemento .favorites-main no encontrado en el DOM.');
+        // Si favoritesMain no se encuentra, la lógica subsiguiente que depende de él no podrá ejecutarse.
+        // Aquí podrías decidir si lanzar un error, mostrar un mensaje de fallback, o detener la ejecución.
+        // Dado que el objetivo es usar el del HTML, si no está, hay un problema en la estructura HTML o el script se carga muy pronto.
+        return; // Detener la ejecución si el elemento principal no se encuentra.
     }
 
     // Mostrar estado de carga inicial
@@ -26,6 +29,11 @@
                 method: 'GET',
                 credentials: 'include'
             });
+
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+
             const data = await response.json();
             return data?.success ? data.token : null;
         } catch (error) {
@@ -47,7 +55,12 @@
                 },
                 credentials: 'include'
             });
-            return response.ok ? await response.text() : null;
+
+            if (!response.ok) {
+                throw new Error('Error al obtener ID de usuario');
+            }
+
+            return await response.text();
         } catch (error) {
             console.error('Error al obtener ID de usuario:', error);
             return null;
@@ -76,13 +89,15 @@
             });
 
             if (!favoritesResponse.ok) {
-                throw new Error('Error al obtener favoritos');
+                throw new Error(favoritesResponse.status === 404 ?
+                    'No se encontraron favoritos' :
+                    'Error al obtener favoritos');
             }
 
             const favoritos = await favoritesResponse.json();
 
             // Manejar caso sin favoritos
-            if (favoritos.length === 0) {
+            if (!favoritos || favoritos.length === 0) {
                 renderNoFavorites();
                 return;
             }
@@ -96,10 +111,19 @@
             });
 
             if (!localesResponse.ok) {
-                throw new Error('Error al obtener detalles de locales');
+                throw new Error(localesResponse.status === 404 ?
+                    'No se encontraron los locales' :
+                    'Error al obtener detalles de locales');
             }
 
             const locales = await localesResponse.json();
+
+            // Verificar que locales no esté vacío
+            if (!locales || locales.length === 0) {
+                renderNoFavorites();
+                return;
+            }
+
             renderFavoritesList(locales);
 
         } catch (error) {
@@ -140,7 +164,7 @@
                 <ion-icon name="heart-dislike" class="empty-icon"></ion-icon>
                 <h3>No tienes locales favoritos aún</h3>
                 <p>Cuando marques locales como favoritos, aparecerán aquí</p>
-                <a href="/Dashboard/Local" class="explore-button">Explorar locales</a>
+                <a href="/Dashboard/Dashb" class="explore-button">Explorar locales</a>
             </div>
         `;
     }
@@ -175,7 +199,7 @@
         titleElement.innerHTML = `
             <ion-icon name="heart" class="title-icon"></ion-icon>
             <h1>Mis Locales Favoritos</h1>
-            <span class="favorites-count">${locales.length} locales</span>
+            <span class="favorites-count">${locales.length} ${locales.length === 1 ? 'local' : 'locales'}</span>
         `;
 
         // Crear grid de favoritos
@@ -185,8 +209,17 @@
 
         // Agregar locales al grid
         locales.forEach(local => {
-            gridElement.appendChild(createFavoriteCard(local));
+            const card = createFavoriteCard(local);
+            if (card) {
+                gridElement.appendChild(card);
+            }
         });
+
+        // Verificar si se agregaron tarjetas
+        if (gridElement.children.length === 0) {
+            renderNoFavorites();
+            return;
+        }
 
         // Ensamblar todo
         container.appendChild(titleElement);
@@ -199,6 +232,11 @@
 
     // Función para crear una tarjeta de favorito
     function createFavoriteCard(local) {
+        if (!local || !local.id) {
+            console.error('Datos de local inválidos:', local);
+            return null;
+        }
+
         const card = document.createElement('div');
         card.className = 'favorite-item';
         card.dataset.localId = local.id;
@@ -207,30 +245,37 @@
         const fotos = local.fotos || [];
         const firstPhoto = fotos[0] || '';
 
+        // Sanitizar datos para evitar XSS
+        const sanitize = (str) => {
+            if (!str) return '';
+            return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        };
+
         card.innerHTML = `
             <div class="favorite-image-container">
                 <div class="favorite-image">
                     ${firstPhoto ?
-                `<img src="${firstPhoto}" alt="${local.name}" loading="lazy">` :
+                `<img src="${sanitize(firstPhoto)}" alt="${sanitize(local.name || 'Local')}" loading="lazy">` :
                 `<div class="no-image">
-                            <ion-icon name="image"></ion-icon>
-                        </div>`
+                        <ion-icon name="image"></ion-icon>
+                    </div>`
             }
                 </div>
-                <button class="remove-favorite" data-local-id="${local.id}">
+                <button class="remove-favorite" data-local-id="${local.id}" aria-label="Eliminar de favoritos">
                     <ion-icon name="trash"></ion-icon>
+                    Eliminar
                 </button>
             </div>
             <div class="favorite-info">
-                <h3 class="favorite-title">${local.name}</h3>
+                <h3 class="favorite-title">${sanitize(local.name || 'Local sin nombre')}</h3>
                 <div class="favorite-details">
                     <p class="favorite-location">
                         <ion-icon name="location"></ion-icon>
-                        ${local.ciudad}, ${local.direccion}
+                        ${sanitize(local.ciudad || 'Ciudad no especificada')}, ${sanitize(local.direccion || 'Dirección no especificada')}
                     </p>
                     <p class="favorite-price">
                         <ion-icon name="pricetag"></ion-icon>
-                        $${local.costo.toLocaleString()}
+                        $${local.costo ? sanitize(local.costo.toLocaleString()) : '0'}
                     </p>
                 </div>
                 <a href="/Dashboard/Local/Detalle/${local.id}" class="view-details">
@@ -241,14 +286,16 @@
 
         // Agregar evento al botón de eliminar
         const removeBtn = card.querySelector('.remove-favorite');
-        removeBtn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            await removeFavorite(local.id, card);
-        });
+        if (removeBtn) {
+            removeBtn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                await removeFavorite(local.id, card);
+            });
+        }
 
         // Agregar evento para hacer clic en la tarjeta
         card.addEventListener('click', (e) => {
-            if (!e.target.closest('.remove-favorite')) {
+            if (!e.target.closest('.remove-favorite') && !e.target.closest('.view-details')) {
                 window.location.href = `/Dashboard/Local/Detalle/${local.id}`;
             }
         });
@@ -273,7 +320,11 @@
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
-            if (!favRes.ok) throw new Error('Error al buscar favoritos');
+            if (!favRes.ok) {
+                throw new Error(favRes.status === 404 ?
+                    'No se encontraron favoritos' :
+                    'Error al buscar favoritos');
+            }
 
             const favoritos = await favRes.json();
             const favorito = favoritos.find(f => f.localId === localId);
@@ -307,7 +358,7 @@
                     // Actualizar contador
                     const countElement = document.querySelector('.favorites-count');
                     if (countElement) {
-                        countElement.textContent = `${remainingFavorites} locales`;
+                        countElement.textContent = `${remainingFavorites} ${remainingFavorites === 1 ? 'local' : 'locales'}`;
                     }
                 }
             }, 300);
@@ -330,6 +381,7 @@
 
         const toast = document.createElement('div');
         toast.className = `favorite-toast ${isError ? 'error' : ''}`;
+        toast.setAttribute('role', 'alert');
         toast.innerHTML = `
             <ion-icon name="${isError ? 'warning' : 'checkmark'}"></ion-icon>
             <span>${message}</span>
