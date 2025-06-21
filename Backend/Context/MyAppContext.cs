@@ -119,6 +119,12 @@ namespace Backend.Context
                         .HasPrecision(18, 2);
                 }
             }
+
+            // Valor por defecto para FechaCreacion
+            modelBuilder.Entity<Local>()
+                .Property(l => l.FechaCreacion)
+                .HasDefaultValueSql("GETUTCDATE()");
+
         }
         public async Task<bool> SaveAsync()
         {

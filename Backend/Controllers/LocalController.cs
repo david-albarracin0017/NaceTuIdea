@@ -76,6 +76,40 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Error al obtener todos los locales: {ex.Message}");
             }
         }
+        [HttpGet("recientes")]
+        public async Task<IActionResult> GetRecientes()
+        {
+            try
+            {
+                var locales = await _repository.GetAllAsync();
+                var recientes = locales
+                    .OrderByDescending(l => l.FechaCreacion)
+                    .Take(6); // o la cantidad que quieras
+                return Ok(recientes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al obtener locales recientes: {ex.Message}");
+            }
+        }
+
+        [HttpGet("recomendados")]
+        public async Task<IActionResult> GetRecomendados()
+        {
+            try
+            {
+                var locales = await _repository.GetAllAsync();
+                var recomendados = locales
+                    .OrderByDescending(l => l.Costo)
+                    .Take(6); // Lógica de recomendación simple
+                return Ok(recomendados);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al obtener locales recomendados: {ex.Message}");
+            }
+        }
+
 
 
 

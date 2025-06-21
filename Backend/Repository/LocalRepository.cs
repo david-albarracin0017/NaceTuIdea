@@ -16,8 +16,11 @@ namespace Backend.Repository
 
         public async Task<IEnumerable<Local>> GetAllAsync()
         {
-            return await _context.Locales.ToListAsync();
+            return await _context.Locales
+                .OrderByDescending(l => l.FechaCreacion)
+                .ToListAsync();
         }
+
 
         public async Task<Local> GetByIdAsync(Guid id)
         {

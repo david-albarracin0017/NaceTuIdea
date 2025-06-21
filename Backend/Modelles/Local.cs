@@ -9,6 +9,8 @@
         public string Ciudad { get; set; }
         public string Direccion { get; set; }
         public string Tipo { get; set; }
+        public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
+
 
         public List<string> Fotos { get; set; } = new();
 
