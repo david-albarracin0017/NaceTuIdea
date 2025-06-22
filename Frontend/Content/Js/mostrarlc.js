@@ -159,38 +159,62 @@
         const esFavorito = !!favorito;
 
         card.innerHTML = `
-        <div class="card">
-            <div class="card-image">
-                <div class="carousel-container">
-                    <div class="carousel" id="carousel-${sanitize(local.id)}">
-                        ${fotos.map(url => `
-                            <figure style="width: 100%; height: 200px; display: flex; align-items: center; justify-content: center; background-color: #f9f9f9;">
-                                <img src="${sanitize(url)}" alt="Imagen del local" loading="lazy" 
-                                style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                            </figure>
-                        `).join('')}
-                    </div>
-                </div>
-                <ol class="carousel-indicators" id="indicators-carousel-${sanitize(local.id)}">
-                    ${fotos.map((_, i) => `<li data-target="carousel-${sanitize(local.id)}" data-slide-to="${i}"></li>`).join('')}
-                </ol>
+<div class="card">
+    <div class="card-image">
+        <div class="carousel-container">
+            <div class="carousel" id="carousel-${sanitize(local.id)}">
+                ${fotos.map(url => `
+                    <figure>
+                        <div class="image-container">
+                            <img src="${sanitize(url)}" alt="Imagen del local" loading="lazy">
+                        </div>
+                    </figure>
+                `).join('')}
             </div>
-            <div class="card-content">
-                <div class="media-content" style="display: flex; justify-content: space-between; align-items: center;">
-                    <p class="title is-6">${sanitize(local.name)}</p>
-                    <ion-icon 
-                        class="favorite-icon" 
-                        name="${esFavorito ? 'heart' : 'heart-outline'}" 
-                        data-favorito-id="${favorito?.id || ''}"
-                        style="font-size: 30px; color: ${esFavorito ? 'crimson' : 'var(--subtitle-color)'}; cursor: pointer;">
-                    </ion-icon>
+            
+            <button class="carousel-control-prev" data-target="carousel-${sanitize(local.id)}">
+                <ion-icon name="chevron-back-outline"></ion-icon>
+            </button>
+            <button class="carousel-control-next" data-target="carousel-${sanitize(local.id)}">
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+            </button>
+            
+            <ol class="carousel-indicators" id="indicators-carousel-${sanitize(local.id)}">
+                ${fotos.map((_, i) => `
+                    <li class="${i === 0 ? 'active' : ''}" 
+                        data-target="carousel-${sanitize(local.id)}" 
+                        data-slide-to="${i}">
+                    </li>
+                `).join('')}
+            </ol>
+        </div>
+    </div>
+    <div class="card-content">
+        <div class="media-content">
+            <p class="title is-6">${sanitize(local.name)}</p>
+            <ion-icon 
+                class="favorite-icon" 
+                name="${esFavorito ? 'heart' : 'heart-outline'}" 
+                data-favorito-id="${favorito?.id || ''}">
+            </ion-icon>
+        </div>
+        <p class="subtitle is-7">${sanitize(local.description)}</p>
+        <p><strong>Ciudad:</strong> ${sanitize(local.ciudad)}</p>
+        <p><strong>Tipo:</strong> ${sanitize(local.tipo)}</p>
+        <p><strong>Dirección:</strong> ${sanitize(local.direccion)}</p>
+        <p><strong>Precio:</strong> $${local.costo ? sanitize(local.costo.toLocaleString()) : '0'}</p>
+        <small>Publicado: ${timeAgo}</small>
+        <p class="subtitle is-7">Valoracion</p>
+        <div class="rating-container interactive">
+                    <div class="rating-stars">
+                        <ion-icon name="star-outline" class="rating-star" data-value="1"></ion-icon>
+                        <ion-icon name="star-outline" class="rating-star" data-value="2"></ion-icon>
+                        <ion-icon name="star-outline" class="rating-star" data-value="3"></ion-icon>
+                        <ion-icon name="star-outline" class="rating-star" data-value="4"></ion-icon>
+                        <ion-icon name="star-outline" class="rating-star" data-value="5"></ion-icon>
+                    </div>
+                    <span class="rating-value">0.0</span>
                 </div>
-                <p class="subtitle is-7">${sanitize(local.description)}</p>
-                <p><strong>Ciudad:</strong> ${sanitize(local.ciudad)}</p>
-                <p><strong>Tipo:</strong> ${sanitize(local.tipo)}</p>
-                <p><strong>Dirección:</strong> ${sanitize(local.direccion)}</p>
-                <p><strong>Precio:</strong> $${local.costo ? sanitize(local.costo.toLocaleString()) : '0'}</p>
-                <small>${timeAgo}</small>
             </div>
         </div>`;
 
@@ -288,6 +312,9 @@
             renderSection('Publicados recientemente', 'albums-recent-grid', 'time-outline', recientes, favoritos);
             renderSection('Recomendados para ti', 'albums-recommended-grid', 'star-outline', recomendados, favoritos);
 
+            // Inicializar el sistema de valoración después de renderizar
+            setupStarRatings();
+
         } catch (error) {
             console.error('Error en init:', error);
             showToast('Error al cargar los locales', true);
@@ -295,22 +322,70 @@
     }
 
     // ==============================
-    // 🎠 Lógica del Carrusel
-    // ==============================
-    function initializeCarousel(carouselId) {
-        const carousel = document.getElementById(carouselId);
-        const slides = carousel?.querySelectorAll('figure') || [];
-        let currentIndex = 0;
+    // Función para inicializar las valoraciones
+    function setupStarRatings() {
+        const ratingContainers = document.querySelectorAll('.rating-container.interactive');
 
-        if (!carousel || slides.length === 0) return;
+        ratingContainers.forEach(container => {
+            const stars = container.querySelectorAll('.rating-star');
+            const ratingValue = container.querySelector('.rating-value');
+            let currentRating = 0;
 
-        function goToSlide(index) {
-            currentIndex = (index + slides.length) % slides.length;
-            carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
-        }
+            // Función para actualizar la visualización
+            const updateStars = (rating) => {
+                stars.forEach((star, index) => {
+                    if (index < rating) {
+                        star.classList.add('filled');
+                        star.setAttribute('name', 'star');
+                    } else {
+                        star.classList.remove('filled');
+                        star.setAttribute('name', 'star-outline');
+                    }
+                });
+                ratingValue.textContent = rating + '.0';
+            };
 
-        goToSlide(0);
+            // Eventos para cada estrella
+            stars.forEach(star => {
+                // Al hacer hover
+                star.addEventListener('mouseenter', () => {
+                    const value = parseInt(star.getAttribute('data-value'));
+                    stars.forEach((s, idx) => {
+                        if (idx < value) {
+                            s.classList.add('hover');
+                            s.setAttribute('name', 'star');
+                        } else {
+                            s.classList.remove('hover');
+                            s.setAttribute('name', 'star-outline');
+                        }
+                    });
+                });
+
+                // Al hacer click
+                star.addEventListener('click', () => {
+                    currentRating = parseInt(star.getAttribute('data-value'));
+                    updateStars(currentRating);
+                    console.log('Valoración seleccionada:', currentRating);
+                });
+
+                // Al quitar el mouse
+                star.addEventListener('mouseleave', () => {
+                    updateStars(currentRating);
+                });
+            });
+
+            // Inicializar con valor 0
+            updateStars(0);
+        });
     }
+
+    // Llamar esta función después de renderizar las tarjetas
+    document.addEventListener('DOMContentLoaded', () => {
+        setupStarRatings();
+    });
+    
+
+
 
     // ==============================
     // 🟢 Ejecutar al cargar DOM

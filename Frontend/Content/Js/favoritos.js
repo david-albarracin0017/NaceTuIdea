@@ -1,45 +1,27 @@
 ﻿document.addEventListener('DOMContentLoaded', async function () {
-
-    // ==============================
-    // 🔗 URLs de la API
-    // ==============================
     const API_FAVORITOS = 'https://localhost:7135/api/Favoritos';
     const API_LOCALES = 'https://localhost:7135/api/Local';
 
-    // ==============================
-    // ⚙️ Variables de estado
-    // ==============================
     let currentUserId = null;
     let isLoading = false;
-
-    // ==============================
-    // 🔍 Selección del contenedor principal
-    // ==============================
     const favoritesMain = document.querySelector('.favorites-main');
+
     if (!favoritesMain) {
         console.error('Error: Elemento .favorites-main no encontrado en el DOM.');
         return;
     }
 
-    // Mostrar estado de carga
     showLoadingState();
 
-    // ==============================
-    // 🔐 Autenticación
-    // ==============================
     async function getJwtToken() {
         try {
-            const response = await fetch('/Token/Obtener', {
+            const res = await fetch('/Token/Obtener', {
                 method: 'GET',
                 credentials: 'include'
             });
-
-            if (!response.ok) throw new Error('Error en la respuesta del servidor');
-
-            const data = await response.json();
+            const data = await res.json();
             return data?.success ? data.token : null;
-        } catch (error) {
-            console.error('Error al obtener token:', error);
+        } catch {
             return null;
         }
     }
@@ -49,265 +31,40 @@
         if (!token) return null;
 
         try {
-            const response = await fetch('/Token/GetUserId', {
+            const res = await fetch('/Token/GetUserId', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` },
                 credentials: 'include'
             });
-
-            if (!response.ok) throw new Error('Error al obtener ID de usuario');
-
-            return await response.text();
-        } catch (error) {
-            console.error('Error al obtener ID de usuario:', error);
+            return res.ok ? await res.text() : null;
+        } catch {
             return null;
         }
     }
 
-    // ==============================
-    // 📦 Carga y render de favoritos
-    // ==============================
-    async function loadFavorites() {
-        if (isLoading) return;
-        isLoading = true;
+    async function eliminarFavorito(favoritoId) {
+        const token = await getJwtToken();
+        if (!token) return false;
 
         try {
-            const token = await getJwtToken();
-            if (!token || !currentUserId) {
-                renderAuthRequired();
-                return;
-            }
-
-            const resFavs = await fetch(`${API_FAVORITOS}/usuario/${currentUserId}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!resFavs.ok) {
-                throw new Error(resFavs.status === 404 ? 'No se encontraron favoritos' : 'Error al obtener favoritos');
-            }
-
-            const favoritos = await resFavs.json();
-            if (!favoritos || favoritos.length === 0) {
-                renderNoFavorites();
-                return;
-            }
-
-            const localIds = [...new Set(favoritos.map(f => f.localId))].join(',');
-            const resLocales = await fetch(`${API_LOCALES}/multiple?ids=${localIds}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!resLocales.ok) {
-                throw new Error(resLocales.status === 404 ? 'No se encontraron los locales' : 'Error al obtener detalles de locales');
-            }
-
-            const locales = await resLocales.json();
-            if (!locales || locales.length === 0) {
-                renderNoFavorites();
-                return;
-            }
-
-            renderFavoritesList(locales);
-
-        } catch (error) {
-            console.error('Error al cargar favoritos:', error);
-            renderErrorState(error.message || 'Error al cargar favoritos');
-        } finally {
-            isLoading = false;
-        }
-    }
-
-    // ==============================
-    // 🧱 Renderizado de tarjetas
-    // ==============================
-    function renderFavoritesList(locales) {
-        const container = document.createElement('div');
-        container.className = 'favorites-container';
-
-        const title = document.createElement('div');
-        title.className = 'favorites-header';
-        title.innerHTML = `
-            <ion-icon name="heart" class="title-icon"></ion-icon>
-            <h1>Mis Locales Favoritos</h1>
-            <span class="favorites-count">${locales.length} ${locales.length === 1 ? 'local' : 'locales'}</span>
-        `;
-
-        const grid = document.createElement('div');
-        grid.className = 'favorites-grid';
-        grid.id = 'favorites-grid';
-
-        locales.forEach(local => {
-            const card = createFavoriteCard(local);
-            if (card) grid.appendChild(card);
-        });
-
-        if (grid.children.length === 0) {
-            renderNoFavorites();
-            return;
-        }
-
-        container.appendChild(title);
-        container.appendChild(grid);
-        favoritesMain.innerHTML = '';
-        favoritesMain.appendChild(container);
-    }
-
-    function createFavoriteCard(local) {
-        if (!local || !local.id) return null;
-
-        const card = document.createElement('div');
-        card.className = 'favorite-item';
-        card.dataset.localId = local.id;
-
-        const fotos = local.fotos || [];
-        const firstPhoto = fotos[0] || '';
-
-        const sanitize = (str) => (!str ? '' : String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;'));
-
-        card.innerHTML = `
-            <div class="favorite-image-container">
-                <div class="favorite-image">
-                    ${firstPhoto ?
-                `<img src="${sanitize(firstPhoto)}" alt="${sanitize(local.name || 'Local')}" loading="lazy">` :
-                `<div class="no-image"><ion-icon name="image"></ion-icon></div>`}
-                </div>
-                <button class="remove-favorite" data-local-id="${local.id}" aria-label="Eliminar de favoritos">
-                    <ion-icon name="trash"></ion-icon> Eliminar
-                </button>
-            </div>
-            <div class="favorite-info">
-                <h3 class="favorite-title">${sanitize(local.name)}</h3>
-                <div class="favorite-details">
-                    <p class="favorite-location"><ion-icon name="location"></ion-icon> ${sanitize(local.ciudad)}, ${sanitize(local.direccion)}</p>
-                    <p class="favorite-price"><ion-icon name="pricetag"></ion-icon> $${local.costo ? sanitize(local.costo.toLocaleString()) : '0'}</p>
-                </div>
-                <a href="/Dashboard/Local/Detalle/${local.id}" class="view-details">Ver detalles</a>
-            </div>
-        `;
-
-        const removeBtn = card.querySelector('.remove-favorite');
-        if (removeBtn) {
-            removeBtn.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                await removeFavorite(local.id, card);
-            });
-        }
-
-        card.addEventListener('click', (e) => {
-            if (!e.target.closest('.remove-favorite') && !e.target.closest('.view-details')) {
-                window.location.href = `/Dashboard/Local/Detalle/${local.id}`;
-            }
-        });
-
-        return card;
-    }
-
-    // ==============================
-    // 🗑️ Eliminar favoritos
-    // ==============================
-    async function removeFavorite(localId, cardElement) {
-        if (isLoading) return;
-        isLoading = true;
-
-        try {
-            const token = await getJwtToken();
-            if (!token || !currentUserId) {
-                showToast('Debes iniciar sesión para esta acción', true);
-                return;
-            }
-
-            const res = await fetch(`${API_FAVORITOS}/usuario/${currentUserId}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            const favoritos = await res.json();
-            const favorito = favoritos.find(f => f.localId === localId);
-            if (!favorito) throw new Error('Favorito no encontrado');
-
-            const deleteRes = await fetch(`${API_FAVORITOS}/${favorito.id}`, {
+            const res = await fetch(`${API_FAVORITOS}/${favoritoId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-
-            if (!deleteRes.ok) {
-                const errorData = await deleteRes.json().catch(() => ({}));
-                throw new Error(errorData.message || 'Error al eliminar favorito');
-            }
-
-            // Animación y actualización visual
-            cardElement.style.transform = 'scale(0.9)';
-            cardElement.style.opacity = '0';
-            setTimeout(() => {
-                cardElement.remove();
-                const remaining = document.querySelectorAll('.favorite-item').length;
-                if (remaining === 0) renderNoFavorites();
-                else {
-                    const count = document.querySelector('.favorites-count');
-                    if (count) count.textContent = `${remaining} ${remaining === 1 ? 'local' : 'locales'}`;
-                }
-            }, 300);
-
-            showToast('Local eliminado de favoritos');
-
-        } catch (error) {
-            console.error('Error al eliminar favorito:', error);
-            showToast(error.message || 'Error al eliminar favorito', true);
-        } finally {
-            isLoading = false;
+            if (!res.ok) throw new Error();
+            showToast('Eliminado de favoritos');
+            return true;
+        } catch {
+            showToast('Error al eliminar favorito', true);
+            return false;
         }
     }
 
-    // ==============================
-    // 📺 Estados visuales
-    // ==============================
-    function showLoadingState() {
-        favoritesMain.innerHTML = `
-            <div class="loading-state">
-                <div class="loading-spinner"><ion-icon name="refresh-outline" class="spinner-icon"></ion-icon></div>
-                <p>Cargando tus favoritos...</p>
-            </div>
-        `;
+    function sanitize(str) {
+        if (!str) return '';
+        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    function renderAuthRequired() {
-        favoritesMain.innerHTML = `
-            <div class="auth-required">
-                <ion-icon name="lock-closed" class="auth-icon"></ion-icon>
-                <h3>Inicia sesión para ver tus favoritos</h3>
-                <a href="/Inicio/Principal" class="login-button">Iniciar sesión</a>
-            </div>
-        `;
-    }
-
-    function renderNoFavorites() {
-        favoritesMain.innerHTML = `
-            <div class="no-favorites">
-                <ion-icon name="heart-dislike" class="empty-icon"></ion-icon>
-                <h3>No tienes locales favoritos aún</h3>
-                <p>Cuando marques locales como favoritos, aparecerán aquí</p>
-                <a href="/Dashboard/Dashb" class="explore-button">Explorar locales</a>
-            </div>
-        `;
-    }
-
-    function renderErrorState(message) {
-        favoritesMain.innerHTML = `
-            <div class="error-state">
-                <ion-icon name="warning" class="error-icon"></ion-icon>
-                <h3>Ocurrió un error</h3>
-                <p>${message}</p>
-                <button class="retry-button" id="retry-button">
-                    <ion-icon name="refresh"></ion-icon> Reintentar
-                </button>
-            </div>
-        `;
-
-        document.getElementById('retry-button')?.addEventListener('click', loadFavorites);
-    }
-
-    // ==============================
-    // 🔔 Toast (Notificaciones)
-    // ==============================
     function showToast(message, isError = false) {
         const existing = document.querySelector('.favorite-toast');
         if (existing) existing.remove();
@@ -325,14 +82,172 @@
         }, 3000);
     }
 
-    // ==============================
-    // 🚀 Inicialización
-    // ==============================
+    function initializeCarousel(carouselId) {
+        const carousel = document.getElementById(carouselId);
+        const slides = carousel?.querySelectorAll('figure') || [];
+        let currentIndex = 0;
+
+        if (!carousel || slides.length === 0) return;
+
+        function goToSlide(index) {
+            currentIndex = (index + slides.length) % slides.length;
+            carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        goToSlide(0);
+    }
+
+    function renderLocalCard(local, favorito) {
+        const card = document.createElement('div');
+        card.className = 'local-card-column';
+        card.setAttribute('data-local-id', local.id);
+
+        const fotos = local.fotos || [];
+        const firstPhoto = fotos[0] || '';
+        const timeAgo = new Date(local.fechaCreacion).toLocaleDateString();
+        const esFavorito = !!favorito;
+
+        card.innerHTML = `
+        <div class="card">
+            <div class="card-image">
+                <div class="carousel-container">
+                    <div class="carousel" id="carousel-${sanitize(local.id)}">
+                        ${fotos.map(url => `
+                            <figure style="width: 100%; height: 200px; display: flex; align-items: center; justify-content: center; background-color: #f9f9f9;">
+                                <img src="${sanitize(url)}" alt="Imagen del local" loading="lazy" 
+                                style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                            </figure>
+                        `).join('')}
+                    </div>
+                </div>
+                <ol class="carousel-indicators" id="indicators-carousel-${sanitize(local.id)}">
+                    ${fotos.map((_, i) => `<li data-target="carousel-${sanitize(local.id)}" data-slide-to="${i}"></li>`).join('')}
+                </ol>
+            </div>
+            <div class="card-content">
+                <div class="media-content" style="display: flex; justify-content: space-between; align-items: center;">
+                    <p class="title is-6">${sanitize(local.name)}</p>
+                    <ion-icon 
+                        class="favorite-icon" 
+                        name="heart"
+                        data-favorito-id="${favorito?.id || ''}"
+                        style="font-size: 30px; color: crimson; cursor: pointer;">
+                    </ion-icon>
+                </div>
+                <p class="subtitle is-7">${sanitize(local.description)}</p>
+                <p><strong>Ciudad:</strong> ${sanitize(local.ciudad)}</p>
+                <p><strong>Tipo:</strong> ${sanitize(local.tipo)}</p>
+                <p><strong>Dirección:</strong> ${sanitize(local.direccion)}</p>
+                <p><strong>Precio:</strong> $${local.costo ? sanitize(local.costo.toLocaleString()) : '0'}</p>
+                <small>${timeAgo}</small>
+            </div>
+        </div>`;
+
+        const favIcon = card.querySelector('.favorite-icon');
+        favIcon.addEventListener('click', async () => {
+            const favoritoId = favIcon.dataset.favoritoId;
+            if (favoritoId && await eliminarFavorito(favoritoId)) {
+                card.remove();
+                const remaining = document.querySelectorAll('.local-card-column').length;
+                if (remaining === 0) renderNoFavorites();
+            }
+        });
+
+        setTimeout(() => initializeCarousel(`carousel-${local.id}`), 50);
+        return card;
+    }
+
+    function renderFavoritesList(locales, favoritos) {
+        favoritesMain.innerHTML = '';
+
+        const container = document.createElement('div');
+        container.className = 'favorites-container';
+
+        const title = document.createElement('div');
+        title.className = 'favorites-header';
+        title.innerHTML = `
+            <ion-icon name="heart" class="title-icon"></ion-icon>
+            <h1>Mis Locales Favoritos</h1>
+            <span class="favorites-count">${locales.length} ${locales.length === 1 ? 'local' : 'locales'}</span>
+        `;
+
+        const grid = document.createElement('div');
+        grid.className = 'locales-grid';
+
+        locales.forEach(local => {
+            const fav = favoritos.find(f => f.localId === local.id);
+            const card = renderLocalCard(local, fav);
+            if (card) grid.appendChild(card);
+        });
+
+        container.appendChild(title);
+        container.appendChild(grid);
+        favoritesMain.appendChild(container);
+    }
+
+    function showLoadingState() {
+        favoritesMain.innerHTML = `
+            <div class="loading-state">
+                <div class="loading-spinner"><ion-icon name="refresh-outline" class="spinner-icon"></ion-icon></div>
+                <p>Cargando tus favoritos...</p>
+            </div>
+        `;
+    }
+
+    function renderNoFavorites() {
+        favoritesMain.innerHTML = `
+            <div class="no-favorites">
+                <ion-icon name="heart-dislike" class="empty-icon"></ion-icon>
+                <h3>No tienes locales favoritos aún</h3>
+                <p>Cuando marques locales como favoritos, aparecerán aquí</p>
+                <a href="/Dashboard/Dashb" class="explore-button">Explorar locales</a>
+            </div>
+        `;
+    }
+
+    async function loadFavorites() {
+        if (isLoading) return;
+        isLoading = true;
+
+        try {
+            const token = await getJwtToken();
+            if (!token || !currentUserId) {
+                renderNoFavorites();
+                return;
+            }
+
+            const resFavs = await fetch(`${API_FAVORITOS}/usuario/${currentUserId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!resFavs.ok) throw new Error();
+
+            const favoritos = await resFavs.json();
+            if (!favoritos.length) {
+                renderNoFavorites();
+                return;
+            }
+
+            const localIds = favoritos.map(f => f.localId).join(',');
+            const resLocales = await fetch(`${API_LOCALES}/multiple?ids=${localIds}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!resLocales.ok) throw new Error();
+
+            const locales = await resLocales.json();
+            renderFavoritesList(locales, favoritos);
+        } catch {
+            renderNoFavorites();
+        } finally {
+            isLoading = false;
+        }
+    }
+
     try {
         currentUserId = await getCurrentUserId();
         await loadFavorites();
-    } catch (error) {
-        console.error('Error en la inicialización:', error);
-        renderErrorState('Error al cargar la página');
+    } catch {
+        renderNoFavorites();
     }
 });
