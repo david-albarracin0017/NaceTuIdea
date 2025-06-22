@@ -11,6 +11,8 @@ namespace Backend.Interface
         Task<bool> DeleteAsync(Guid id);
         Task<bool> ExistsAsync(string nombre, string direccion, Guid propietarioId);
         Task<IEnumerable<Local>> GetByUserIdAsync(Guid userId);
+        Task<IEnumerable<Local>> GetByIdsAsync(IEnumerable<Guid> ids);
+
 
 
     }

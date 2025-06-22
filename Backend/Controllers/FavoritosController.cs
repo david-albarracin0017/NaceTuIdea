@@ -1,4 +1,5 @@
-﻿using Backend.Interface;
+﻿using Backend.Dtos;
+using Backend.Interface;
 using Backend.Modelles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -75,10 +76,17 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Favorito favorito)
+        public async Task<IActionResult> Create([FromBody] FavoritoCreateDto dto)
         {
             try
             {
+                var favorito = new Favorito
+                {
+                    Id = Guid.NewGuid(),
+                    UsuarioId = dto.UsuarioId,
+                    LocalId = dto.LocalId
+                };
+
                 var nuevo = await _repository.AddAsync(favorito);
                 return CreatedAtAction(nameof(GetById), new { id = nuevo.Id }, nuevo);
             }
@@ -87,6 +95,7 @@ namespace Backend.Controllers
                 return StatusCode(500, $"Error interno: {ex.Message}");
             }
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] Favorito favorito)

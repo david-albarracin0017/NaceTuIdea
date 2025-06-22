@@ -110,6 +110,33 @@ namespace Backend.Controllers
             }
         }
 
+        [HttpGet("multiple")]
+        public async Task<IActionResult> GetByMultipleIds([FromQuery] string ids)
+        {
+            if (string.IsNullOrWhiteSpace(ids))
+                return BadRequest("Debe proporcionar al menos un ID.");
+
+            try
+            {
+                var idList = ids
+                    .Split(',')
+                    .Select(idStr => Guid.TryParse(idStr, out var id) ? id : Guid.Empty)
+                    .Where(id => id != Guid.Empty)
+                    .ToList();
+
+                if (idList.Count == 0)
+                    return BadRequest("Ningún ID válido proporcionado.");
+
+                var locales = await _repository.GetByIdsAsync(idList);
+                return Ok(locales);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al obtener locales por múltiples IDs: {ex.Message}");
+            }
+        }
+
+
 
 
 

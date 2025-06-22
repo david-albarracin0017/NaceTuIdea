@@ -75,5 +75,12 @@ namespace Backend.Repository
                 .Where(l => l.PropietarioId == userId)
                 .ToListAsync();
         }
+        public async Task<IEnumerable<Local>> GetByIdsAsync(IEnumerable<Guid> ids)
+        {
+            return await _context.Locales
+                .Where(local => ids.Contains(local.Id))
+                .ToListAsync();
+        }
+
     }
 }
