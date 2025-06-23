@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Repository
 {
+   
     public class ReservaRepository : IReservaRepository
     {
         private readonly MyAppContext _context;
@@ -30,6 +31,13 @@ namespace Backend.Repository
                 .Include(r => r.Usuario)
                 .Include(r => r.Pagos)
                 .FirstOrDefaultAsync(r => r.Id == id);
+        }
+
+        public async Task<IEnumerable<Reserva>> GetByLocalIdAsync(Guid localId)
+        {
+            return await _context.Reservas
+                .Where(r => r.LocalId == localId)
+                .ToListAsync();
         }
 
         public async Task AddAsync(Reserva reserva)

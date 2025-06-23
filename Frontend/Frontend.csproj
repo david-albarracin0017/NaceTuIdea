@@ -298,6 +298,8 @@
     <Content Include="Content\Css\local.css" />
     <Content Include="Content\Css\mostrarlc.css" />
     <Content Include="Content\Css\perfil.css" />
+    <Content Include="Content\Css\reservas.css" />
+    <Content Include="Content\Css\reservas.js" />
     <Content Include="Content\Css\Style.css" />
     <Content Include="Content\Js\acces.js" />
     <Content Include="Content\Js\CrudLocal.js" />

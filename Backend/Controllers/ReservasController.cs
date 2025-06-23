@@ -1,4 +1,5 @@
-﻿using Backend.Interface;
+﻿using Backend.Dtos;
+using Backend.Interface;
 using Backend.Modelles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -47,12 +48,34 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Reserva reserva)
+        public async Task<IActionResult> Create([FromBody] ReservaDTO dto)
         {
             try
             {
-                await _repository.AddAsync(reserva);
-                return CreatedAtAction(nameof(GetById), new { id = reserva.Id }, reserva);
+                if (dto.FechaFin <= dto.FechaInicio)
+                    return BadRequest("La fecha de fin debe ser posterior a la de inicio.");
+
+                if ((dto.FechaFin - dto.FechaInicio).TotalDays < 30)
+                    return BadRequest("La reserva mínima debe ser de 1 mes.");
+
+                var reservasExistentes = await _repository.GetByLocalIdAsync(dto.LocalId);
+                var hayConflicto = reservasExistentes.Any(r =>
+                    r.FechaInicio < dto.FechaFin && r.FechaFin > dto.FechaInicio);
+
+                if (hayConflicto)
+                    return Conflict("El local ya tiene una reserva en ese periodo.");
+
+                var nueva = new Reserva
+                {
+                    Id = Guid.NewGuid(),
+                    UsuarioId = dto.UsuarioId,
+                    LocalId = dto.LocalId,
+                    FechaInicio = dto.FechaInicio,
+                    FechaFin = dto.FechaFin
+                };
+
+                await _repository.AddAsync(nueva);
+                return CreatedAtAction(nameof(GetById), new { id = nueva.Id }, nueva);
             }
             catch (Exception ex)
             {
@@ -61,13 +84,30 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] Reserva reserva)
+        public async Task<IActionResult> Update(Guid id, [FromBody] ReservaDTO dto)
         {
-            if (id != reserva.Id) return BadRequest("El ID de la reserva no coincide.");
-
             try
             {
-                await _repository.UpdateAsync(reserva);
+                var original = await _repository.GetByIdAsync(id);
+                if (original == null) return NotFound();
+
+                if (dto.FechaFin <= dto.FechaInicio)
+                    return BadRequest("La fecha de fin debe ser posterior a la de inicio.");
+
+                if ((dto.FechaFin - dto.FechaInicio).TotalDays < 30)
+                    return BadRequest("La reserva mínima debe ser de 1 mes.");
+
+                var reservasExistentes = await _repository.GetByLocalIdAsync(dto.LocalId);
+                var hayConflicto = reservasExistentes.Any(r => r.Id != id &&
+                    r.FechaInicio < dto.FechaFin && r.FechaFin > dto.FechaInicio);
+
+                if (hayConflicto)
+                    return Conflict("El local ya tiene una reserva en ese periodo.");
+
+                original.FechaInicio = dto.FechaInicio;
+                original.FechaFin = dto.FechaFin;
+
+                await _repository.UpdateAsync(original);
                 return NoContent();
             }
             catch (Exception ex)
@@ -90,5 +130,6 @@ namespace Backend.Controllers
             }
         }
     }
+
 
 }
