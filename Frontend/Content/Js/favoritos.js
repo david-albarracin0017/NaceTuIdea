@@ -82,20 +82,7 @@
         }, 3000);
     }
 
-    function initializeCarousel(carouselId) {
-        const carousel = document.getElementById(carouselId);
-        const slides = carousel?.querySelectorAll('figure') || [];
-        let currentIndex = 0;
-
-        if (!carousel || slides.length === 0) return;
-
-        function goToSlide(index) {
-            currentIndex = (index + slides.length) % slides.length;
-            carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
-        }
-
-        goToSlide(0);
-    }
+  
 
     function renderLocalCard(local, favorito) {
         const card = document.createElement('div');
@@ -105,7 +92,6 @@
         const fotos = local.fotos || [];
         const firstPhoto = fotos[0] || '';
         const timeAgo = new Date(local.fechaCreacion).toLocaleDateString();
-        const esFavorito = !!favorito;
 
         card.innerHTML = `
         <div class="card">
@@ -113,25 +99,37 @@
                 <div class="carousel-container">
                     <div class="carousel" id="carousel-${sanitize(local.id)}">
                         ${fotos.map(url => `
-                            <figure style="width: 100%; height: 200px; display: flex; align-items: center; justify-content: center; background-color: #f9f9f9;">
-                                <img src="${sanitize(url)}" alt="Imagen del local" loading="lazy" 
-                                style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                            <figure>
+                                <div class="image-container">
+                                    <img src="${sanitize(url)}" alt="Imagen del local" loading="lazy">
+                                </div>
                             </figure>
                         `).join('')}
                     </div>
+                    <button class="carousel-control-prev" data-target="carousel-${sanitize(local.id)}">
+                        <ion-icon name="chevron-back-outline"></ion-icon>
+                    </button>
+                    <button class="carousel-control-next" data-target="carousel-${sanitize(local.id)}">
+                        <ion-icon name="chevron-forward-outline"></ion-icon>
+                    </button>
+                    <ol class="carousel-indicators" id="indicators-carousel-${sanitize(local.id)}">
+                        ${fotos.map((_, i) => `
+                            <li class="${i === 0 ? 'active' : ''}" 
+                                data-target="carousel-${sanitize(local.id)}" 
+                                data-slide-to="${i}">
+                            </li>
+                        `).join('')}
+                    </ol>
                 </div>
-                <ol class="carousel-indicators" id="indicators-carousel-${sanitize(local.id)}">
-                    ${fotos.map((_, i) => `<li data-target="carousel-${sanitize(local.id)}" data-slide-to="${i}"></li>`).join('')}
-                </ol>
             </div>
             <div class="card-content">
-                <div class="media-content" style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="media-content">
                     <p class="title is-6">${sanitize(local.name)}</p>
                     <ion-icon 
                         class="favorite-icon" 
                         name="heart"
                         data-favorito-id="${favorito?.id || ''}"
-                        style="font-size: 30px; color: crimson; cursor: pointer;">
+                        style="color: crimson; cursor: pointer;">
                     </ion-icon>
                 </div>
                 <p class="subtitle is-7">${sanitize(local.description)}</p>
@@ -139,7 +137,7 @@
                 <p><strong>Tipo:</strong> ${sanitize(local.tipo)}</p>
                 <p><strong>Dirección:</strong> ${sanitize(local.direccion)}</p>
                 <p><strong>Precio:</strong> $${local.costo ? sanitize(local.costo.toLocaleString()) : '0'}</p>
-                <small>${timeAgo}</small>
+                <small>Publicado: ${timeAgo}</small>
             </div>
         </div>`;
 

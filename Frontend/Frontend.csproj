@@ -292,6 +292,7 @@
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\Css\acerca.css" />
     <Content Include="Content\Css\contacto.css" />
+    <Content Include="Content\Css\favoritos.css" />
     <Content Include="Content\Css\inicio.css" />
     <Content Include="Content\Css\interfaz.css" />
     <Content Include="Content\Css\local.css" />

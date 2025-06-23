@@ -1,16 +1,402 @@
-﻿/* Content/Css/favoritos.css */
-
+﻿/* Estilos generales para el contenedor principal */
 .favorites-main {
     background-color: var(--body-color);
     min-height: 100vh;
     padding: 2rem;
     margin-left: 250px;
-    transition: background-color 0.3s ease, margin-left 0.3s ease;
+    transition: all 0.3s ease;
 }
 
+/* Ajuste cuando la sidebar está cerrada */
 .siderbar.close ~ .favorites-main {
     margin-left: 88px;
 }
 
+/* Contenedor de favoritos */
+.favorites-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: var(--siderbar-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
 
+/* Encabezado de favoritos */
+.favorites-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
 
+    .favorites-header .title-icon {
+        font-size: 2rem;
+        color: crimson;
+    }
+
+    .favorites-header h1 {
+        font-size: 1.8rem;
+        margin: 0;
+        color: var(--text-color);
+    }
+
+.favorites-count {
+    margin-left: auto;
+    background-color: var(--primary-color-light);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+/* Grid de locales favoritos */
+.locales-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+/* Tarjeta de local */
+.local-card-column {
+    height: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: var(--primary-color-light);
+    color: var(--text-color);
+}
+
+    .local-card-column:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+/* Estructura de la tarjeta */
+.card {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--primary-color-light);
+}
+
+/* Sección de la imagen */
+.card-image {
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+    background-color: #000;
+}
+
+/* Carrusel de imágenes */
+.carousel-container {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+.carousel {
+    display: flex;
+    height: 100%;
+    transition: transform 0.3s ease-in-out;
+}
+
+    .carousel figure {
+        min-width: 100%;
+        min-height: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #000;
+    }
+
+    .carousel img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+    }
+
+        .carousel img:hover {
+            transform: scale(1.03);
+        }
+
+/* Controles del carrusel */
+.carousel-control-prev,
+.carousel-control-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.3);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 1rem 0.5rem;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 60px;
+}
+
+.carousel-control-prev {
+    left: 10px;
+}
+
+.carousel-control-next {
+    right: 10px;
+}
+
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+/* Indicadores del carrusel */
+.carousel-indicators {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem;
+    margin: 0;
+    list-style: none;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    z-index: 2;
+}
+
+    .carousel-indicators li {
+        width: 10px;
+        height: 10px;
+        margin: 0 5px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+
+        .carousel-indicators li.active {
+            opacity: 1;
+            background-color: var(--primary-color);
+            transform: scale(1.2);
+        }
+
+/* Contenido de la tarjeta */
+.card-content {
+    padding: 15px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--primary-color-light);
+}
+
+.media-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+    .media-content .title {
+        margin: 0;
+        flex-grow: 1;
+        font-size: 1.1rem;
+        color: var(--text-color);
+    }
+
+.favorite-icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+    color: var(--subtitle-color);
+}
+
+    .favorite-icon[name="heart"] {
+        color: crimson;
+        transform: scale(1.1);
+    }
+
+.card-content p {
+    margin-bottom: 8px;
+    line-height: 1.4;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.card-content strong {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.card-content small {
+    font-size: 0.75em;
+    color: var(--text-color-light);
+    margin-top: auto;
+}
+
+/* Sistema de valoración con estrellas */
+.rating-container {
+    display: flex;
+    align-items: center;
+    margin: 10px 0 15px;
+}
+
+.rating-stars {
+    display: flex;
+    gap: 5px;
+}
+
+.rating-star {
+    font-size: 1.4rem;
+    color: #e0e0e0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+    .rating-star.filled {
+        color: #FFC107;
+        text-shadow: 0 0 4px rgba(255, 193, 7, 0.5);
+    }
+
+    .rating-star.hover {
+        transform: scale(1.2);
+        color: #FFD700;
+    }
+
+.rating-value {
+    margin-left: 10px;
+    font-size: 1rem;
+    color: var(--text-color);
+    font-weight: bold;
+    min-width: 30px;
+}
+
+/* Efecto para rating interactivo */
+.rating-stars.interactive:hover .rating-star {
+    color: #e0e0e0;
+}
+
+.rating-stars.interactive .rating-star:hover,
+.rating-stars.interactive .rating-star:hover ~ .rating-star {
+    color: #e0e0e0;
+}
+
+/* Estados de carga y sin favoritos */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    color: var(--text-color);
+}
+
+.loading-spinner {
+    animation: spin 1s linear infinite;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.no-favorites {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    text-align: center;
+    color: var(--text-color);
+}
+
+    .no-favorites .empty-icon {
+        font-size: 3rem;
+        color: var(--text-color-light);
+        margin-bottom: 1rem;
+    }
+
+    .no-favorites h3 {
+        margin-bottom: 0.5rem;
+    }
+
+    .no-favorites p {
+        margin-bottom: 1.5rem;
+        color: var(--text-color-light);
+    }
+
+.explore-button {
+    padding: 0.6rem 1.2rem;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+    .explore-button:hover {
+        background-color: var(--primary-color-dark);
+    }
+
+/* Toast notifications */
+.favorite-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+    .favorite-toast.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .favorite-toast.error {
+        background-color: #d32f2f;
+    }
+
+    .favorite-toast ion-icon {
+        font-size: 1.2rem;
+    }
