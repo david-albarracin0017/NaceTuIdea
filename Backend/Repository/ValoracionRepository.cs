@@ -19,6 +19,7 @@ namespace Backend.Repository
             return await _context.Valoraciones
                 .Include(v => v.Local)
                 .Include(v => v.Usuario)
+                .OrderByDescending(v => v.Fecha)
                 .ToListAsync();
         }
 
@@ -34,6 +35,8 @@ namespace Backend.Repository
         {
             return await _context.Valoraciones
                 .Where(v => v.LocalId == localId)
+                .Include(v => v.Usuario)
+                .OrderByDescending(v => v.Fecha)
                 .ToListAsync();
         }
 
@@ -41,19 +44,50 @@ namespace Backend.Repository
         {
             return await _context.Valoraciones
                 .Where(v => v.UsuarioId == usuarioId)
+                .Include(v => v.Local)
+                .OrderByDescending(v => v.Fecha)
                 .ToListAsync();
+        }
+
+        public async Task<Valoracion> GetByUsuarioAndLocalAsync(Guid usuarioId, Guid localId)
+        {
+            return await _context.Valoraciones
+                .FirstOrDefaultAsync(v => v.UsuarioId == usuarioId && v.LocalId == localId);
+        }
+
+        public async Task<double> GetPromedioByLocalAsync(Guid localId)
+        {
+            var promedio = await _context.Valoraciones
+                .Where(v => v.LocalId == localId)
+                .AverageAsync(v => (double?)v.Estrellas) ?? 0.0;
+
+            return Math.Round(promedio, 1);
+        }
+
+        public async Task<int> GetCountByLocalAsync(Guid localId)
+        {
+            return await _context.Valoraciones
+                .CountAsync(v => v.LocalId == localId);
         }
 
         public async Task AddAsync(Valoracion valoracion)
         {
+            valoracion.Id = Guid.NewGuid();
+            valoracion.Fecha = DateTime.UtcNow;
+
             await _context.Valoraciones.AddAsync(valoracion);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Valoracion valoracion)
         {
-            _context.Valoraciones.Update(valoracion);
-            await _context.SaveChangesAsync();
+            var existing = await _context.Valoraciones.FindAsync(valoracion.Id);
+            if (existing != null)
+            {
+                existing.Estrellas = valoracion.Estrellas;
+                _context.Valoraciones.Update(existing);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task DeleteAsync(Guid id)
@@ -66,5 +100,4 @@ namespace Backend.Repository
             }
         }
     }
-
 }

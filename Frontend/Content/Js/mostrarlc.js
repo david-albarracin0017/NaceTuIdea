@@ -205,18 +205,18 @@
         <p><strong>Precio:</strong> $${local.costo ? sanitize(local.costo.toLocaleString()) : '0'}</p>
         <small>Publicado: ${timeAgo}</small>
         <p class="subtitle is-7">Valoracion</p>
-        <div class="rating-container interactive">
-                    <div class="rating-stars">
-                        <ion-icon name="star-outline" class="rating-star" data-value="1"></ion-icon>
-                        <ion-icon name="star-outline" class="rating-star" data-value="2"></ion-icon>
-                        <ion-icon name="star-outline" class="rating-star" data-value="3"></ion-icon>
-                        <ion-icon name="star-outline" class="rating-star" data-value="4"></ion-icon>
-                        <ion-icon name="star-outline" class="rating-star" data-value="5"></ion-icon>
-                    </div>
-                    <span class="rating-value">0.0</span>
-                </div>
-            </div>
-        </div>`;
+         <div class="rating-container interactive">
+        <div class="rating-stars">
+            <ion-icon name="star-outline" class="rating-star" data-value="1"></ion-icon>
+            <ion-icon name="star-outline" class="rating-star" data-value="2"></ion-icon>
+            <ion-icon name="star-outline" class="rating-star" data-value="3"></ion-icon>
+            <ion-icon name="star-outline" class="rating-star" data-value="4"></ion-icon>
+            <ion-icon name="star-outline" class="rating-star" data-value="5"></ion-icon>
+        </div>
+            <span class="rating-value">0.0</span>
+            <small class="rating-count">(0)</small>
+         </div>
+       </div>`;
 
         const favIcon = card.querySelector('.favorite-icon');
         favIcon.addEventListener('click', async function () {
@@ -312,83 +312,27 @@
             renderSection('Publicados recientemente', 'albums-recent-grid', 'time-outline', recientes, favoritos);
             renderSection('Recomendados para ti', 'albums-recommended-grid', 'star-outline', recomendados, favoritos);
 
-            // Inicializar el sistema de valoración después de renderizar
-            setupStarRatings();
+            
 
         } catch (error) {
             console.error('Error en init:', error);
             showToast('Error al cargar los locales', true);
         }
+
+        document.dispatchEvent(new CustomEvent('localesLoaded'));
     }
 
     // ==============================
-    // Función para inicializar las valoraciones
-    function setupStarRatings() {
-        const ratingContainers = document.querySelectorAll('.rating-container.interactive');
+    
 
-        ratingContainers.forEach(container => {
-            const stars = container.querySelectorAll('.rating-star');
-            const ratingValue = container.querySelector('.rating-value');
-            let currentRating = 0;
 
-            // Función para actualizar la visualización
-            const updateStars = (rating) => {
-                stars.forEach((star, index) => {
-                    if (index < rating) {
-                        star.classList.add('filled');
-                        star.setAttribute('name', 'star');
-                    } else {
-                        star.classList.remove('filled');
-                        star.setAttribute('name', 'star-outline');
-                    }
-                });
-                ratingValue.textContent = rating + '.0';
-            };
-
-            // Eventos para cada estrella
-            stars.forEach(star => {
-                // Al hacer hover
-                star.addEventListener('mouseenter', () => {
-                    const value = parseInt(star.getAttribute('data-value'));
-                    stars.forEach((s, idx) => {
-                        if (idx < value) {
-                            s.classList.add('hover');
-                            s.setAttribute('name', 'star');
-                        } else {
-                            s.classList.remove('hover');
-                            s.setAttribute('name', 'star-outline');
-                        }
-                    });
-                });
-
-                // Al hacer click
-                star.addEventListener('click', () => {
-                    currentRating = parseInt(star.getAttribute('data-value'));
-                    updateStars(currentRating);
-                    console.log('Valoración seleccionada:', currentRating);
-                });
-
-                // Al quitar el mouse
-                star.addEventListener('mouseleave', () => {
-                    updateStars(currentRating);
-                });
-            });
-
-            // Inicializar con valor 0
-            updateStars(0);
-        });
-    }
-
-    // Llamar esta función después de renderizar las tarjetas
-    document.addEventListener('DOMContentLoaded', () => {
-        setupStarRatings();
-    });
+    
     
 
 
 
     // ==============================
-    // 🟢 Ejecutar al cargar DOM
-    // ==============================
+    //  Ejecutar al cargar DOM
+    
     init();
 });

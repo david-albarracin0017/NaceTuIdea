@@ -310,6 +310,7 @@
     <Content Include="Content\Js\mostrarlc.js" />
     <Content Include="Content\Js\perfil.js" />
     <Content Include="Content\Js\Script.js" />
+    <Content Include="Content\Js\valoraciones.js" />
     <Content Include="Content\Media\background.jpg" />
     <Content Include="Content\Media\dest-img.jpg" />
     <Content Include="Content\Media\hero-img.jpg" />

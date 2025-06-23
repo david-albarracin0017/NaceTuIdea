@@ -6,7 +6,6 @@
 
             public int Estrellas { get; set; }  // Valor de 1 a 5
 
-            public string Comentario { get; set; }  // Opcional: comentario del usuario
 
             // Relación con el Local
             public Guid LocalId { get; set; }
