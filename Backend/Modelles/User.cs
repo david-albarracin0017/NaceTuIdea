@@ -10,7 +10,7 @@
         public bool Propierty { get; set; } // Indica si es propietario
 
         // Navegación
-        public List<Reserva> Reservas { get; set; } = new();
+        
         public List<Notificacion> Notificaciones { get; set; } = new();
         public List<Local> Locales { get; set; } = new();  // Locales que posee
         public List<Valoracion> Valoraciones { get; set; } = new();  // Valoraciones que hizo

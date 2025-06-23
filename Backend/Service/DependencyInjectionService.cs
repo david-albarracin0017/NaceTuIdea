@@ -14,8 +14,6 @@ namespace Backend.Service
             });
             services.AddScoped<IValoracionRepository, ValoracionRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IReservaRepository, ReservaRepository>();
-            services.AddScoped<IPagoRepository, PagoRepository>();
             services.AddScoped<INotificacionRepository, NotificacionRepository>();
             services.AddScoped<IMensajeRepository, MensajeRepository>();
             services.AddScoped<ILocalRepository, LocalRepository>();

@@ -12,8 +12,6 @@ namespace Backend.Context
 
         public DbSet<User> Users { get; set; }
         public DbSet<Local> Locales { get; set; }
-        public DbSet<Reserva> Reservas { get; set; }
-        public DbSet<Pago> Pagos { get; set; }
         public DbSet<Notificacion> Notificaciones { get; set; }
         public DbSet<Valoracion> Valoraciones { get; set; }
         public DbSet<Mensaje> Mensajes { get; set; }
@@ -22,12 +20,7 @@ namespace Backend.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // User → Reservas (1:N)
-            modelBuilder.Entity<Reserva>()
-                .HasOne(r => r.Usuario)
-                .WithMany(u => u.Reservas)
-                .HasForeignKey(r => r.UsuarioId)
-                .OnDelete(DeleteBehavior.Restrict);
+            
 
             // User → Notificaciones (1:N)
             modelBuilder.Entity<Notificacion>()
@@ -50,19 +43,6 @@ namespace Backend.Context
                 .HasForeignKey(f => f.UsuarioId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Reserva → Local (1:N)
-            modelBuilder.Entity<Reserva>()
-                .HasOne(r => r.Local)
-                .WithMany(l => l.Reservas)
-                .HasForeignKey(r => r.LocalId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Pago → Reserva (1:N)
-            modelBuilder.Entity<Pago>()
-                .HasOne(p => p.Reserva)
-                .WithMany(r => r.Pagos)
-                .HasForeignKey(p => p.ReservaId)
-                .OnDelete(DeleteBehavior.Restrict);
 
             // Valoracion → Local (1:N)
             modelBuilder.Entity<Valoracion>()

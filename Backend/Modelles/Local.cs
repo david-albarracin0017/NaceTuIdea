@@ -19,7 +19,7 @@
         public User? Propietario { get; set; }
 
         // Navegación
-        public List<Reserva> Reservas { get; set; } = new();
+        
         public List<Valoracion> Valoraciones { get; set; } = new();
         public List<Disponibilidad> Disponibilidades { get; set; } = new();
         public List<Favorito> Favoritos { get; set; } = new(); // Usuarios que lo tienen como favorito

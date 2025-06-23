@@ -16,10 +16,6 @@ namespace Frontend.Controllers
             return View();
         }
 
-        [JwtAuthorize]
-        public ActionResult Reservas()
-        {
-            return View();
-        }
+        
     }
 }

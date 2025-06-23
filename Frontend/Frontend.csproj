@@ -298,8 +298,6 @@
     <Content Include="Content\Css\local.css" />
     <Content Include="Content\Css\mostrarlc.css" />
     <Content Include="Content\Css\perfil.css" />
-    <Content Include="Content\Css\reservas.css" />
-    <Content Include="Content\Css\reservas.js" />
     <Content Include="Content\Css\Style.css" />
     <Content Include="Content\Js\acces.js" />
     <Content Include="Content\Js\CrudLocal.js" />
@@ -360,7 +358,6 @@
     <Content Include="Views\Dashboard\Perfil.cshtml" />
     <Content Include="Views\Dashboard\Local.cshtml" />
     <Content Include="Views\MPR\Mensajes.cshtml" />
-    <Content Include="Views\MPR\Reservas.cshtml" />
     <Content Include="Views\FN\Favoritos.cshtml" />
     <Content Include="Views\FN\Notificaciones.cshtml" />
   </ItemGroup>
