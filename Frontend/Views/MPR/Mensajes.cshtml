@@ -108,8 +108,8 @@
             <section class="chat">
                 <div class="header-chat">
                     <ion-icon name="person-outline" class="icon"></ion-icon>
-                    <p class="name">Conversación</p>
-                    <ion-icon name="ellipsis-horizontal-outline" class="icon clickable right"></ion-icon>
+                    <h3 id="chat-contact-name">Selecciona un contacto</h3>
+                    <ion-icon id="delete-chat" name="trash-outline" class="icon clickable right" title="Eliminar conversación"></ion-icon>
                 </div>
 
                 <div class="messages-chat">
@@ -119,7 +119,7 @@
                 <div class="footer-chat" style="position: relative;">
                     <ion-icon id="emoji-toggle" name="happy-outline"></ion-icon>
                     <input type="text" id="message-input" class="write-message" placeholder="Escribe tu mensaje...">
-                    <ion-icon name="send-outline"></ion-icon>
+                    <ion-icon id="send-button" name="send-outline" title="Enviar mensaje"></ion-icon>
                     <!-- Picker sin estilos personalizados -->
                     <emoji-picker id="emoji-picker" style="display: none; position: absolute; bottom: 60px; left: 0; z-index: 1000;"></emoji-picker>
                 </div>

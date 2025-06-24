@@ -1,3 +1,5 @@
+/* mensajes.css COMPLETO y ACTUALIZADO */
+
 .chat-container {
     display: flex;
     height: 100vh;
@@ -10,22 +12,49 @@ body .siderbar.close ~ .chat-container {
     margin-left: 88px;
 }
 
+/* Header del chat */
 .chat .header-chat {
     background: var(--body-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--primary-color-light);
 }
 
-/* Sección de contactos */
+#chat-contact-name {
+    flex-grow: 1;
+    font-size: 18px;
+    margin: 0 15px;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+#delete-chat {
+    margin-left: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: color 0.3s;
+}
+
+    #delete-chat:hover {
+        color: #ff4444;
+    }
+
+/* Panel de discusiones */
 .discussions {
     width: 30%;
     background-color: var(--primary-color-light);
-    padding: 10px;
+    padding: 0;
     overflow-y: auto;
+    border-right: 1px solid var(--primary-color);
 }
 
 .discussion {
     display: flex;
     align-items: center;
-    padding: 10px;
+    padding: 12px 15px;
     border-bottom: 1px solid var(--primary-color-light);
     cursor: pointer;
     transition: var(--tran-03);
@@ -42,143 +71,247 @@ body .siderbar.close ~ .chat-container {
             color: var(--siderbar-color);
         }
 
-    .discussion .photo {
-        width: 50px;
-        height: 50px;
-        background-size: cover;
-        background-position: center;
-        border-radius: 50%;
-        margin-right: 10px;
+    .discussion.active {
+        background: var(--primary-color);
     }
+
+        .discussion.active .name,
+        .discussion.active .message,
+        .discussion.active .timer {
+            color: var(--siderbar-color);
+        }
+
+.contact-icon {
+    font-size: 40px;
+    color: var(--primary-color);
+    margin-right: 15px;
+    flex-shrink: 0;
+}
 
 .desc-contact {
     flex: 1;
     color: var(--text-color);
+    min-width: 0;
 }
+
+    .desc-contact .name {
+        font-weight: 500;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .desc-contact .message {
+        font-size: 13px;
+        color: var(--text-color-light);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
 .timer {
     font-size: 12px;
-    color: var(--text-color);
+    color: var(--text-color-light);
+    margin-left: 10px;
+    white-space: nowrap;
 }
 
-/* Estilo de la barra de búsqueda */
+/* Search */
 .search {
-    padding: 10px;
+    padding: 15px;
+    background: var(--body-color);
+    border-bottom: 1px solid var(--primary-color-light);
 }
 
 .searchbar {
     display: flex;
     align-items: center;
     background: var(--primary-color-light);
-    padding: 8px 12px;
-    border-radius: 6px;
+    padding: 10px 15px;
+    border-radius: 20px;
     color: var(--text-color);
 }
 
     .searchbar ion-icon {
-        margin-right: 8px;
+        margin-right: 10px;
         font-size: 20px;
         color: var(--text-color);
-        background: var(--primary-color-light);
     }
 
     .searchbar input {
         width: 100%;
         border: none;
         outline: none;
-        background: var(--primary-color-light);
+        background: transparent;
         color: var(--text-color);
         font-size: 14px;
     }
 
-/* Panel de chat */
+/* Área de chat */
 .chat {
     width: 70%;
     display: flex;
     flex-direction: column;
     background-color: var(--siderbar-color);
-}
-
-.header-chat,
-.footer-chat {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background: var(--body-color);
-    color: var(--text-color);
+    position: relative;
 }
 
 .messages-chat {
     flex: 1;
-    padding: 10px;
+    padding: 20px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    background-color: var(--body-color);
 }
 
-/* Mensajes */
 .message {
     display: flex;
-    align-items: flex-end;
-    margin-bottom: 10px;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    max-width: 80%;
 }
 
-    .message .photo {
-        width: 40px;
-        height: 40px;
-        background-size: cover;
-        border-radius: 50%;
-        margin-right: 10px;
+    /* Mensajes del remitente (otros usuarios) */
+    .message:not(.response) {
+        align-self: flex-start;
+        margin-right: auto;
     }
 
-    .message .text {
-        background: var(--primary-color-light);
-        padding: 10px;
-        border-radius: 10px;
-        color: var(--text-color);
-        max-width: 60%;
-    }
+        .message:not(.response) .message-icon {
+            color: var(--primary-color);
+        }
 
+        .message:not(.response) .text {
+            background: var(--primary-color-light) !important;
+            color: var(--text-color) !important;
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 18px !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+    /* Mensajes del usuario actual (response) */
     .message.response {
-        display: flex;
-        justify-content: flex-end;
+        align-self: flex-end;
         margin-left: auto;
     }
 
         .message.response .text {
-            background: var(--primary-color);
-            color: var(--siderbar-color);
-            border-radius: 10px;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 0;
-            max-width: 60%;
-            text-align: left;
+            background: var(--primary-color) !important;
+            color: white !important;
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 18px !important;
         }
 
-.time,
-.response-time {
-    font-size: 12px;
-    color: var(--text-color);
-    margin: 4px 0;
+.message-icon {
+    font-size: 28px;
+    margin-right: 15px;
+    flex-shrink: 0;
 }
 
-/* Campo de escritura */
-.write-message {
+.message.response .message-icon {
+    display: none;
+}
+
+.text .time {
+    font-size: 11px;
+    margin-top: 5px;
+    color: inherit;
+    opacity: 0.8;
+    text-align: right;
+}
+
+/* Footer del chat */
+.footer-chat {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    background: var(--body-color);
+    border-top: 1px solid var(--primary-color-light);
+}
+
+#message-input {
     flex: 1;
-    padding: 10px;
-    margin: 0 10px;
-    border-radius: 6px;
-    border: none;
-    background: var(--siderbar-color);
+    padding: 12px 18px;
+    margin: 0 15px;
+    border-radius: 24px;
+    border: 1px solid var(--primary-color-light);
+    background: var(--primary-color-light);
     color: var(--text-color);
+    outline: none;
+    font-size: 15px;
+    transition: border 0.3s;
 }
 
-/* Iconos generales */
-.footer-chat ion-icon {
+    #message-input:focus {
+        border-color: var(--primary-color);
+    }
+
+#send-button {
+    font-size: 24px;
+    color: var(--primary-color);
     cursor: pointer;
+    transition: transform 0.2s;
 }
 
-/* Aumenta el tamaño solo de la carita */
+    #send-button:hover {
+        transform: scale(1.1);
+    }
+
 #emoji-toggle {
     font-size: 28px;
+    color: var(--primary-color);
+    cursor: pointer;
+    margin-right: 10px;
+    transition: transform 0.2s;
 }
+
+    #emoji-toggle:hover {
+        transform: scale(1.1);
+    }
+
+/* Emoji picker */
+#emoji-picker {
+    position: absolute !important;
+    bottom: 70px !important;
+    left: 20px !important;
+    z-index: 1000 !important;
+    width: 350px !important;
+    height: 400px !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px !important;
+    border: 1px solid var(--primary-color) !important;
+    display: none;
+}
+
+/* Estados vacíos */
+.empty-chat,
+.empty-discussions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-color-light);
+    text-align: center;
+}
+
+    .empty-chat ion-icon,
+    .empty-discussions ion-icon {
+        font-size: 50px;
+        margin-bottom: 15px;
+        color: var(--primary-color-light);
+    }
+
+    .empty-chat p,
+    .empty-discussions p {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .empty-chat small,
+    .empty-discussions small {
+        font-size: 13px;
+    }
