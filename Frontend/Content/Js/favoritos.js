@@ -138,6 +138,16 @@
                 <p><strong>Dirección:</strong> ${sanitize(local.direccion)}</p>
                 <p><strong>Precio:</strong> $${local.costo ? sanitize(local.costo.toLocaleString()) : '0'}</p>
                 <small>Publicado: ${timeAgo}</small>
+                 <!-- Footer con ícono de mensaje -->
+                <div class="card-footer">
+                    <ion-icon
+                        class="paper-plane-outline"
+                        name="paper-plane-outline"
+                        title="Contactar al propietario"
+                        data-local-id="${local.id}"
+                        data-local-name="${sanitize(local.name)}"
+                    ></ion-icon>
+                </div>
             </div>
         </div>`;
 
