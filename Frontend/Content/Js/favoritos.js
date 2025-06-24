@@ -65,6 +65,7 @@
         return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+
     function showToast(message, isError = false) {
         const existing = document.querySelector('.favorite-toast');
         if (existing) existing.remove();
@@ -160,6 +161,98 @@
                 if (remaining === 0) renderNoFavorites();
             }
         });
+
+        const paperPlane = card.querySelector('.paper-plane-outline');
+        if (paperPlane) {
+            paperPlane.addEventListener('click', async () => {
+                const localId = paperPlane.dataset.localId;
+                const localName = paperPlane.dataset.localName;
+                const remitenteId = currentUserId;
+                
+
+
+                console.log('📤 Intentando enviar mensaje automático...');
+                console.log('🆔 Local ID:', localId);
+                console.log('🆔 Remitente ID:', remitenteId);
+
+                if (!localId || !remitenteId) {
+                    showToast('No se puede enviar el mensaje.', true);
+                    return;
+                }
+
+
+                const token = await getJwtToken();
+                if (!token) {
+                    console.warn('❌ Token no obtenido');
+                    showToast('Debes iniciar sesión para enviar mensajes.', true);
+                    return;
+                }
+
+                const storageKey = `msgSent_${remitenteId}_${localId}`;
+                const lastSentDate = localStorage.getItem(storageKey);
+                const today = new Date().toISOString().split('T')[0];
+
+                if (lastSentDate === today) {
+                    console.log('📆 Mensaje ya enviado hoy:', lastSentDate);
+                    showToast('Ya enviaste un mensaje hoy sobre este local.');
+                    return;
+                }
+
+                try {
+                    console.log('📡 Obteniendo datos del local...');
+                    const resLocal = await fetch(`${API_LOCALES}/${localId}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    if (!resLocal.ok) {
+                        const err = await resLocal.text();
+                        console.error('❌ Error al obtener local:', err);
+                        throw new Error('No se pudo obtener el local');
+                    }
+
+                    const localData = await resLocal.json();
+                    const destinatarioId = localData.propietarioId; // ✅ CORREGIDO AQUÍ
+
+                    console.log('🧾 Propietario (destinatarioId):', destinatarioId);
+
+                    if (remitenteId === destinatarioId) {
+                        showToast('No puedes enviarte un mensaje a ti mismo.', true);
+                        return;
+                    }
+
+                    const mensaje = {
+                        destinatarioId: destinatarioId,
+                        contenido: `Hola, estoy interesado en tu local "${localName}" que marqué como favorito. ¿Podemos hablar?`
+                    };
+
+                    console.log('📨 Enviando mensaje:', mensaje);
+
+                    const resMensaje = await fetch('https://localhost:7135/api/Mensaje', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(mensaje)
+                    });
+
+                    if (!resMensaje.ok) {
+                        const errorText = await resMensaje.text();
+                        console.error('❌ Error al enviar mensaje:', errorText);
+                        showToast('Error al contactar al propietario', true);
+                        return;
+                    }
+
+                    localStorage.setItem(storageKey, today);
+                    showToast('Mensaje enviado al propietario');
+                    console.log('✅ Mensaje enviado y guardado en localStorage');
+                } catch (error) {
+                    console.error('❌ Excepción general:', error);
+                    showToast('Error al contactar al propietario', true);
+                }
+            });
+        }
+
 
         setTimeout(() => initializeCarousel(`carousel-${local.id}`), 50);
         return card;
