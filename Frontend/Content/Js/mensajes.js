@@ -352,32 +352,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ========= Inicialización del Emoji Picker =========
-    
-    function initEmojiPicker() {
+    function initializeEmojiPicker() {
         if (!emojiToggle || !emojiPicker) return;
 
-        // Asegurarse de que el picker está inicializado
-        if (!window.EmojiPickerElement) {
-            console.error('EmojiPickerElement no está disponible');
-            return;
-        }
-
-        emojiToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            emojiPicker.style.display = emojiPicker.style.display === 'block' ? 'none' : 'block';
+        emojiToggle.addEventListener('click', () => {
+            emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'block' : 'none';
         });
 
+        emojiPicker.addEventListener('emoji-click', (event) => {
+            messageInput.value += event.detail.unicode;
+            emojiPicker.style.display = 'none';
+            messageInput.focus();
+        });
+
+        // Cerrar el picker al hacer clic fuera
         document.addEventListener('click', (e) => {
-            if (e.target !== emojiToggle && !emojiPicker.contains(e.target)) {
+            if (!emojiPicker.contains(e.target) && e.target !== emojiToggle) {
                 emojiPicker.style.display = 'none';
             }
         });
-
-        emojiPicker.addEventListener('emoji-click', event => {
-            messageInput.value += event.detail.unicode;
-            messageInput.focus();
-        });
     }
+    
+   
 
     // ========= Inicialización de la Aplicación =========
     async function initialize() {
@@ -413,6 +409,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Error al inicializar:', error);
             showError(discussions, 'Error al cargar contactos');
         }
+
+
     }
 
     // ========= Event Listeners =========
@@ -432,20 +430,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         messageInput.style.height = 'auto';
         messageInput.style.height = `${Math.min(messageInput.scrollHeight, 100)}px`;
     });
-    async function waitForEmojiPicker() {
-        for (let i = 0; i < 10; i++) {
-            if (window.EmojiPickerElement) {
-                initEmojiPicker();
-                return;
-            }
-            await new Promise(resolve => setTimeout(resolve, 100));
-        }
-        console.warn('EmojiPickerElement no se cargó a tiempo');
-    }
+
 
 
     // Inicialización
-    await waitForEmojiPicker();
+    
     initialize();
 });
 
