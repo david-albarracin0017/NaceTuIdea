@@ -53,13 +53,29 @@ namespace Backend.Repository
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var local = await _context.Locales.FindAsync(id);
+            var local = await _context.Locales
+                .Include(l => l.Favoritos)
+                .Include(l => l.Valoraciones)
+                .Include(l => l.Disponibilidades) // aunque no la uses aún
+                .FirstOrDefaultAsync(l => l.Id == id);
+
             if (local == null) return false;
+
+            // Eliminar relaciones primero
+            if (local.Favoritos?.Any() == true)
+                _context.Favoritos.RemoveRange(local.Favoritos);
+
+            if (local.Valoraciones?.Any() == true)
+                _context.Valoraciones.RemoveRange(local.Valoraciones);
+
+            if (local.Disponibilidades?.Any() == true)
+                _context.Disponibilidades.RemoveRange(local.Disponibilidades);
 
             _context.Locales.Remove(local);
             await _context.SaveChangesAsync();
             return true;
         }
+
 
         public async Task<bool> ExistsAsync(string nombre, string direccion, Guid propietarioId)
         {

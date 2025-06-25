@@ -260,6 +260,7 @@ document.addEventListener('DOMContentLoaded', function () {
     async function updateLocal(id, data) {
         const token = await getJwtToken();
         const requestData = {
+            Id: id,
             ...data,
             Costo: parseFloat(data.costo) || 0
         };

@@ -352,27 +352,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // ========= Inicialización del Emoji Picker =========
+    
     function initEmojiPicker() {
         if (!emojiToggle || !emojiPicker) return;
 
+        // Asegurarse de que el picker está inicializado
+        if (!window.EmojiPickerElement) {
+            console.error('EmojiPickerElement no está disponible');
+            return;
+        }
+
         emojiToggle.addEventListener('click', (e) => {
             e.stopPropagation();
-            emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'block' : 'none';
-        });
-
-        emojiPicker.addEventListener('emoji-click', (event) => {
-            const cursorPos = messageInput.selectionStart;
-            const textBefore = messageInput.value.substring(0, cursorPos);
-            const textAfter = messageInput.value.substring(cursorPos);
-            messageInput.value = textBefore + event.detail.unicode + textAfter;
-            messageInput.focus();
-            messageInput.selectionStart = messageInput.selectionEnd = cursorPos + event.detail.unicode.length;
+            emojiPicker.style.display = emojiPicker.style.display === 'block' ? 'none' : 'block';
         });
 
         document.addEventListener('click', (e) => {
             if (e.target !== emojiToggle && !emojiPicker.contains(e.target)) {
                 emojiPicker.style.display = 'none';
             }
+        });
+
+        emojiPicker.addEventListener('emoji-click', event => {
+            messageInput.value += event.detail.unicode;
+            messageInput.focus();
         });
     }
 
@@ -429,9 +432,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         messageInput.style.height = 'auto';
         messageInput.style.height = `${Math.min(messageInput.scrollHeight, 100)}px`;
     });
+    async function waitForEmojiPicker() {
+        for (let i = 0; i < 10; i++) {
+            if (window.EmojiPickerElement) {
+                initEmojiPicker();
+                return;
+            }
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        console.warn('EmojiPickerElement no se cargó a tiempo');
+    }
+
 
     // Inicialización
-    initEmojiPicker();
+    await waitForEmojiPicker();
     initialize();
 });
 
