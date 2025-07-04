@@ -1,0 +1,71 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="@Url.Content("~/Favicon/logo.ico")" type="image/x-icon" />
+    <title>Recuperar Contraseña</title>
+    <link rel="stylesheet" href="@Url.Content("~/Content/Css/Style.css")">
+</head>
+<body>
+    <div class="wrapper active-popup">
+        <div class="form-box login">
+            <h2>Recuperar Contraseña</h2>
+            <form id="recuperarForm">
+                <div class="input-box">
+                    <input type="email" id="email" required placeholder=" ">
+                    <label>Correo electrónico</label>
+                    <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
+                </div>
+                <button type="submit" class="btn">Enviar enlace</button>
+            </form>
+            <div id="link-container" class="success-message" style="display: none; margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <!-- Iconos -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+
+    <script>
+        function showSuccessToast(message) {
+            const toast = document.createElement("div");
+            toast.className = "toast-success";
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        document.getElementById("recuperarForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("email").value.trim();
+
+            try {
+                const res = await fetch("https://localhost:7135/api/Access/RecuperarClave", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await res.json();
+                showSuccessToast(data.message || "Solicitud enviada");
+
+                if (res.ok && data.token) {
+                    // Redirige correctamente a la acción Resetear del controlador Recuperar
+                    const url = `/Recuperar/resetear?token=${data.token}`;
+                    const linkContainer = document.getElementById("link-container");
+                    linkContainer.innerHTML = `🔗 <a href="${url}">Haz clic aquí para restablecer tu contraseña</a>`;
+                    linkContainer.style.display = "block";
+                }
+            } catch (error) {
+                showSuccessToast("Error al conectar con el servidor");
+                console.error("Error en la solicitud:", error);
+            }
+        });
+    </script>
+</body>
+</html>
+
+

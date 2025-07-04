@@ -105,6 +105,50 @@ namespace Backend.Controllers
             return Ok(new { token = token, message = "Inicio de sesión exitoso." });
         }
 
+        [HttpPost("RecuperarClave")]
+        public async Task<IActionResult> RecuperarClave([FromBody] RecuperarClaveDto dto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+            if (user == null) return Ok(); // ocultamos si existe o no
+
+            var token = Guid.NewGuid().ToString();
+            var resetToken = new PasswordResetToken
+            {
+                UserId = user.Id,
+                Token = token,
+                Expiration = DateTime.UtcNow.AddHours(1)
+            };
+
+            _context.PasswordResetTokens.Add(resetToken);
+            await _context.SaveChangesAsync();
+
+            // En entorno local: devolver el token en la respuesta para simular el correo
+            return Ok(new
+            {
+                message = "Se ha generado un enlace de recuperación.",
+                token = token
+            });
+        }
+
+        [HttpPost("ResetearClave")]
+        public async Task<IActionResult> ResetearClave([FromBody] ResetearClaveDto dto)
+        {
+            var token = await _context.PasswordResetTokens
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.Token == dto.Token && t.Expiration > DateTime.UtcNow);
+
+            if (token == null)
+                return BadRequest(new { message = "Token inválido o expirado." });
+
+            token.User.Password = BCrypt.Net.BCrypt.HashPassword(dto.NuevaClave);
+            _context.PasswordResetTokens.Remove(token);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Contraseña actualizada correctamente." });
+        }
+
+
+
         private string GenerateJwtToken(User user)
         {
             var claims = new[]
